@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Blockface, LegalityResult } from '@/types/parking';
@@ -12,22 +11,47 @@ interface MapViewProps {
   blockfaces: Blockface[];
 }
 
-// Component to render blockfaces as Leaflet layers
-function BlockfaceLayer({ 
-  blockfaces, 
-  checkTime, 
-  durationMinutes, 
-  onBlockfaceClick 
-}: MapViewProps) {
-  const map = useMap();
+export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
+  const mapRef = useRef<L.Map | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const layersRef = useRef<L.Polyline[]>([]);
 
+  // Initialize map
   useEffect(() => {
-    // Clear existing layers
-    map.eachLayer((layer) => {
-      if (layer instanceof L.Polyline && !(layer instanceof L.TileLayer)) {
-        map.removeLayer(layer);
-      }
+    if (!mapContainerRef.current || mapRef.current) return;
+
+    // Create map
+    const map = L.map(mapContainerRef.current, {
+      center: [37.7527, -122.4078],
+      zoom: 16,
+      zoomControl: true,
     });
+
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    mapRef.current = map;
+
+    // Cleanup
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
+  // Update blockfaces when data changes
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Clear existing layers
+    layersRef.current.forEach((layer) => {
+      mapRef.current?.removeLayer(layer);
+    });
+    layersRef.current = [];
 
     // Add blockfaces as polylines
     blockfaces.forEach((blockface) => {
@@ -65,43 +89,16 @@ function BlockfaceLayer({
         polyline.setStyle({ weight: 8 });
       });
 
-      polyline.addTo(map);
+      polyline.addTo(mapRef.current!);
+      layersRef.current.push(polyline);
     });
+  }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
 
-    // Cleanup on unmount
-    return () => {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Polyline && !(layer instanceof L.TileLayer)) {
-          map.removeLayer(layer);
-        }
-      });
-    };
-  }, [map, blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
-
-  return null;
-}
-
-export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
   return (
-    <div className="absolute inset-0 w-full h-full">
-      <MapContainer
-        center={[37.7527, -122.4078]}
-        zoom={16}
-        style={{ width: '100%', height: '100%' }}
-        zoomControl={true}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        
-        <BlockfaceLayer
-          blockfaces={blockfaces}
-          checkTime={checkTime}
-          durationMinutes={durationMinutes}
-          onBlockfaceClick={onBlockfaceClick}
-        />
-      </MapContainer>
-    </div>
+    <div 
+      ref={mapContainerRef} 
+      className="absolute inset-0 w-full h-full"
+      style={{ zIndex: 0 }}
+    />
   );
 }
