@@ -21,7 +21,7 @@ export function SimpleDurationPicker({ durationMinutes, onDurationChange }: Simp
       <div className="flex items-center gap-2 mb-2">
         <Clock className="h-5 w-5 text-purple-600" />
         <h2 className="text-base font-bold text-gray-900">
-          Where can I street park for the next {durationHours} {hourText}?
+          Where can I street park nearby for the next {durationHours} {hourText}?
         </h2>
       </div>
       
