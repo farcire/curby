@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Logo } from '@/components/Logo';
 import { SimpleDurationPicker } from '@/components/SimpleDurationPicker';
+import { ParkingNavigator } from '@/components/ParkingNavigator';
 import { MapView } from '@/components/MapView';
 import { BlockfaceDetail } from '@/components/BlockfaceDetail';
 import { ErrorReportDialog } from '@/components/ErrorReportDialog';
 import { Blockface, LegalityResult } from '@/types/parking';
-import { Card } from '@/components/ui/card';
-import { Sparkles, RefreshCw, PartyPopper } from 'lucide-react';
+import { Sparkles, RefreshCw, Map as MapIcon, Navigation } from 'lucide-react';
 import { fetchSFMTABlockfaces, clearSFMTACache } from '@/utils/sfmtaDataFetcher';
 import { mockBlockfaces } from '@/data/mockBlockfaces';
 import { Button } from '@/components/ui/button';
@@ -17,11 +17,10 @@ const Index = () => {
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [showDemoHint, setShowDemoHint] = useState(true);
   const [blockfaces, setBlockfaces] = useState<Blockface[]>(mockBlockfaces);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
-  const [celebrateFind, setCelebrateFind] = useState(false);
+  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('navigator');
 
   useEffect(() => {
     loadSFMTAData();
@@ -59,13 +58,6 @@ const Index = () => {
   const handleBlockfaceClick = (blockface: Blockface, result: LegalityResult) => {
     setSelectedBlockface(blockface);
     setLegalityResult(result);
-    setShowDemoHint(false);
-    
-    // Celebrate when finding a legal spot!
-    if (result.status === 'legal') {
-      setCelebrateFind(true);
-      setTimeout(() => setCelebrateFind(false), 2000);
-    }
   };
 
   const handleCloseDetail = () => {
@@ -93,14 +85,28 @@ const Index = () => {
                 Curby
                 <Sparkles className="h-5 w-5 animate-pulse" />
               </h1>
-              <p className="text-sm text-white/90">Circle less, live more</p>
+              <p className="text-sm text-white/90">Your parking copilot ✨</p>
             </div>
           </div>
-          <div className="text-xs text-white/90 text-right bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2">
-            <div className="font-semibold">Mission + SOMA</div>
-            <div className="flex items-center gap-1 justify-end">
-              {dataSource === 'sfmta' ? '🌟 Live' : '🎭 Demo'}
-            </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setViewMode(viewMode === 'navigator' ? 'map' : 'navigator')}
+              className="text-white hover:bg-white/20 rounded-full"
+            >
+              {viewMode === 'navigator' ? (
+                <>
+                  <MapIcon className="h-4 w-4 mr-1" />
+                  Map
+                </>
+              ) : (
+                <>
+                  <Navigation className="h-4 w-4 mr-1" />
+                  Navigate
+                </>
+              )}
+            </Button>
           </div>
         </div>
       </header>
@@ -134,15 +140,6 @@ const Index = () => {
         </div>
       )}
 
-      {/* Celebration Overlay */}
-      {celebrateFind && (
-        <div className="fixed inset-0 pointer-events-none z-50 flex items-center justify-center">
-          <div className="animate-bounce">
-            <PartyPopper className="h-24 w-24 text-green-500" />
-          </div>
-        </div>
-      )}
-
       {/* Loading with Personality */}
       {isLoadingData && (
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -159,15 +156,23 @@ const Index = () => {
         </div>
       )}
 
-      {/* Map - Takes remaining space */}
-      <div className="flex-1 relative min-h-0">
-        <MapView
-          checkTime={new Date()}
-          durationMinutes={durationMinutes}
-          onBlockfaceClick={handleBlockfaceClick}
+      {/* Main Content - Navigator or Map */}
+      {viewMode === 'navigator' ? (
+        <ParkingNavigator
           blockfaces={blockfaces}
+          durationMinutes={durationMinutes}
+          onShowMap={() => setViewMode('map')}
         />
-      </div>
+      ) : (
+        <div className="flex-1 relative min-h-0">
+          <MapView
+            checkTime={new Date()}
+            durationMinutes={durationMinutes}
+            onBlockfaceClick={handleBlockfaceClick}
+            blockfaces={blockfaces}
+          />
+        </div>
+      )}
 
       {/* Blockface Detail Panel */}
       {selectedBlockface && legalityResult && (
@@ -185,34 +190,6 @@ const Index = () => {
         onOpenChange={setShowErrorDialog}
         blockface={selectedBlockface}
       />
-
-      {/* Simplified Demo Guide */}
-      {showDemoHint && !selectedBlockface && !isLoadingData && (
-        <div className="absolute bottom-6 right-6 max-w-xs z-20 animate-in slide-in-from-bottom-4 duration-500">
-          <Card className="p-4 bg-white shadow-2xl border-2 border-purple-300 rounded-2xl">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">👋</span>
-                <h3 className="font-bold text-sm text-gray-900">Tap any street!</h3>
-              </div>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-gray-700">Park here</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-2 bg-red-500 rounded-full"></div>
-                  <span className="text-gray-700">Don't park</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-2 bg-gray-400 rounded-full"></div>
-                  <span className="text-gray-700">No data</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      )}
     </div>
   );
 };
