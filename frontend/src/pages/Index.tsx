@@ -86,9 +86,9 @@ const Index = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen w-screen flex flex-col bg-gray-50 overflow-hidden">
       {/* Header */}
-      <header className="bg-blue-600 text-white p-4 shadow-md">
+      <header className="bg-blue-600 text-white p-4 shadow-md flex-shrink-0">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Curby</h1>
@@ -104,16 +104,18 @@ const Index = () => {
       </header>
 
       {/* Time Controls */}
-      <TimeControls
-        selectedTime={selectedTime}
-        durationMinutes={durationMinutes}
-        onTimeChange={setSelectedTime}
-        onDurationChange={setDurationMinutes}
-      />
+      <div className="flex-shrink-0">
+        <TimeControls
+          selectedTime={selectedTime}
+          durationMinutes={durationMinutes}
+          onTimeChange={setSelectedTime}
+          onDurationChange={setDurationMinutes}
+        />
+      </div>
 
       {/* Data Source Banner */}
       {dataSource === 'mock' && (
-        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 flex-shrink-0">
           <div className="flex items-center justify-between gap-2 text-xs">
             <div className="flex items-start gap-2 text-amber-900">
               <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
@@ -135,7 +137,7 @@ const Index = () => {
       )}
 
       {/* Demo Scenario Banner */}
-      <div className="bg-green-50 border-b border-green-200 px-4 py-2">
+      <div className="bg-green-50 border-b border-green-200 px-4 py-2 flex-shrink-0">
         <div className="flex items-start gap-2 text-xs text-green-900">
           <Info className="h-4 w-4 mt-0.5 flex-shrink-0" />
           <p>
@@ -155,8 +157,8 @@ const Index = () => {
         </div>
       )}
 
-      {/* Map */}
-      <div className="flex-1 relative">
+      {/* Map - Takes remaining space */}
+      <div className="flex-1 relative min-h-0">
         <MapView
           checkTime={selectedTime}
           durationMinutes={durationMinutes}
@@ -184,7 +186,7 @@ const Index = () => {
 
       {/* Demo Instructions Card */}
       {showDemoHint && !selectedBlockface && !isLoadingData && (
-        <div className="absolute bottom-4 right-4 max-w-sm">
+        <div className="absolute bottom-4 right-4 max-w-sm z-20">
           <Card className="p-4 bg-white shadow-xl border-2 border-blue-500">
             <h3 className="font-semibold text-sm text-gray-900 mb-2 flex items-center gap-2">
               🎯 Demo Guide
