@@ -26,6 +26,18 @@ const createTimeLimitRule = (minutes: number): ParkingRule => ({
   },
 });
 
+const createStreetSweepingRule = (): ParkingRule => ({
+  id: 'street-sweeping-monday',
+  type: 'street-sweeping',
+  timeRanges: [{
+    startTime: '00:00',
+    endTime: '02:00',
+    daysOfWeek: [1], // Monday
+  }],
+  description: 'Street sweeping Monday 12am-2am',
+  precedence: PRECEDENCE['street-sweeping'],
+});
+
 const createNoParkingRule = (): ParkingRule => ({
   id: 'no-parking-anytime',
   type: 'no-parking',
@@ -71,6 +83,7 @@ export const mockBlockfaces: Blockface[] = [
     side: 'east',
     rules: [
       createTimeLimitRule(120), // 2-hour limit
+      createStreetSweepingRule(), // Street sweeping Monday 12am-2am
     ],
   },
   
@@ -88,6 +101,7 @@ export const mockBlockfaces: Blockface[] = [
     side: 'west',
     rules: [
       createTimeLimitRule(120), // 2-hour limit
+      createStreetSweepingRule(), // Street sweeping Monday 12am-2am
     ],
   },
   
