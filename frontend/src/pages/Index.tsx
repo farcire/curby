@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { showSuccess, showError } from '@/utils/toast';
 import { evaluateLegality } from '@/utils/ruleEngine';
 
-const CENTER_POINT: [number, number] = [37.75872, -122.40920]; // Real 20th & Bryant intersection
+const CENTER_POINT: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - adjusted north
 
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(60);
