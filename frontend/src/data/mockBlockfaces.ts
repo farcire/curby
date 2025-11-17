@@ -65,10 +65,10 @@ const createRPPRule = (): ParkingRule => ({
   },
 });
 
-// More accurate coordinates matching actual SF street grid
-// Bryant St runs NW-SE, cross streets run NE-SW
+// Accurate coordinates based on actual SF street grid
+// Streets in this area run at approximately 45-degree angles
 export const mockBlockfaces: Blockface[] = [
-  // ===== BRYANT STREET (your location) =====
+  // ===== BRYANT STREET (runs NW-SE) =====
   
   // Bryant: 19th to 20th - LEGAL (east side) ✅
   {
@@ -76,8 +76,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40930, 37.75990],
-        [-122.40840, 37.75880],
+        [-122.40918, 37.75995],
+        [-122.40828, 37.75885],
       ],
     },
     streetName: 'Bryant St',
@@ -94,8 +94,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40945, 37.75990],
-        [-122.40855, 37.75880],
+        [-122.40933, 37.75995],
+        [-122.40843, 37.75885],
       ],
     },
     streetName: 'Bryant St',
@@ -112,8 +112,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40840, 37.75880],
-        [-122.40750, 37.75770],
+        [-122.40828, 37.75885],
+        [-122.40738, 37.75775],
       ],
     },
     streetName: 'Bryant St',
@@ -129,8 +129,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40855, 37.75880],
-        [-122.40765, 37.75770],
+        [-122.40843, 37.75885],
+        [-122.40753, 37.75775],
       ],
     },
     streetName: 'Bryant St',
@@ -140,7 +140,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== HARRISON STREET (1 block west) =====
+  // ===== HARRISON STREET (1 block west, parallel to Bryant) =====
   
   // Harrison: 19th to 20th - LEGAL (east side) ✅
   {
@@ -148,8 +148,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41130, 37.75990],
-        [-122.41040, 37.75880],
+        [-122.41118, 37.75995],
+        [-122.41028, 37.75885],
       ],
     },
     streetName: 'Harrison St',
@@ -159,14 +159,14 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Harrison: 19th to 20th - ILLEGAL (west side) ⚠️ Creates YELLOW
+  // Harrison: 19th to 20th - ILLEGAL (west side) ⚠️
   {
     id: 'harrison-19th-20th-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41145, 37.75990],
-        [-122.41055, 37.75880],
+        [-122.41133, 37.75995],
+        [-122.41043, 37.75885],
       ],
     },
     streetName: 'Harrison St',
@@ -182,8 +182,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41040, 37.75880],
-        [-122.40950, 37.75770],
+        [-122.41028, 37.75885],
+        [-122.40938, 37.75775],
       ],
     },
     streetName: 'Harrison St',
@@ -199,8 +199,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41055, 37.75880],
-        [-122.40965, 37.75770],
+        [-122.41043, 37.75885],
+        [-122.40953, 37.75775],
       ],
     },
     streetName: 'Harrison St',
@@ -210,7 +210,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== FOLSOM STREET (1 block east) =====
+  // ===== FOLSOM STREET (1 block east, parallel to Bryant) =====
   
   // Folsom: 19th to 20th - LEGAL (west side) ✅
   {
@@ -218,8 +218,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40730, 37.75990],
-        [-122.40640, 37.75880],
+        [-122.40718, 37.75995],
+        [-122.40628, 37.75885],
       ],
     },
     streetName: 'Folsom St',
@@ -235,8 +235,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40715, 37.75990],
-        [-122.40625, 37.75880],
+        [-122.40703, 37.75995],
+        [-122.40613, 37.75885],
       ],
     },
     streetName: 'Folsom St',
@@ -252,8 +252,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40640, 37.75880],
-        [-122.40550, 37.75770],
+        [-122.40628, 37.75885],
+        [-122.40538, 37.75775],
       ],
     },
     streetName: 'Folsom St',
@@ -263,14 +263,14 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Folsom: 20th to 21st - LEGAL (east side) ⚠️ Creates YELLOW
+  // Folsom: 20th to 21st - LEGAL (east side) ✅
   {
     id: 'folsom-20th-21st-east',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40625, 37.75880],
-        [-122.40535, 37.75770],
+        [-122.40613, 37.75885],
+        [-122.40523, 37.75775],
       ],
     },
     streetName: 'Folsom St',
@@ -280,7 +280,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== 19TH STREET (perpendicular) =====
+  // ===== 19TH STREET (runs NE-SW, perpendicular to Bryant) =====
   
   // 19th: Harrison to Bryant - LEGAL (south side) ✅
   {
@@ -288,8 +288,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41130, 37.75990],
-        [-122.40930, 37.75990],
+        [-122.41118, 37.75995],
+        [-122.40918, 37.75995],
       ],
     },
     streetName: '19th St',
@@ -305,8 +305,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41130, 37.76005],
-        [-122.40930, 37.76005],
+        [-122.41118, 37.76010],
+        [-122.40918, 37.76010],
       ],
     },
     streetName: '19th St',
@@ -322,8 +322,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40930, 37.75990],
-        [-122.40730, 37.75990],
+        [-122.40918, 37.75995],
+        [-122.40718, 37.75995],
       ],
     },
     streetName: '19th St',
@@ -339,8 +339,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40930, 37.76005],
-        [-122.40730, 37.76005],
+        [-122.40918, 37.76010],
+        [-122.40718, 37.76010],
       ],
     },
     streetName: '19th St',
@@ -350,7 +350,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== 20TH STREET (your location) =====
+  // ===== 20TH STREET (runs NE-SW, perpendicular to Bryant) =====
   
   // 20th: Harrison to Bryant - LEGAL (north side) ✅
   {
@@ -358,8 +358,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41040, 37.75880],
-        [-122.40840, 37.75880],
+        [-122.41028, 37.75885],
+        [-122.40828, 37.75885],
       ],
     },
     streetName: '20th St',
@@ -375,8 +375,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41040, 37.75865],
-        [-122.40840, 37.75865],
+        [-122.41028, 37.75870],
+        [-122.40828, 37.75870],
       ],
     },
     streetName: '20th St',
@@ -392,8 +392,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40840, 37.75880],
-        [-122.40640, 37.75880],
+        [-122.40828, 37.75885],
+        [-122.40628, 37.75885],
       ],
     },
     streetName: '20th St',
@@ -409,8 +409,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40840, 37.75865],
-        [-122.40640, 37.75865],
+        [-122.40828, 37.75870],
+        [-122.40628, 37.75870],
       ],
     },
     streetName: '20th St',
@@ -420,7 +420,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== 21ST STREET (perpendicular) =====
+  // ===== 21ST STREET (runs NE-SW, perpendicular to Bryant) =====
   
   // 21st: Harrison to Bryant - LEGAL (north side) ✅
   {
@@ -428,8 +428,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40950, 37.75770],
-        [-122.40750, 37.75770],
+        [-122.40938, 37.75775],
+        [-122.40738, 37.75775],
       ],
     },
     streetName: '21st St',
@@ -445,8 +445,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40950, 37.75755],
-        [-122.40750, 37.75755],
+        [-122.40938, 37.75760],
+        [-122.40738, 37.75760],
       ],
     },
     streetName: '21st St',
@@ -462,8 +462,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40750, 37.75770],
-        [-122.40550, 37.75770],
+        [-122.40738, 37.75775],
+        [-122.40538, 37.75775],
       ],
     },
     streetName: '21st St',
@@ -479,8 +479,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40750, 37.75755],
-        [-122.40550, 37.75755],
+        [-122.40738, 37.75760],
+        [-122.40538, 37.75760],
       ],
     },
     streetName: '21st St',
