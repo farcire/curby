@@ -382,6 +382,6 @@ export async function fetchSFMTABlockfaces(): Promise<Blockface[]> {
 /**
  * Clear cached data
  */
-export function clearSFMTache(): void {
+export function clearSFMTACache(): void {
   localStorage.removeItem(CACHE_KEY);
 }
