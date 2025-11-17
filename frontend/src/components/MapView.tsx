@@ -9,49 +9,47 @@ interface MapViewProps {
   durationMinutes: number;
   onBlockfaceClick: (blockface: Blockface, result: LegalityResult) => void;
   blockfaces: Blockface[];
+  radiusBlocks: number;
+  centerPoint: [number, number]; // [lat, lng]
 }
 
 interface BlockfaceWithResult {
   blockface: Blockface;
   result: LegalityResult;
+  distance: number;
 }
 
-export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
+export function MapView({ 
+  checkTime, 
+  durationMinutes, 
+  onBlockfaceClick, 
+  blockfaces,
+  radiusBlocks,
+  centerPoint,
+}: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
+  const radiusCircleRef = useRef<L.Circle | null>(null);
 
-  // Initialize map centered on Bryant & 20th with 3-block radius view
+  // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Create map centered on Bryant & 20th Street
     const map = L.map(mapContainerRef.current, {
-      center: [37.75885, -122.40935], // Bryant & 20th
-      zoom: 17, // Closer zoom for 3-block radius
+      center: centerPoint,
+      zoom: 17,
       zoomControl: true,
       minZoom: 15,
       maxZoom: 18,
     });
 
-    // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // Add a subtle circle to show the 3-block radius area
-    L.circle([37.75885, -122.40935], {
-      radius: 330, // approximately 3 blocks (110m per block)
-      color: '#8b5cf6',
-      fillColor: '#8b5cf6',
-      fillOpacity: 0.05,
-      weight: 2,
-      opacity: 0.3,
-      dashArray: '5, 10',
-    }).addTo(map);
-
-    // Add a marker at Bryant & 20th
-    const centerMarker = L.marker([37.75885, -122.40935], {
+    // Add center marker
+    const centerMarker = L.marker(centerPoint, {
       icon: L.divIcon({
         className: 'custom-center-marker',
         html: '<div style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
@@ -68,23 +66,68 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
     mapRef.current = map;
 
-    // Cleanup
     return () => {
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
       }
     };
-  }, []);
+  }, [centerPoint]);
 
-  // Helper function to get street segment key (street name + approximate block)
+  // Update radius circle
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Remove old circle
+    if (radiusCircleRef.current) {
+      mapRef.current.removeLayer(radiusCircleRef.current);
+    }
+
+    // Add new circle
+    const radiusMeters = radiusBlocks * 110;
+    const circle = L.circle(centerPoint, {
+      radius: radiusMeters,
+      color: '#8b5cf6',
+      fillColor: '#8b5cf6',
+      fillOpacity: 0.05,
+      weight: 2,
+      opacity: 0.3,
+      dashArray: '5, 10',
+    }).addTo(mapRef.current);
+
+    radiusCircleRef.current = circle;
+  }, [radiusBlocks, centerPoint]);
+
+  // Calculate distance between two points (Haversine formula)
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371e3; // Earth's radius in meters
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lng2 - lng1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+  };
+
+  // Get blockface center point
+  const getBlockfaceCenter = (blockface: Blockface): [number, number] => {
+    const coords = blockface.geometry.coordinates;
+    const centerLat = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
+    const centerLng = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
+    return [centerLat, centerLng];
+  };
+
+  // Helper function to get street segment key
   const getStreetSegmentKey = (blockface: Blockface): string => {
-    // Get average lat/lng to identify the block
     const coords = blockface.geometry.coordinates;
     const avgLat = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
     const avgLng = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
     
-    // Round to 3 decimal places to group nearby segments
     const latKey = Math.round(avgLat * 1000);
     const lngKey = Math.round(avgLng * 1000);
     
@@ -97,29 +140,24 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     result: LegalityResult,
     allBlockfacesWithResults: BlockfaceWithResult[]
   ): string => {
-    // Find blockfaces on the same street segment
     const segmentKey = getStreetSegmentKey(blockface);
     const sameSegment = allBlockfacesWithResults.filter(
       bwr => getStreetSegmentKey(bwr.blockface) === segmentKey
     );
 
-    // If we only have one side, use normal color
     if (sameSegment.length === 1) {
       return getStatusColor(result.status);
     }
 
-    // Check if opposite sides have different legality
     const hasLegal = sameSegment.some(bwr => bwr.result.status === 'legal');
     const hasIllegal = sameSegment.some(
       bwr => bwr.result.status === 'illegal' || bwr.result.status === 'insufficient-data'
     );
 
-    // If one side is legal and the other is not, show yellow
     if (hasLegal && hasIllegal) {
       return '#eab308'; // yellow-500
     }
 
-    // Otherwise, use the normal color for this blockface
     return getStatusColor(result.status);
   };
 
@@ -133,14 +171,23 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     });
     layersRef.current = [];
 
-    // Evaluate all blockfaces first
-    const blockfacesWithResults: BlockfaceWithResult[] = blockfaces.map(blockface => ({
-      blockface,
-      result: evaluateLegality(blockface, checkTime, durationMinutes),
-    }));
+    const radiusMeters = radiusBlocks * 110;
+
+    // Evaluate all blockfaces with distance
+    const blockfacesWithResults: BlockfaceWithResult[] = blockfaces.map(blockface => {
+      const [centerLat, centerLng] = getBlockfaceCenter(blockface);
+      const distance = calculateDistance(centerPoint[0], centerPoint[1], centerLat, centerLng);
+      
+      return {
+        blockface,
+        result: evaluateLegality(blockface, checkTime, durationMinutes),
+        distance,
+      };
+    });
 
     // Add blockfaces as polylines
-    blockfacesWithResults.forEach(({ blockface, result }) => {
+    blockfacesWithResults.forEach(({ blockface, result, distance }) => {
+      const isInRadius = distance <= radiusMeters;
       const color = getBlockfaceColor(blockface, result, blockfacesWithResults);
 
       // Convert coordinates to Leaflet format [lat, lng]
@@ -149,15 +196,17 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       );
 
       const polyline = L.polyline(latlngs, {
-        color,
+        color: isInRadius ? color : '#d1d5db', // gray-300 for out of radius
         weight: 10,
-        opacity: 0.9,
+        opacity: isInRadius ? 0.9 : 0.3,
       });
 
-      // Add tooltip with status indicator
+      // Add tooltip
       let statusEmoji = '';
-      if (color === '#eab308') {
-        statusEmoji = '⚠️ '; // Yellow = mixed
+      if (!isInRadius) {
+        statusEmoji = '🚫 '; // Out of radius
+      } else if (color === '#eab308') {
+        statusEmoji = '⚠️ ';
       } else if (result.status === 'legal') {
         statusEmoji = '✅ ';
       } else if (result.status === 'illegal') {
@@ -166,29 +215,36 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         statusEmoji = '🤔 ';
       }
 
-      polyline.bindTooltip(statusEmoji + blockface.streetName, {
-        permanent: false,
-        direction: 'top',
-      });
+      polyline.bindTooltip(
+        isInRadius 
+          ? statusEmoji + blockface.streetName 
+          : `🚫 ${blockface.streetName} (outside radius)`,
+        {
+          permanent: false,
+          direction: 'top',
+        }
+      );
 
-      // Add click handler
-      polyline.on('click', () => {
-        onBlockfaceClick(blockface, result);
-      });
+      // Add click handler only for blocks in radius
+      if (isInRadius) {
+        polyline.on('click', () => {
+          onBlockfaceClick(blockface, result);
+        });
 
-      // Add hover effects
-      polyline.on('mouseover', () => {
-        polyline.setStyle({ weight: 14 });
-      });
+        // Add hover effects
+        polyline.on('mouseover', () => {
+          polyline.setStyle({ weight: 14 });
+        });
 
-      polyline.on('mouseout', () => {
-        polyline.setStyle({ weight: 10 });
-      });
+        polyline.on('mouseout', () => {
+          polyline.setStyle({ weight: 10 });
+        });
+      }
 
       polyline.addTo(mapRef.current!);
       layersRef.current.push(polyline);
     });
-  }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
+  }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick, radiusBlocks, centerPoint]);
 
   return (
     <div 
