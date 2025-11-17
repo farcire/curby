@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import mapboxgl from 'mapbox-gl';
+import { useState, useCallback, useMemo } from 'react';
+import Map, { Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
+import type { LayerProps } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { evaluateLegality, getStatusColor } from '@/utils/ruleEngine';
@@ -14,123 +15,10 @@ interface MapViewProps {
 }
 
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapLoaded, setMapLoaded] = useState(false);
-  const [mapError, setMapError] = useState<string | null>(null);
-  const [isInitializing, setIsInitializing] = useState(true);
-  const initializationAttempted = useRef(false);
+  const [cursor, setCursor] = useState<string>('auto');
 
-  // Initialize map when container is mounted
-  const initializeMap = useCallback((container: HTMLDivElement) => {
-    if (initializationAttempted.current) {
-      console.log('⚠️ Map initialization already attempted');
-      return;
-    }
-
-    initializationAttempted.current = true;
-
-    console.log('🎬 Starting map initialization from callback ref');
-    console.log('📦 Container dimensions:', {
-      width: container.offsetWidth,
-      height: container.offsetHeight,
-    });
-
-    if (!MAPBOX_TOKEN) {
-      console.error('❌ No Mapbox token');
-      setMapError('Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to your .env.local file and restart the server.');
-      setIsInitializing(false);
-      return;
-    }
-    
-    if (!MAPBOX_TOKEN.startsWith('pk.')) {
-      console.error('❌ Invalid Mapbox token format');
-      setMapError('Your Mapbox token is invalid. It should start with "pk.". Please check your .env.local file.');
-      setIsInitializing(false);
-      return;
-    }
-
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
-
-    if (containerWidth === 0 || containerHeight === 0) {
-      console.error('❌ Container has no dimensions');
-      setMapError('Map container has no dimensions. Please check the layout.');
-      setIsInitializing(false);
-      return;
-    }
-
-    console.log('🏗️ Creating Mapbox map instance...');
-
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-
-    try {
-      const newMap = new mapboxgl.Map({
-        container: container,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-122.4078, 37.7527],
-        zoom: 16,
-      });
-
-      console.log('✅ Map instance created, waiting for load event...');
-
-      newMap.on('load', () => {
-        console.log('🎉 Map loaded successfully!');
-        map.current = newMap;
-        setMapLoaded(true);
-        setIsInitializing(false);
-      });
-
-      newMap.on('error', (e) => {
-        console.error('❌ Map error:', e);
-        setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
-        setIsInitializing(false);
-      });
-
-      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
-      newMap.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: { enableHighAccuracy: true },
-          trackUserLocation: true,
-        }),
-        'top-right'
-      );
-    } catch (error) {
-      console.error('💥 Error creating map:', error);
-      setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
-      setIsInitializing(false);
-    }
-  }, []);
-
-  // Callback ref that triggers initialization
-  const mapContainer = useCallback((node: HTMLDivElement | null) => {
-    if (node && !map.current) {
-      console.log('📦 Container ref callback triggered');
-      // Small delay to ensure container is fully rendered
-      setTimeout(() => initializeMap(node), 50);
-    }
-  }, [initializeMap]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      console.log('🧹 Cleaning up map...');
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, []);
-
-  // Update blockfaces on map
-  useEffect(() => {
-    if (!map.current || !mapLoaded) {
-      console.log('⏳ Waiting for map to load before updating blockfaces');
-      return;
-    }
-
-    console.log('🔄 Updating blockfaces on map...');
-
-    const source = map.current.getSource('blockfaces');
+  // Generate GeoJSON data with legality colors
+  const geojsonData = useMemo(() => {
     const features = blockfaces.map((blockface) => {
       const result = evaluateLegality(blockface, checkTime, durationMinutes);
       return {
@@ -142,88 +30,103 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         geometry: blockface.geometry,
       };
     });
-    const geojsonData = { type: 'FeatureCollection' as const, features };
 
-    console.log('📍 Updating blockfaces:', features.length, 'features');
+    return {
+      type: 'FeatureCollection' as const,
+      features,
+    };
+  }, [blockfaces, checkTime, durationMinutes]);
 
-    if (source) {
-      console.log('🔄 Updating existing source');
-      (source as mapboxgl.GeoJSONSource).setData(geojsonData);
-    } else {
-      console.log('➕ Adding new source and layer');
-      map.current.addSource('blockfaces', {
-        type: 'geojson',
-        data: geojsonData,
-      });
+  // Layer style for blockfaces
+  const blockfaceLayer: LayerProps = {
+    id: 'blockfaces',
+    type: 'line',
+    paint: {
+      'line-color': ['get', 'color'],
+      'line-width': 8,
+      'line-opacity': 0.9,
+    },
+  };
 
-      map.current.addLayer({
-        id: 'blockfaces',
-        type: 'line',
-        source: 'blockfaces',
-        paint: {
-          'line-color': ['get', 'color'],
-          'line-width': 8,
-          'line-opacity': 0.9,
-        },
-      });
+  // Handle click on blockface
+  const handleClick = useCallback(
+    (event: MapLayerMouseEvent) => {
+      const feature = event.features?.[0];
+      if (!feature) return;
 
-      map.current.on('click', 'blockfaces', (e) => {
-        if (!e.features?.length) return;
-        const blockfaceId = e.features[0].properties?.id;
-        const blockface = blockfaces.find((b) => b.id === blockfaceId);
-        if (blockface) {
-          onBlockfaceClick(blockface, evaluateLegality(blockface, checkTime, durationMinutes));
-        }
-      });
+      const blockfaceId = feature.properties?.id;
+      const blockface = blockfaces.find((b) => b.id === blockfaceId);
+      
+      if (blockface) {
+        const result = evaluateLegality(blockface, checkTime, durationMinutes);
+        onBlockfaceClick(blockface, result);
+      }
+    },
+    [blockfaces, checkTime, durationMinutes, onBlockfaceClick]
+  );
 
-      map.current.on('mouseenter', 'blockfaces', () => {
-        map.current!.getCanvas().style.cursor = 'pointer';
-      });
-      map.current.on('mouseleave', 'blockfaces', () => {
-        map.current!.getCanvas().style.cursor = '';
-      });
-    }
-  }, [mapLoaded, checkTime, durationMinutes, blockfaces, onBlockfaceClick]);
+  // Handle mouse enter/leave for cursor
+  const onMouseEnter = useCallback(() => setCursor('pointer'), []);
+  const onMouseLeave = useCallback(() => setCursor('auto'), []);
 
-  if (isInitializing) {
+  if (!MAPBOX_TOKEN) {
     return (
-      <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-sm text-gray-600">Loading map...</p>
-          <p className="text-xs text-gray-500 mt-2">Initializing Mapbox...</p>
+      <div className="absolute inset-0 bg-red-50 flex items-center justify-center p-4">
+        <div className="text-center bg-white p-6 rounded-2xl shadow-lg border-2 border-red-200 max-w-md">
+          <div className="text-5xl mb-3">🗺️💥</div>
+          <h3 className="text-lg font-bold text-red-800 mb-2">Map Configuration Needed</h3>
+          <p className="text-sm text-gray-700 mb-4">
+            Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to your .env.local file and restart the server.
+          </p>
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-left text-xs text-yellow-900">
+            <p className="font-semibold mb-2">How to fix:</p>
+            <ol className="list-decimal list-inside space-y-1">
+              <li>Create a file named `.env.local` in the project root</li>
+              <li>Add: VITE_MAPBOX_TOKEN=pk.your_token_here</li>
+              <li>Get a free token from mapbox.com</li>
+              <li>Restart the dev server</li>
+            </ol>
+          </div>
         </div>
       </div>
     );
   }
 
-  if (mapError) {
+  if (!MAPBOX_TOKEN.startsWith('pk.')) {
     return (
       <div className="absolute inset-0 bg-red-50 flex items-center justify-center p-4">
         <div className="text-center bg-white p-6 rounded-2xl shadow-lg border-2 border-red-200 max-w-md">
           <div className="text-5xl mb-3">🗺️💥</div>
-          <h3 className="text-lg font-bold text-red-800 mb-2">Map Loading Error</h3>
-          <p className="text-sm text-gray-700 mb-4">{mapError}</p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-left text-xs text-yellow-900">
-            <p className="font-semibold mb-2">How to fix:</p>
-            <ol className="list-decimal list-inside space-y-1">
-              <li>Create a file named `.env.local` in the project root.</li>
-              <li>Add your Mapbox token: `VITE_MAPBOX_TOKEN=pk.your_token_here`</li>
-              <li>Get a free token from `mapbox.com`.</li>
-              <li>Restart the application server.</li>
-            </ol>
-          </div>
-          <p className="text-xs text-gray-500 mt-3">Check browser console for more details</p>
+          <h3 className="text-lg font-bold text-red-800 mb-2">Invalid Mapbox Token</h3>
+          <p className="text-sm text-gray-700 mb-4">
+            Your Mapbox token is invalid. It should start with "pk.". Please check your .env.local file.
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div 
-      ref={mapContainer}
-      className="absolute inset-0 w-full h-full bg-gray-200" 
-      style={{ minHeight: '400px' }}
-    />
+    <div className="absolute inset-0 w-full h-full">
+      <Map
+        mapboxAccessToken={MAPBOX_TOKEN}
+        initialViewState={{
+          longitude: -122.4078,
+          latitude: 37.7527,
+          zoom: 16,
+        }}
+        style={{ width: '100%', height: '100%' }}
+        mapStyle="mapbox://styles/mapbox/streets-v12"
+        cursor={cursor}
+        interactiveLayerIds={['blockfaces']}
+        onClick={handleClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        <Source id="blockfaces" type="geojson" data={geojsonData}>
+          <Layer {...blockfaceLayer} />
+        </Source>
+      </Map>
+    </div>
   );
 }
