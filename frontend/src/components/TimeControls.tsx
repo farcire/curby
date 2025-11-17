@@ -15,13 +15,9 @@ interface TimeControlsProps {
 }
 
 const DURATION_OPTIONS = [
-  { value: 15, label: '15 min', emoji: '⚡' },
-  { value: 30, label: '30 min', emoji: '🏃' },
   { value: 60, label: '1 hour', emoji: '☕' },
-  { value: 90, label: '1.5 hours', emoji: '🍽️' },
-  { value: 120, label: '2 hours', emoji: '🎬' },
+  { value: 120, label: '2 hours', emoji: '🍽️' },
   { value: 180, label: '3 hours', emoji: '🛍️' },
-  { value: 240, label: '4 hours', emoji: '🎨' },
 ];
 
 const TIME_OPTIONS = Array.from({ length: 24 }, (_, i) => {
