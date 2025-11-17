@@ -103,6 +103,23 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
+  // Bryant: 18th to 19th - ILLEGAL (west side) - Creates YELLOW with east side
+  {
+    id: 'bryant-18th-19th-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40995, 37.76145],
+        [-122.40905, 37.76035],
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'west',
+    rules: [
+      createNoParkingRule(),
+    ],
+  },
+  
   // Bryant: 19th to 20th - LEGAL (east side)
   {
     id: 'bryant-19th-20th-east',
@@ -121,6 +138,24 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
+  // Bryant: 19th to 20th - LEGAL (west side) - Both sides legal = GREEN
+  {
+    id: 'bryant-19th-20th-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40905, 37.76035],
+        [-122.40815, 37.75925],
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'west',
+    rules: [
+      createStreetSweepingRule(3, '08:00', '10:00'),
+      createTimeLimitRule(120),
+    ],
+  },
+  
   // Bryant: 20th to 21st - ILLEGAL (east side)
   {
     id: 'bryant-20th-21st-east',
@@ -133,6 +168,23 @@ export const mockBlockfaces: Blockface[] = [
     },
     streetName: 'Bryant St',
     side: 'east',
+    rules: [
+      createNoParkingRule(),
+    ],
+  },
+  
+  // Bryant: 20th to 21st - ILLEGAL (west side) - Both sides illegal = RED
+  {
+    id: 'bryant-20th-21st-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40815, 37.75925],
+        [-122.40725, 37.75815],
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'west',
     rules: [
       createNoParkingRule(),
     ],
@@ -191,6 +243,23 @@ export const mockBlockfaces: Blockface[] = [
     rules: [
       createStreetSweepingRule(5, '08:00', '10:00'),
       createTimeLimitRule(240),
+    ],
+  },
+  
+  // Harrison: 19th to 20th - ILLEGAL (west side) - Creates YELLOW with east side
+  {
+    id: 'harrison-19th-20th-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41105, 37.76035],
+        [-122.41015, 37.75925],
+      ],
+    },
+    streetName: 'Harrison St',
+    side: 'west',
+    rules: [
+      createRPPRule('P'),
     ],
   },
   
@@ -282,6 +351,24 @@ export const mockBlockfaces: Blockface[] = [
     side: 'west',
     rules: [
       createRPPRule('P'),
+    ],
+  },
+  
+  // Folsom: 20th to 21st - LEGAL (east side) - Creates YELLOW with west side
+  {
+    id: 'folsom-20th-21st-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40595, 37.75925],
+        [-122.40505, 37.75815],
+      ],
+    },
+    streetName: 'Folsom St',
+    side: 'east',
+    rules: [
+      createStreetSweepingRule(2, '08:00', '10:00'),
+      createTimeLimitRule(180),
     ],
   },
   
