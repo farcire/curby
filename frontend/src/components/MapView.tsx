@@ -1,11 +1,9 @@
-import { useState, useCallback, useMemo } from 'react';
-import Map, { Source, Layer, MapLayerMouseEvent } from 'react-map-gl';
-import type { LayerProps } from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useMemo } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { evaluateLegality, getStatusColor } from '@/utils/ruleEngine';
-
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || '';
 
 interface MapViewProps {
   checkTime: Date;
@@ -14,9 +12,50 @@ interface MapViewProps {
   blockfaces: Blockface[];
 }
 
-export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
-  const [cursor, setCursor] = useState<string>('auto');
+// Component to handle map events
+function MapEventHandler({ 
+  blockfaces, 
+  checkTime, 
+  durationMinutes, 
+  onBlockfaceClick 
+}: MapViewProps) {
+  const map = useMap();
 
+  // Handle click events on the map
+  useMemo(() => {
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      const clickedPoint = e.latlng;
+      
+      // Find the closest blockface to the click
+      let closestBlockface: Blockface | null = null;
+      let minDistance = Infinity;
+
+      blockfaces.forEach((blockface) => {
+        const coords = blockface.geometry.coordinates;
+        coords.forEach(([lng, lat]) => {
+          const distance = clickedPoint.distanceTo(L.latLng(lat, lng));
+          if (distance < minDistance && distance < 50) { // 50 meter threshold
+            minDistance = distance;
+            closestBlockface = blockface;
+          }
+        });
+      });
+
+      if (closestBlockface) {
+        const result = evaluateLegality(closestBlockface, checkTime, durationMinutes);
+        onBlockfaceClick(closestBlockface, result);
+      }
+    });
+
+    return () => {
+      map.off('click');
+    };
+  }, [map, blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
+
+  return null;
+}
+
+export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
   // Generate GeoJSON data with legality colors
   const geojsonData = useMemo(() => {
     const features = blockfaces.map((blockface) => {
@@ -26,6 +65,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         properties: {
           id: blockface.id,
           color: getStatusColor(result.status),
+          streetName: blockface.streetName,
         },
         geometry: blockface.geometry,
       };
@@ -37,96 +77,72 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     };
   }, [blockfaces, checkTime, durationMinutes]);
 
-  // Layer style for blockfaces
-  const blockfaceLayer: LayerProps = {
-    id: 'blockfaces',
-    type: 'line',
-    paint: {
-      'line-color': ['get', 'color'],
-      'line-width': 8,
-      'line-opacity': 0.9,
-    },
+  // Style function for GeoJSON features
+  const styleFeature = (feature: any) => {
+    return {
+      color: feature.properties.color,
+      weight: 8,
+      opacity: 0.9,
+    };
   };
 
-  // Handle click on blockface
-  const handleClick = useCallback(
-    (event: MapLayerMouseEvent) => {
-      const feature = event.features?.[0];
-      if (!feature) return;
+  // Handle feature click
+  const onEachFeature = (feature: any, layer: L.Layer) => {
+    layer.on({
+      click: () => {
+        const blockface = blockfaces.find((b) => b.id === feature.properties.id);
+        if (blockface) {
+          const result = evaluateLegality(blockface, checkTime, durationMinutes);
+          onBlockfaceClick(blockface, result);
+        }
+      },
+      mouseover: (e: L.LeafletMouseEvent) => {
+        const layer = e.target;
+        layer.setStyle({
+          weight: 12,
+        });
+      },
+      mouseout: (e: L.LeafletMouseEvent) => {
+        const layer = e.target;
+        layer.setStyle({
+          weight: 8,
+        });
+      },
+    });
 
-      const blockfaceId = feature.properties?.id;
-      const blockface = blockfaces.find((b) => b.id === blockfaceId);
-      
-      if (blockface) {
-        const result = evaluateLegality(blockface, checkTime, durationMinutes);
-        onBlockfaceClick(blockface, result);
-      }
-    },
-    [blockfaces, checkTime, durationMinutes, onBlockfaceClick]
-  );
-
-  // Handle mouse enter/leave for cursor
-  const onMouseEnter = useCallback(() => setCursor('pointer'), []);
-  const onMouseLeave = useCallback(() => setCursor('auto'), []);
-
-  if (!MAPBOX_TOKEN) {
-    return (
-      <div className="absolute inset-0 bg-red-50 flex items-center justify-center p-4">
-        <div className="text-center bg-white p-6 rounded-2xl shadow-lg border-2 border-red-200 max-w-md">
-          <div className="text-5xl mb-3">🗺️💥</div>
-          <h3 className="text-lg font-bold text-red-800 mb-2">Map Configuration Needed</h3>
-          <p className="text-sm text-gray-700 mb-4">
-            Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to your .env.local file and restart the server.
-          </p>
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-left text-xs text-yellow-900">
-            <p className="font-semibold mb-2">How to fix:</p>
-            <ol className="list-decimal list-inside space-y-1">
-              <li>Create a file named `.env.local` in the project root</li>
-              <li>Add: VITE_MAPBOX_TOKEN=pk.your_token_here</li>
-              <li>Get a free token from mapbox.com</li>
-              <li>Restart the dev server</li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!MAPBOX_TOKEN.startsWith('pk.')) {
-    return (
-      <div className="absolute inset-0 bg-red-50 flex items-center justify-center p-4">
-        <div className="text-center bg-white p-6 rounded-2xl shadow-lg border-2 border-red-200 max-w-md">
-          <div className="text-5xl mb-3">🗺️💥</div>
-          <h3 className="text-lg font-bold text-red-800 mb-2">Invalid Mapbox Token</h3>
-          <p className="text-sm text-gray-700 mb-4">
-            Your Mapbox token is invalid. It should start with "pk.". Please check your .env.local file.
-          </p>
-        </div>
-      </div>
-    );
-  }
+    // Add tooltip
+    layer.bindTooltip(feature.properties.streetName, {
+      permanent: false,
+      direction: 'top',
+    });
+  };
 
   return (
     <div className="absolute inset-0 w-full h-full">
-      <Map
-        mapboxAccessToken={MAPBOX_TOKEN}
-        initialViewState={{
-          longitude: -122.4078,
-          latitude: 37.7527,
-          zoom: 16,
-        }}
+      <MapContainer
+        center={[37.7527, -122.4078]}
+        zoom={16}
         style={{ width: '100%', height: '100%' }}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
-        cursor={cursor}
-        interactiveLayerIds={['blockfaces']}
-        onClick={handleClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        zoomControl={true}
       >
-        <Source id="blockfaces" type="geojson" data={geojsonData}>
-          <Layer {...blockfaceLayer} />
-        </Source>
-      </Map>
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        
+        <GeoJSON
+          data={geojsonData}
+          style={styleFeature}
+          onEachFeature={onEachFeature}
+        />
+
+        <MapEventHandler
+          blockfaces={blockfaces}
+          checkTime={checkTime}
+          durationMinutes={durationMinutes}
+          onBlockfaceClick={onBlockfaceClick}
+        />
+      </MapContainer>
     </div>
   );
 }

@@ -99,3 +99,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Leaflet CSS fixes */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-tooltip {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
