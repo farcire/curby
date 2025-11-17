@@ -11,6 +11,11 @@ interface MapViewProps {
   blockfaces: Blockface[];
 }
 
+interface BlockfaceWithResult {
+  blockface: Blockface;
+  result: LegalityResult;
+}
+
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -72,6 +77,52 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     };
   }, []);
 
+  // Helper function to get street segment key (street name + approximate block)
+  const getStreetSegmentKey = (blockface: Blockface): string => {
+    // Get average lat/lng to identify the block
+    const coords = blockface.geometry.coordinates;
+    const avgLat = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
+    const avgLng = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
+    
+    // Round to 3 decimal places to group nearby segments
+    const latKey = Math.round(avgLat * 1000);
+    const lngKey = Math.round(avgLng * 1000);
+    
+    return `${blockface.streetName}-${latKey}-${lngKey}`;
+  };
+
+  // Helper function to determine color based on opposite sides
+  const getBlockfaceColor = (
+    blockface: Blockface,
+    result: LegalityResult,
+    allBlockfacesWithResults: BlockfaceWithResult[]
+  ): string => {
+    // Find blockfaces on the same street segment
+    const segmentKey = getStreetSegmentKey(blockface);
+    const sameSegment = allBlockfacesWithResults.filter(
+      bwr => getStreetSegmentKey(bwr.blockface) === segmentKey
+    );
+
+    // If we only have one side, use normal color
+    if (sameSegment.length === 1) {
+      return getStatusColor(result.status);
+    }
+
+    // Check if opposite sides have different legality
+    const hasLegal = sameSegment.some(bwr => bwr.result.status === 'legal');
+    const hasIllegal = sameSegment.some(
+      bwr => bwr.result.status === 'illegal' || bwr.result.status === 'insufficient-data'
+    );
+
+    // If one side is legal and the other is not, show yellow
+    if (hasLegal && hasIllegal) {
+      return '#eab308'; // yellow-500
+    }
+
+    // Otherwise, use the normal color for this blockface
+    return getStatusColor(result.status);
+  };
+
   // Update blockfaces when data changes
   useEffect(() => {
     if (!mapRef.current) return;
@@ -82,10 +133,15 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     });
     layersRef.current = [];
 
+    // Evaluate all blockfaces first
+    const blockfacesWithResults: BlockfaceWithResult[] = blockfaces.map(blockface => ({
+      blockface,
+      result: evaluateLegality(blockface, checkTime, durationMinutes),
+    }));
+
     // Add blockfaces as polylines
-    blockfaces.forEach((blockface) => {
-      const result = evaluateLegality(blockface, checkTime, durationMinutes);
-      const color = getStatusColor(result.status);
+    blockfacesWithResults.forEach(({ blockface, result }) => {
+      const color = getBlockfaceColor(blockface, result, blockfacesWithResults);
 
       // Convert coordinates to Leaflet format [lat, lng]
       const latlngs: [number, number][] = blockface.geometry.coordinates.map(
@@ -98,8 +154,19 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         opacity: 0.9,
       });
 
-      // Add tooltip
-      polyline.bindTooltip(blockface.streetName, {
+      // Add tooltip with status indicator
+      let statusEmoji = '';
+      if (color === '#eab308') {
+        statusEmoji = '⚠️ '; // Yellow = mixed
+      } else if (result.status === 'legal') {
+        statusEmoji = '✅ ';
+      } else if (result.status === 'illegal') {
+        statusEmoji = '🚫 ';
+      } else {
+        statusEmoji = '🤔 ';
+      }
+
+      polyline.bindTooltip(statusEmoji + blockface.streetName, {
         permanent: false,
         direction: 'top',
       });
