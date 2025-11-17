@@ -25,7 +25,7 @@ export function RadiusControl({
           <div className="flex items-center gap-2">
             <Logo size="sm" animated={true} />
             <div>
-              <div className="text-xs font-semibold opacity-90">Walking Distance</div>
+              <div className="text-xs font-semibold opacity-90">Parking Radius</div>
               <div className="text-lg font-bold">{radiusBlocks} {radiusBlocks === 1 ? 'block' : 'blocks'}</div>
             </div>
           </div>
