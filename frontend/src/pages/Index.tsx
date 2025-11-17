@@ -20,7 +20,7 @@ const Index = () => {
   const [blockfaces, setBlockfaces] = useState<Blockface[]>(mockBlockfaces);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
-  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('navigator');
+  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map'); // Changed to 'map' for demo
 
   useEffect(() => {
     loadSFMTAData();
