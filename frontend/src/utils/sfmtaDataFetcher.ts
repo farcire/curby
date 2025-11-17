@@ -29,7 +29,7 @@ interface CachedData {
 /**
  * Check if coordinates are within bounds
  */
-function isInBounds(lat: number, lng: number, bounds = DEMO_AREA_BOUNDS): boolean {
+function isInBounds(lat: number, lng: number, bounds = MISSION_SOMA_BOUNDS): boolean {
   return (
     lat >= bounds.minLat &&
     lat <= bounds.maxLat &&
@@ -382,6 +382,6 @@ export async function fetchSFMTABlockfaces(): Promise<Blockface[]> {
 /**
  * Clear cached data
  */
-export function clearSFMTACache(): void {
+export function clearSFMTache(): void {
   localStorage.removeItem(CACHE_KEY);
 }
