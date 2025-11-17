@@ -201,29 +201,21 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         style={{ width: '100%', height: '100%' }}
       />
       
-      {/* Playful Legend */}
+      {/* Simple, Action-Oriented Legend */}
       {mapLoaded && (
-        <div className="absolute bottom-6 left-6 bg-white rounded-2xl shadow-xl p-4 space-y-3 text-xs z-10 border-2 border-purple-200">
-          <div className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-            <span className="text-lg">🎨</span>
-            Color Guide
-          </div>
+        <div className="absolute bottom-6 left-6 bg-white rounded-2xl shadow-xl p-3 text-xs z-10 border-2 border-purple-200">
           <div className="space-y-2">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-2 bg-green-600 rounded-full shadow-sm"></div>
-              <span className="text-gray-700 font-medium">Perfect! Park here 🎉</span>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-600 rounded-full"></div>
+              <span className="text-gray-900 font-semibold">Go for it!</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-2 bg-amber-600 rounded-full shadow-sm"></div>
-              <span className="text-gray-700 font-medium">Maybe (check rules) ⚠️</span>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-amber-600 rounded-full"></div>
+              <span className="text-gray-900 font-semibold">Check details</span>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-2 bg-red-600 rounded-full shadow-sm"></div>
-              <span className="text-gray-700 font-medium">Nope! Keep going 🚫</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-2 bg-gray-600 rounded-full shadow-sm"></div>
-              <span className="text-gray-700 font-medium">Not sure yet 🤔</span>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+              <span className="text-gray-900 font-semibold">Don't park</span>
             </div>
           </div>
         </div>
