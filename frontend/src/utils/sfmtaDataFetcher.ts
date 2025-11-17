@@ -142,7 +142,7 @@ function parseRegulationRules(regulation: any): ParkingRule[] {
   const rules: ParkingRule[] = [];
 
   // Street sweeping
-  if (regulation.street_sweeping_schedule) {
+  if (regulation.street_sweeping_schedule && typeof regulation.street_sweeping_schedule === 'string') {
     const sweepingRule: ParkingRule = {
       id: `sweep-${regulation.cnn || Math.random()}`,
       type: 'street-sweeping',
@@ -192,7 +192,7 @@ function parseRegulationRules(regulation: any): ParkingRule[] {
   }
 
   // No parking
-  if (regulation.regulation_type?.toLowerCase().includes('no parking')) {
+  if (typeof regulation.regulation_type === 'string' && regulation.regulation_type.toLowerCase().includes('no parking')) {
     const noParkingRule: ParkingRule = {
       id: `no-parking-${regulation.cnn || Math.random()}`,
       type: 'no-parking',
@@ -214,6 +214,9 @@ function parseRegulationRules(regulation: any): ParkingRule[] {
  * Parse days of week string into array
  */
 function parseDaysOfWeek(daysStr: string): number[] {
+  if (typeof daysStr !== 'string') {
+    return [1, 2, 3, 4, 5]; // Default to weekdays
+  }
   const days: number[] = [];
   const lower = daysStr.toLowerCase();
 
@@ -266,6 +269,21 @@ function convertTo24Hour(hour: number, period: string): string {
 }
 
 /**
+ * Parses side of street string into a valid type
+ */
+function parseSide(side: any): 'north' | 'south' | 'east' | 'west' {
+  if (typeof side !== 'string' || side.length === 0) {
+    return 'east'; // A sensible default
+  }
+  const lowerSide = side.toLowerCase();
+  if (lowerSide.startsWith('n')) return 'north';
+  if (lowerSide.startsWith('s')) return 'south';
+  if (lowerSide.startsWith('e')) return 'east';
+  if (lowerSide.startsWith('w')) return 'west';
+  return 'east'; // Fallback for other values
+}
+
+/**
  * Convert SFMTA data to Blockface format
  */
 function convertToBlockfaces(
@@ -303,7 +321,7 @@ function convertToBlockfaces(
         coordinates,
       },
       streetName: regulation.street_name || 'Unknown Street',
-      side: regulation.side || 'unknown',
+      side: parseSide(regulation.side),
       rules,
     };
 
