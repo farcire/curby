@@ -68,36 +68,36 @@ const createRPPRule = (zone: string): ParkingRule => ({
   },
 });
 
-// Mock blockfaces for Mission + SOMA (FALLBACK DATA)
+// Mock blockfaces with CORRECTED coordinates aligned to actual streets
 export const mockBlockfaces: Blockface[] = [
-  // ===== BRYANT & 24TH AREA (DEMO SCENARIO) =====
+  // ===== BRYANT STREET (runs north-south) =====
   
-  // Bryant Street - 24th to 25th (LEGAL - good option!)
+  // Bryant Street - 24th to 25th (LEGAL - east side)
   {
     id: 'bryant-24th-25th-east',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4098, 37.7527],
-        [-122.4098, 37.7537],
+        [-122.40975, 37.75265], // 24th St intersection
+        [-122.40975, 37.75375], // 25th St intersection
       ],
     },
     streetName: 'Bryant St',
     side: 'east',
     rules: [
-      createStreetSweepingRule(3, '08:00', '10:00'), // Wednesday - not today!
-      createTimeLimitRule(120), // 2-hour limit - perfect for 60min
+      createStreetSweepingRule(3, '08:00', '10:00'), // Wednesday
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // Bryant Street - 23rd to 24th (ILLEGAL - sweeping right now!)
+  // Bryant Street - 23rd to 24th (ILLEGAL - east side, sweeping now!)
   {
     id: 'bryant-23rd-24th-east',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4098, 37.7517],
-        [-122.4098, 37.7527],
+        [-122.40975, 37.75155], // 23rd St intersection
+        [-122.40975, 37.75265], // 24th St intersection
       ],
     },
     streetName: 'Bryant St',
@@ -107,67 +107,71 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // 24th Street - Bryant to York (LIMITED - meters)
+  // ===== 24TH STREET (runs east-west) =====
+  
+  // 24th Street - Bryant to York (LIMITED - north side, meters)
   {
     id: '24th-bryant-york-north',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4098, 37.7527],
-        [-122.4078, 37.7527],
+        [-122.40975, 37.75265], // Bryant intersection
+        [-122.40775, 37.75265], // York intersection
       ],
     },
     streetName: '24th St',
     side: 'north',
     rules: [
       createMeterRule(),
-      createTimeLimitRule(60), // 1-hour limit - exactly what you need
+      createTimeLimitRule(60), // 1-hour limit
     ],
   },
   
-  // 24th Street - York to Potrero (LEGAL - residential, no restrictions)
+  // 24th Street - York to Hampshire (LEGAL - north side, residential)
   {
-    id: '24th-york-potrero-north',
+    id: '24th-york-hampshire-north',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4078, 37.7527],
-        [-122.4058, 37.7527],
+        [-122.40775, 37.75265], // York intersection
+        [-122.40575, 37.75265], // Hampshire intersection
       ],
     },
     streetName: '24th St',
     side: 'north',
     rules: [
-      createStreetSweepingRule(4, '08:00', '10:00'), // Thursday - not today!
+      createStreetSweepingRule(4, '08:00', '10:00'), // Thursday
     ],
   },
   
-  // York Street - 24th to 25th (LEGAL - best option!)
+  // ===== YORK STREET (runs north-south) =====
+  
+  // York Street - 24th to 25th (LEGAL - west side, best option!)
   {
     id: 'york-24th-25th-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4078, 37.7527],
-        [-122.4078, 37.7537],
+        [-122.40775, 37.75265], // 24th St intersection
+        [-122.40775, 37.75375], // 25th St intersection
       ],
     },
     streetName: 'York St',
     side: 'west',
     rules: [
-      createStreetSweepingRule(2, '12:00', '14:00'), // Tuesday - not today!
-      createTimeLimitRule(240), // 4-hour limit - plenty of time
+      createStreetSweepingRule(2, '12:00', '14:00'), // Tuesday
+      createTimeLimitRule(240), // 4-hour limit
     ],
   },
   
-  // York Street - 23rd to 24th (LIMITED - RPP zone)
+  // York Street - 23rd to 24th (LIMITED - west side, RPP zone)
   {
     id: 'york-23rd-24th-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4078, 37.7517],
-        [-122.4078, 37.7527],
+        [-122.40775, 37.75155], // 23rd St intersection
+        [-122.40775, 37.75265], // 24th St intersection
       ],
     },
     streetName: 'York St',
@@ -178,256 +182,78 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Hampshire Street - 24th to 25th (LEGAL - quiet residential)
+  // ===== HAMPSHIRE STREET (runs north-south) =====
+  
+  // Hampshire Street - 24th to 25th (LEGAL - east side, quiet residential)
   {
     id: 'hampshire-24th-25th-east',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4058, 37.7527],
-        [-122.4058, 37.7537],
+        [-122.40575, 37.75265], // 24th St intersection
+        [-122.40575, 37.75375], // 25th St intersection
       ],
     },
     streetName: 'Hampshire St',
     side: 'east',
     rules: [
-      createStreetSweepingRule(5, '08:00', '10:00'), // Friday - not today!
+      createStreetSweepingRule(5, '08:00', '10:00'), // Friday
     ],
   },
   
-  // Potrero Avenue - 24th to 25th (ILLEGAL - no parking)
-  {
-    id: 'potrero-24th-25th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4038, 37.7527],
-        [-122.4038, 37.7537],
-      ],
-    },
-    streetName: 'Potrero Ave',
-    side: 'west',
-    rules: [
-      {
-        id: 'no-parking-potrero',
-        type: 'no-parking',
-        timeRanges: [{
-          startTime: '00:00',
-          endTime: '23:59',
-          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-        }],
-        description: 'No parking anytime - major arterial',
-        precedence: PRECEDENCE['no-parking'],
-      },
-    ],
-  },
+  // ===== 25TH STREET (runs east-west) =====
   
-  // 25th Street - Bryant to York (LEGAL)
+  // 25th Street - Bryant to York (LEGAL - south side)
   {
     id: '25th-bryant-york-south',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4098, 37.7537],
-        [-122.4078, 37.7537],
+        [-122.40975, 37.75375], // Bryant intersection
+        [-122.40775, 37.75375], // York intersection
       ],
     },
     streetName: '25th St',
     side: 'south',
     rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'), // Monday morning - already passed
+      createStreetSweepingRule(1, '08:00', '10:00'), // Monday morning
       createTimeLimitRule(120),
     ],
   },
   
-  // ===== ORIGINAL MISSION/SOMA EXAMPLES =====
+  // 25th Street - York to Hampshire (LEGAL - south side)
+  {
+    id: '25th-york-hampshire-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40775, 37.75375], // York intersection
+        [-122.40575, 37.75375], // Hampshire intersection
+      ],
+    },
+    streetName: '25th St',
+    side: 'south',
+    rules: [
+      createStreetSweepingRule(3, '12:00', '14:00'), // Wednesday
+    ],
+  },
   
-  // Valencia Street (Mission) - Popular corridor
+  // ===== 23RD STREET (runs east-west) =====
+  
+  // 23rd Street - Bryant to York (LEGAL - north side)
   {
-    id: 'valencia-16th-17th-east',
+    id: '23rd-bryant-york-north',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.4215, 37.7649],
-        [-122.4215, 37.7659],
+        [-122.40975, 37.75155], // Bryant intersection
+        [-122.40775, 37.75155], // York intersection
       ],
     },
-    streetName: 'Valencia St',
-    side: 'east',
+    streetName: '23rd St',
+    side: 'north',
     rules: [
-      createStreetSweepingRule(2, '08:00', '10:00'), // Tuesday
-      createMeterRule(),
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  {
-    id: 'valencia-17th-18th-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4215, 37.7659],
-        [-122.4215, 37.7669],
-      ],
-    },
-    streetName: 'Valencia St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(2, '08:00', '10:00'),
-      createMeterRule(),
       createTimeLimitRule(120),
     ],
-  },
-  // Mission Street - High traffic area
-  {
-    id: 'mission-16th-17th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4194, 37.7649],
-        [-122.4194, 37.7659],
-      ],
-    },
-    streetName: 'Mission St',
-    side: 'west',
-    rules: [
-      createStreetSweepingRule(4, '12:00', '14:00'), // Thursday
-      createMeterRule(),
-      createTimeLimitRule(60), // 1-hour limit
-    ],
-  },
-  // 18th Street - Residential with RPP
-  {
-    id: '18th-valencia-guerrero-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4215, 37.7614],
-        [-122.4235, 37.7614],
-      ],
-    },
-    streetName: '18th St',
-    side: 'north',
-    rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'), // Monday
-      createRPPRule('M'),
-      createTimeLimitRule(120),
-    ],
-  },
-  // Folsom Street (SOMA) - Mixed use
-  {
-    id: 'folsom-9th-10th-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4125, 37.7745],
-        [-122.4125, 37.7755],
-      ],
-    },
-    streetName: 'Folsom St',
-    side: 'south',
-    rules: [
-      createStreetSweepingRule(3, '08:00', '10:00'), // Wednesday
-      createMeterRule(),
-    ],
-  },
-  // Howard Street (SOMA) - Tow-away zone example
-  {
-    id: 'howard-8th-9th-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4105, 37.7735],
-        [-122.4105, 37.7745],
-      ],
-    },
-    streetName: 'Howard St',
-    side: 'north',
-    rules: [
-      {
-        id: 'tow-away-rush',
-        type: 'tow-away',
-        timeRanges: [{
-          startTime: '07:00',
-          endTime: '09:00',
-          daysOfWeek: [1, 2, 3, 4, 5],
-        }],
-        description: 'Tow-away zone Mon-Fri 7-9am',
-        precedence: PRECEDENCE['tow-away'],
-      },
-      createMeterRule(),
-    ],
-  },
-  // 20th Street - Simple residential
-  {
-    id: '20th-mission-valencia-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4194, 37.7594],
-        [-122.4215, 37.7594],
-      ],
-    },
-    streetName: '20th St',
-    side: 'south',
-    rules: [
-      createStreetSweepingRule(5, '12:00', '14:00'), // Friday
-      createTimeLimitRule(240), // 4-hour limit
-    ],
-  },
-  // Guerrero Street - Mostly legal
-  {
-    id: 'guerrero-17th-18th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4235, 37.7659],
-        [-122.4235, 37.7669],
-      ],
-    },
-    streetName: 'Guerrero St',
-    side: 'west',
-    rules: [
-      createStreetSweepingRule(2, '12:00', '14:00'),
-    ],
-  },
-  // 11th Street (SOMA) - No parking example
-  {
-    id: '11th-folsom-harrison-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4125, 37.7765],
-        [-122.4145, 37.7765],
-      ],
-    },
-    streetName: '11th St',
-    side: 'north',
-    rules: [
-      {
-        id: 'no-parking-anytime',
-        type: 'no-parking',
-        timeRanges: [{
-          startTime: '00:00',
-          endTime: '23:59',
-          daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-        }],
-        description: 'No parking anytime',
-        precedence: PRECEDENCE['no-parking'],
-      },
-    ],
-  },
-  // Harrison Street - Insufficient data example
-  {
-    id: 'harrison-10th-11th-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.4145, 37.7755],
-        [-122.4145, 37.7765],
-      ],
-    },
-    streetName: 'Harrison St',
-    side: 'south',
-    rules: [], // No rules = insufficient data
   },
 ];
