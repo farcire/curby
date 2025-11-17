@@ -19,7 +19,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  const initAttempted = useRef(false);
 
   // Check token on mount
   useEffect(() => {
@@ -33,86 +32,75 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     if (!MAPBOX_TOKEN) {
       setMapError('Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to your .env.local file and restart the server.');
       setIsInitializing(false);
-    } else if (!MAPBOX_TOKEN.startsWith('pk.')) {
+      return;
+    }
+    
+    if (!MAPBOX_TOKEN.startsWith('pk.')) {
       setMapError('Your Mapbox token is invalid. It should start with "pk.". Please check your .env.local file.');
       setIsInitializing(false);
-    }
-  }, []);
-
-  // Initialize map - with retry logic
-  useEffect(() => {
-    // Don't try to initialize if there's an error or map already exists
-    if (mapError || map.current || initAttempted.current) {
       return;
     }
 
-    // Check if container is ready
+    // Initialize map after a short delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      if (mapContainer.current && !map.current) {
+        console.log('🎯 Initializing map...');
+        initializeMap();
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const initializeMap = () => {
     if (!mapContainer.current) {
-      console.log('⏳ Container not ready yet, will retry...');
-      // Retry after a short delay
-      const timer = setTimeout(() => {
-        if (mapContainer.current && !map.current && !initAttempted.current) {
-          console.log('🔄 Retrying map initialization...');
-          initAttempted.current = true;
-          initializeMap();
-        }
-      }, 100);
-      return () => clearTimeout(timer);
+      console.error('❌ Container not available');
+      setMapError('Map container not ready');
+      setIsInitializing(false);
+      return;
     }
 
-    console.log('🎯 Container is ready, initializing map...');
-    initAttempted.current = true;
-    initializeMap();
+    mapboxgl.accessToken = MAPBOX_TOKEN;
 
-    function initializeMap() {
-      if (!mapContainer.current) {
-        console.error('❌ Container disappeared before initialization');
-        return;
-      }
+    try {
+      console.log('🏗️ Creating Mapbox map instance...');
+      const newMap = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-122.4078, 37.7527],
+        zoom: 16,
+      });
 
-      mapboxgl.accessToken = MAPBOX_TOKEN;
-
-      try {
-        console.log('🏗️ Creating Mapbox map instance...');
-        const newMap = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/streets-v12',
-          center: [-122.4078, 37.7527],
-          zoom: 16,
-        });
-
-        newMap.on('load', () => {
-          console.log('✅ Map loaded successfully!');
-          map.current = newMap;
-          setMapLoaded(true);
-          setIsInitializing(false);
-        });
-
-        newMap.on('error', (e) => {
-          console.error('❌ Map error:', e);
-          setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
-          setIsInitializing(false);
-        });
-
-        newMap.on('styledata', () => {
-          console.log('🎨 Map style loaded');
-        });
-
-        newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
-        newMap.addControl(
-          new mapboxgl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: true },
-            trackUserLocation: true,
-          }),
-          'top-right'
-        );
-      } catch (error) {
-        console.error('💥 Error creating map:', error);
-        setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
+      newMap.on('load', () => {
+        console.log('✅ Map loaded successfully!');
+        map.current = newMap;
+        setMapLoaded(true);
         setIsInitializing(false);
-      }
-    }
+      });
 
+      newMap.on('error', (e) => {
+        console.error('❌ Map error:', e);
+        setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
+        setIsInitializing(false);
+      });
+
+      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      newMap.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: { enableHighAccuracy: true },
+          trackUserLocation: true,
+        }),
+        'top-right'
+      );
+    } catch (error) {
+      console.error('💥 Error creating map:', error);
+      setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
+      setIsInitializing(false);
+    }
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
       console.log('🧹 Cleaning up map...');
       if (map.current) {
@@ -120,7 +108,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         map.current = null;
       }
     };
-  }, [mapError]);
+  }, []);
 
   // Update blockfaces on map
   useEffect(() => {
@@ -185,7 +173,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   if (isInitializing) {
     return (
-      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+      <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
           <p className="text-sm text-gray-600">Loading map...</p>
@@ -197,7 +185,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   if (mapError) {
     return (
-      <div className="w-full h-full bg-red-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-red-50 flex items-center justify-center p-4">
         <div className="text-center bg-white p-6 rounded-2xl shadow-lg border-2 border-red-200 max-w-md">
           <div className="text-5xl mb-3">🗺️💥</div>
           <h3 className="text-lg font-bold text-red-800 mb-2">Map Loading Error</h3>
@@ -218,6 +206,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   }
 
   return (
-    <div className="w-full h-full bg-gray-200" ref={mapContainer} />
+    <div className="absolute inset-0 bg-gray-200" ref={mapContainer} />
   );
 }
