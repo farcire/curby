@@ -1,17 +1,15 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./globals.css";
 
-const rootElement = document.getElementById("root");
+const container = document.getElementById("root");
 
-if (!rootElement) {
+if (!container) {
   throw new Error("Root element not found");
 }
 
-const root = ReactDOM.createRoot(rootElement);
-
-root.render(
+createRoot(container).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
