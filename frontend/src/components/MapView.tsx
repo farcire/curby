@@ -32,13 +32,25 @@ export function MapView({
   const layersRef = useRef<L.Polyline[]>([]);
   const radiusCircleRef = useRef<L.Circle | null>(null);
 
+  // Calculate appropriate zoom level based on radius
+  const getZoomForRadius = (blocks: number): number => {
+    // Zoom levels to show the radius circle comfortably
+    if (blocks <= 1) return 18;
+    if (blocks <= 2) return 17;
+    if (blocks <= 3) return 17;
+    if (blocks <= 5) return 16;
+    return 15; // 8 blocks
+  };
+
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
+    const initialZoom = getZoomForRadius(radiusBlocks);
+
     const map = L.map(mapContainerRef.current, {
       center: centerPoint,
-      zoom: 17,
+      zoom: initialZoom,
       zoomControl: true,
       minZoom: 15,
       maxZoom: 18,
@@ -73,6 +85,22 @@ export function MapView({
       }
     };
   }, [centerPoint]);
+
+  // Update zoom when radius changes
+  useEffect(() => {
+    if (!mapRef.current) return;
+
+    const targetZoom = getZoomForRadius(radiusBlocks);
+    const currentZoom = mapRef.current.getZoom();
+
+    // Only animate zoom if it's different
+    if (currentZoom !== targetZoom) {
+      mapRef.current.setView(centerPoint, targetZoom, {
+        animate: true,
+        duration: 0.5, // Smooth 0.5 second animation
+      });
+    }
+  }, [radiusBlocks, centerPoint]);
 
   // Update radius circle
   useEffect(() => {
