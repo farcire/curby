@@ -1,5 +1,5 @@
 import { Blockface, LegalityResult } from '@/types/parking';
-import { format, addDays, getDay, differenceInHours, differenceInMinutes } from 'date-fns';
+import { format, addDays, getDay } from 'date-fns';
 import { X, Clock, MapPin, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -75,6 +75,9 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
     return days[getDay(date)];
   };
 
+  // Check if permit is required
+  const hasPermitRequirement = blockface.rules.some(rule => rule.type === 'rpp-zone');
+
   const status = getStatusConfig();
 
   return (
@@ -103,20 +106,27 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
             <span className="text-gray-500">({blockface.side})</span>
           </div>
 
-          {/* Rules */}
-          {legalityResult.applicableRules.length > 0 && (
-            <div>
-              <h3 className="text-xs font-bold text-gray-700 mb-1">Rules:</h3>
+          {/* Rules - ALWAYS SHOW */}
+          <div>
+            <h3 className="text-xs font-bold text-gray-700 mb-1">RULES:</h3>
+            {blockface.rules.length > 0 ? (
               <ul className="space-y-0.5">
-                {legalityResult.applicableRules.map((rule) => (
+                {blockface.rules.map((rule) => (
                   <li key={rule.id} className="text-xs text-gray-600 pl-3 relative">
                     <span className="absolute left-0 text-purple-600">•</span>
                     {rule.description}
                   </li>
                 ))}
+                {/* Add permit status */}
+                <li className="text-xs text-gray-600 pl-3 relative">
+                  <span className="absolute left-0 text-purple-600">•</span>
+                  {hasPermitRequirement ? 'Permit required' : 'No permit required'}
+                </li>
               </ul>
-            </div>
-          )}
+            ) : (
+              <p className="text-xs text-gray-600 pl-3">No parking rules available</p>
+            )}
+          </div>
 
           {/* Next Restriction */}
           {legalityResult.status === 'legal' && nextRestriction && (
@@ -132,7 +142,7 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
           <div className="flex items-center justify-between pt-1.5 border-t border-gray-100">
             <div className="flex items-center gap-1 text-xs text-gray-500">
               <Clock className="h-3 w-3" />
-              <span>{format(new Date(), 'MMM d')}</span>
+              <span>Updated {format(new Date(), 'MMM d')}</span>
             </div>
             
             <Button
