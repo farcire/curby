@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Blockface, LegalityResult } from '@/types/parking';
@@ -14,14 +14,32 @@ interface MapViewProps {
 }
 
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
+  const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [containerReady, setContainerReady] = useState(false);
 
-  // Initialize map
+  // Callback ref to ensure container is mounted
+  const setMapContainer = useCallback((node: HTMLDivElement | null) => {
+    if (node) {
+      console.log('📦 Container mounted with dimensions:', {
+        width: node.offsetWidth,
+        height: node.offsetHeight,
+      });
+      mapContainer.current = node;
+      setContainerReady(true);
+    }
+  }, []);
+
+  // Initialize map only after container is ready
   useEffect(() => {
+    if (!containerReady) {
+      console.log('⏳ Waiting for container to be ready...');
+      return;
+    }
+
     console.log('🎬 MapView useEffect triggered');
     console.log('🔑 Mapbox token check:', {
       hasToken: !!MAPBOX_TOKEN,
@@ -55,10 +73,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     }
 
     console.log('🏗️ Starting map initialization...');
-    console.log('📦 Container dimensions:', {
-      width: mapContainer.current.offsetWidth,
-      height: mapContainer.current.offsetHeight,
-    });
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -99,7 +113,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
       setIsInitializing(false);
     }
-  }, []);
+  }, [containerReady]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -211,6 +225,10 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   }
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-gray-200" ref={mapContainer} />
+    <div 
+      ref={setMapContainer}
+      className="absolute inset-0 w-full h-full bg-gray-200" 
+      style={{ minHeight: '400px' }}
+    />
   );
 }
