@@ -21,16 +21,16 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
 
-  // Initialize map centered on Bryant & 20th with 5-block radius view
+  // Initialize map centered on Bryant & 20th with 3-block radius view
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
     // Create map centered on Bryant & 20th Street
     const map = L.map(mapContainerRef.current, {
       center: [37.75885, -122.40935], // Bryant & 20th
-      zoom: 16, // Shows approximately 5-block radius
+      zoom: 17, // Closer zoom for 3-block radius
       zoomControl: true,
-      minZoom: 14,
+      minZoom: 15,
       maxZoom: 18,
     });
 
@@ -39,9 +39,9 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // Add a subtle circle to show the 5-block radius area
+    // Add a subtle circle to show the 3-block radius area
     L.circle([37.75885, -122.40935], {
-      radius: 550, // approximately 5 blocks (110m per block)
+      radius: 330, // approximately 3 blocks (110m per block)
       color: '#8b5cf6',
       fillColor: '#8b5cf6',
       fillOpacity: 0.05,
@@ -54,16 +54,16 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     const centerMarker = L.marker([37.75885, -122.40935], {
       icon: L.divIcon({
         className: 'custom-center-marker',
-        html: '<div style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-        iconSize: [16, 16],
-        iconAnchor: [8, 8],
+        html: '<div style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
       }),
     }).addTo(map);
 
-    centerMarker.bindTooltip('Bryant & 20th', {
+    centerMarker.bindTooltip('📍 You are here', {
       permanent: false,
       direction: 'top',
-      offset: [0, -10],
+      offset: [0, -15],
     });
 
     mapRef.current = map;
@@ -150,7 +150,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
       const polyline = L.polyline(latlngs, {
         color,
-        weight: 8,
+        weight: 10,
         opacity: 0.9,
       });
 
@@ -178,11 +178,11 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
       // Add hover effects
       polyline.on('mouseover', () => {
-        polyline.setStyle({ weight: 12 });
+        polyline.setStyle({ weight: 14 });
       });
 
       polyline.on('mouseout', () => {
-        polyline.setStyle({ weight: 8 });
+        polyline.setStyle({ weight: 10 });
       });
 
       polyline.addTo(mapRef.current!);
