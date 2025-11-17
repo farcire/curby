@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { showSuccess, showError } from '@/utils/toast';
 import { evaluateLegality } from '@/utils/ruleEngine';
 
-const CENTER_POINT: [number, number] = [37.75880, -122.40935]; // Bryant & 20th
+const CENTER_POINT: [number, number] = [37.75650, -122.40935]; // Bryant & 20th - adjusted south
 
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(60);
