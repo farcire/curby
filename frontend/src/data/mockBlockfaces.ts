@@ -68,191 +68,410 @@ const createRPPRule = (zone: string): ParkingRule => ({
   },
 });
 
-// Mock blockfaces with CORRECTED coordinates aligned to actual streets
+const createNoParkingRule = (): ParkingRule => ({
+  id: 'no-parking-anytime',
+  type: 'no-parking',
+  timeRanges: [{
+    startTime: '00:00',
+    endTime: '23:59',
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+  }],
+  description: 'No parking anytime',
+  precedence: PRECEDENCE['no-parking'],
+});
+
+// Mock blockfaces for 5-block radius around 20th & Bryant (18th-22nd, Harrison-Potrero)
 export const mockBlockfaces: Blockface[] = [
-  // ===== BRYANT STREET (runs north-south) =====
+  // ===== BRYANT STREET (main north-south arterial) =====
   
-  // Bryant Street - 24th to 25th (LEGAL - east side)
+  // Bryant: 18th to 19th - LEGAL (east side)
   {
-    id: 'bryant-24th-25th-east',
+    id: 'bryant-18th-19th-east',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40975, 37.75265], // 24th St intersection
-        [-122.40975, 37.75375], // 25th St intersection
+        [-122.4093, 37.7610], // 18th St
+        [-122.4093, 37.7599], // 19th St
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'east',
+    rules: [
+      createStreetSweepingRule(2, '08:00', '10:00'), // Tuesday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // Bryant: 19th to 20th - LEGAL (east side) - YOUR STARTING POINT
+  {
+    id: 'bryant-19th-20th-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7599], // 19th St
+        [-122.4093, 37.7588], // 20th St
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'east',
+    rules: [
+      createStreetSweepingRule(4, '12:00', '14:00'), // Thursday
+      createTimeLimitRule(180),
+    ],
+  },
+  
+  // Bryant: 20th to 21st - ILLEGAL (east side, sweeping active)
+  {
+    id: 'bryant-20th-21st-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7588], // 20th St
+        [-122.4093, 37.7577], // 21st St
+      ],
+    },
+    streetName: 'Bryant St',
+    side: 'east',
+    rules: [
+      createStreetSweepingRule(1, '12:00', '14:00'), // Monday - ACTIVE NOW
+    ],
+  },
+  
+  // Bryant: 21st to 22nd - LEGAL (east side)
+  {
+    id: 'bryant-21st-22nd-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7577], // 21st St
+        [-122.4093, 37.7566], // 22nd St
       ],
     },
     streetName: 'Bryant St',
     side: 'east',
     rules: [
       createStreetSweepingRule(3, '08:00', '10:00'), // Wednesday
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  
-  // Bryant Street - 23rd to 24th (ILLEGAL - east side, sweeping now!)
-  {
-    id: 'bryant-23rd-24th-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40975, 37.75155], // 23rd St intersection
-        [-122.40975, 37.75265], // 24th St intersection
-      ],
-    },
-    streetName: 'Bryant St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(1, '12:00', '14:00'), // Monday noon-2pm - ACTIVE NOW!
-    ],
-  },
-  
-  // ===== 24TH STREET (runs east-west) =====
-  
-  // 24th Street - Bryant to York (LIMITED - north side, meters)
-  {
-    id: '24th-bryant-york-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40975, 37.75265], // Bryant intersection
-        [-122.40775, 37.75265], // York intersection
-      ],
-    },
-    streetName: '24th St',
-    side: 'north',
-    rules: [
-      createMeterRule(),
-      createTimeLimitRule(60), // 1-hour limit
-    ],
-  },
-  
-  // 24th Street - York to Hampshire (LEGAL - north side, residential)
-  {
-    id: '24th-york-hampshire-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40775, 37.75265], // York intersection
-        [-122.40575, 37.75265], // Hampshire intersection
-      ],
-    },
-    streetName: '24th St',
-    side: 'north',
-    rules: [
-      createStreetSweepingRule(4, '08:00', '10:00'), // Thursday
-    ],
-  },
-  
-  // ===== YORK STREET (runs north-south) =====
-  
-  // York Street - 24th to 25th (LEGAL - west side, best option!)
-  {
-    id: 'york-24th-25th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40775, 37.75265], // 24th St intersection
-        [-122.40775, 37.75375], // 25th St intersection
-      ],
-    },
-    streetName: 'York St',
-    side: 'west',
-    rules: [
-      createStreetSweepingRule(2, '12:00', '14:00'), // Tuesday
-      createTimeLimitRule(240), // 4-hour limit
-    ],
-  },
-  
-  // York Street - 23rd to 24th (LIMITED - west side, RPP zone)
-  {
-    id: 'york-23rd-24th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40775, 37.75155], // 23rd St intersection
-        [-122.40775, 37.75265], // 24th St intersection
-      ],
-    },
-    streetName: 'York St',
-    side: 'west',
-    rules: [
-      createRPPRule('P'),
-      createTimeLimitRule(120), // 2-hour visitor limit
-    ],
-  },
-  
-  // ===== HAMPSHIRE STREET (runs north-south) =====
-  
-  // Hampshire Street - 24th to 25th (LEGAL - east side, quiet residential)
-  {
-    id: 'hampshire-24th-25th-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40575, 37.75265], // 24th St intersection
-        [-122.40575, 37.75375], // 25th St intersection
-      ],
-    },
-    streetName: 'Hampshire St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(5, '08:00', '10:00'), // Friday
-    ],
-  },
-  
-  // ===== 25TH STREET (runs east-west) =====
-  
-  // 25th Street - Bryant to York (LEGAL - south side)
-  {
-    id: '25th-bryant-york-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40975, 37.75375], // Bryant intersection
-        [-122.40775, 37.75375], // York intersection
-      ],
-    },
-    streetName: '25th St',
-    side: 'south',
-    rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'), // Monday morning
       createTimeLimitRule(120),
     ],
   },
   
-  // 25th Street - York to Hampshire (LEGAL - south side)
+  // ===== HARRISON STREET (one block west of Bryant) =====
+  
+  // Harrison: 19th to 20th - LEGAL (west side)
   {
-    id: '25th-york-hampshire-south',
+    id: 'harrison-19th-20th-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40775, 37.75375], // York intersection
-        [-122.40575, 37.75375], // Hampshire intersection
+        [-122.4113, 37.7599], // 19th St
+        [-122.4113, 37.7588], // 20th St
       ],
     },
-    streetName: '25th St',
-    side: 'south',
+    streetName: 'Harrison St',
+    side: 'west',
     rules: [
-      createStreetSweepingRule(3, '12:00', '14:00'), // Wednesday
+      createStreetSweepingRule(5, '08:00', '10:00'), // Friday
+      createTimeLimitRule(240),
     ],
   },
   
-  // ===== 23RD STREET (runs east-west) =====
-  
-  // 23rd Street - Bryant to York (LEGAL - north side)
+  // Harrison: 20th to 21st - LEGAL (west side, meters)
   {
-    id: '23rd-bryant-york-north',
+    id: 'harrison-20th-21st-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40975, 37.75155], // Bryant intersection
-        [-122.40775, 37.75155], // York intersection
+        [-122.4113, 37.7588], // 20th St
+        [-122.4113, 37.7577], // 21st St
       ],
     },
-    streetName: '23rd St',
+    streetName: 'Harrison St',
+    side: 'west',
+    rules: [
+      createMeterRule(),
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // ===== FOLSOM STREET (one block east of Bryant) =====
+  
+  // Folsom: 19th to 20th - LEGAL (east side)
+  {
+    id: 'folsom-19th-20th-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4073, 37.7599], // 19th St
+        [-122.4073, 37.7588], // 20th St
+      ],
+    },
+    streetName: 'Folsom St',
+    side: 'east',
+    rules: [
+      createStreetSweepingRule(1, '08:00', '10:00'), // Monday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // Folsom: 20th to 21st - LEGAL (east side, RPP zone)
+  {
+    id: 'folsom-20th-21st-east',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4073, 37.7588], // 20th St
+        [-122.4073, 37.7577], // 21st St
+      ],
+    },
+    streetName: 'Folsom St',
+    side: 'east',
+    rules: [
+      createRPPRule('P'),
+      createTimeLimitRule(120), // 2hr visitor parking
+    ],
+  },
+  
+  // ===== 20TH STREET (your starting point - runs east-west) =====
+  
+  // 20th: Harrison to Bryant - LEGAL (north side)
+  {
+    id: '20th-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4113, 37.7588], // Harrison
+        [-122.4093, 37.7588], // Bryant
+      ],
+    },
+    streetName: '20th St',
     side: 'north',
     rules: [
+      createStreetSweepingRule(2, '12:00', '14:00'), // Tuesday
+      createTimeLimitRule(180),
+    ],
+  },
+  
+  // 20th: Bryant to Folsom - LEGAL (north side, best option!)
+  {
+    id: '20th-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7588], // Bryant
+        [-122.4073, 37.7588], // Folsom
+      ],
+    },
+    streetName: '20th St',
+    side: 'north',
+    rules: [
+      createStreetSweepingRule(4, '08:00', '10:00'), // Thursday
+      createTimeLimitRule(240), // 4-hour limit
+    ],
+  },
+  
+  // 20th: Folsom to York - LEGAL (north side)
+  {
+    id: '20th-folsom-york-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4073, 37.7588], // Folsom
+        [-122.4053, 37.7588], // York
+      ],
+    },
+    streetName: '20th St',
+    side: 'north',
+    rules: [
+      createStreetSweepingRule(3, '12:00', '14:00'), // Wednesday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // ===== 19TH STREET (runs east-west) =====
+  
+  // 19th: Harrison to Bryant - LEGAL (south side)
+  {
+    id: '19th-harrison-bryant-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4113, 37.7599], // Harrison
+        [-122.4093, 37.7599], // Bryant
+      ],
+    },
+    streetName: '19th St',
+    side: 'south',
+    rules: [
+      createStreetSweepingRule(1, '08:00', '10:00'), // Monday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // 19th: Bryant to Folsom - LEGAL (south side)
+  {
+    id: '19th-bryant-folsom-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7599], // Bryant
+        [-122.4073, 37.7599], // Folsom
+      ],
+    },
+    streetName: '19th St',
+    side: 'south',
+    rules: [
+      createStreetSweepingRule(5, '12:00', '14:00'), // Friday
+      createTimeLimitRule(180),
+    ],
+  },
+  
+  // ===== 21ST STREET (runs east-west) =====
+  
+  // 21st: Harrison to Bryant - LEGAL (north side, meters)
+  {
+    id: '21st-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4113, 37.7577], // Harrison
+        [-122.4093, 37.7577], // Bryant
+      ],
+    },
+    streetName: '21st St',
+    side: 'north',
+    rules: [
+      createMeterRule(),
+      createTimeLimitRule(60),
+    ],
+  },
+  
+  // 21st: Bryant to Folsom - LEGAL (north side)
+  {
+    id: '21st-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7577], // Bryant
+        [-122.4073, 37.7577], // Folsom
+      ],
+    },
+    streetName: '21st St',
+    side: 'north',
+    rules: [
+      createStreetSweepingRule(2, '08:00', '10:00'), // Tuesday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // ===== YORK STREET (residential, east of Folsom) =====
+  
+  // York: 19th to 20th - LEGAL (west side, quiet residential)
+  {
+    id: 'york-19th-20th-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4053, 37.7599], // 19th St
+        [-122.4053, 37.7588], // 20th St
+      ],
+    },
+    streetName: 'York St',
+    side: 'west',
+    rules: [
+      createStreetSweepingRule(3, '08:00', '10:00'), // Wednesday
+      createTimeLimitRule(240), // 4-hour limit
+    ],
+  },
+  
+  // York: 20th to 21st - LEGAL (west side)
+  {
+    id: 'york-20th-21st-west',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4053, 37.7588], // 20th St
+        [-122.4053, 37.7577], // 21st St
+      ],
+    },
+    streetName: 'York St',
+    side: 'west',
+    rules: [
+      createStreetSweepingRule(4, '12:00', '14:00'), // Thursday
+      createTimeLimitRule(180),
+    ],
+  },
+  
+  // ===== 18TH STREET (northern boundary) =====
+  
+  // 18th: Harrison to Bryant - ILLEGAL (north side, no parking)
+  {
+    id: '18th-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4113, 37.7610], // Harrison
+        [-122.4093, 37.7610], // Bryant
+      ],
+    },
+    streetName: '18th St',
+    side: 'north',
+    rules: [
+      createNoParkingRule(),
+    ],
+  },
+  
+  // 18th: Bryant to Folsom - LEGAL (north side, meters)
+  {
+    id: '18th-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7610], // Bryant
+        [-122.4073, 37.7610], // Folsom
+      ],
+    },
+    streetName: '18th St',
+    side: 'north',
+    rules: [
+      createMeterRule(),
+      createTimeLimitRule(60),
+    ],
+  },
+  
+  // ===== 22ND STREET (southern boundary) =====
+  
+  // 22nd: Harrison to Bryant - LEGAL (south side)
+  {
+    id: '22nd-harrison-bryant-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4113, 37.7566], // Harrison
+        [-122.4093, 37.7566], // Bryant
+      ],
+    },
+    streetName: '22nd St',
+    side: 'south',
+    rules: [
+      createStreetSweepingRule(5, '08:00', '10:00'), // Friday
+      createTimeLimitRule(120),
+    ],
+  },
+  
+  // 22nd: Bryant to Folsom - LEGAL (south side, RPP)
+  {
+    id: '22nd-bryant-folsom-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.4093, 37.7566], // Bryant
+        [-122.4073, 37.7566], // Folsom
+      ],
+    },
+    streetName: '22nd St',
+    side: 'south',
+    rules: [
+      createRPPRule('P'),
       createTimeLimitRule(120),
     ],
   },
