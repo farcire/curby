@@ -35,8 +35,9 @@ export function evaluateLegality(
   if (applicableRules.length === 0) {
     return {
       status: 'legal',
-      explanation: '✅ You can park here! No restrictions apply during your time.',
+      explanation: 'You can park here! No restrictions apply during your time.',
       applicableRules: [],
+      warnings: ['Always verify parking signs at the location'],
     };
   }
 
@@ -102,17 +103,17 @@ function generateLegalityResult(
   switch (primaryRule.type) {
     case 'tow-away':
       status = 'illegal';
-      explanation = `🚫 Don't park here! ${primaryRule.description}. Your car will be towed.`;
+      explanation = `Don't park here! ${primaryRule.description}. Your car will be towed.`;
       break;
 
     case 'street-sweeping':
       status = 'illegal';
-      explanation = `🚫 Don't park here! ${primaryRule.description}. You'll get a ticket.`;
+      explanation = `Don't park here! ${primaryRule.description}. You'll get a ticket and may be towed.`;
       break;
 
     case 'no-parking':
       status = 'illegal';
-      explanation = `🚫 Don't park here! ${primaryRule.description}.`;
+      explanation = `Don't park here! ${primaryRule.description}.`;
       break;
 
     case 'meter':
@@ -122,7 +123,7 @@ function generateLegalityResult(
         const limitMinutes = timeLimitRule.metadata.timeLimit;
         if (durationMinutes > limitMinutes) {
           status = 'illegal';
-          explanation = `🚫 Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
+          explanation = `Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
           break;
         }
       }
@@ -130,7 +131,7 @@ function generateLegalityResult(
       // Meters are legal if you pay and within time limit
       status = 'legal';
       const rate = primaryRule.metadata?.meterRate || 3.50;
-      explanation = `✅ You can park here! ${primaryRule.description}. Rate: $${rate}/hour.`;
+      explanation = `You can park here! ${primaryRule.description}. Rate: $${rate}/hour.`;
       
       if (timeLimitRule && timeLimitRule.metadata?.timeLimit) {
         const limitMinutes = timeLimitRule.metadata.timeLimit;
@@ -142,10 +143,10 @@ function generateLegalityResult(
       const limitMinutes = primaryRule.metadata?.timeLimit || 120;
       if (durationMinutes > limitMinutes) {
         status = 'illegal';
-        explanation = `🚫 Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
+        explanation = `Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
       } else {
         status = 'legal';
-        explanation = `✅ You can park here! ${primaryRule.description} - you're within the limit.`;
+        explanation = `You can park here! ${primaryRule.description} - you're within the limit.`;
       }
       break;
 
@@ -153,7 +154,7 @@ function generateLegalityResult(
       // RPP zones are illegal for non-residents during enforcement hours
       status = 'illegal';
       const zone = primaryRule.metadata?.permitZone || 'Unknown';
-      explanation = `🚫 Don't park here! Residential Permit Zone ${zone} - permit required.`;
+      explanation = `Don't park here! Residential Permit Zone ${zone} - permit required. Non-residents will be ticketed.`;
       warnings.push('Visitors may have limited time - check signs carefully');
       break;
 
