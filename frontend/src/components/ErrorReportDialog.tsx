@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Blockface, ErrorReport } from '@/types/parking';
 import { showSuccess } from '@/utils/toast';
+import { Heart, Send } from 'lucide-react';
 
 interface ErrorReportDialogProps {
   open: boolean;
@@ -21,7 +22,6 @@ export function ErrorReportDialog({ open, onOpenChange, blockface }: ErrorReport
 
     setIsSubmitting(true);
 
-    // Create error report
     const report: ErrorReport = {
       id: `report-${Date.now()}`,
       blockfaceId: blockface.id,
@@ -33,12 +33,11 @@ export function ErrorReportDialog({ open, onOpenChange, blockface }: ErrorReport
       timestamp: new Date().toISOString(),
     };
 
-    // Save to localStorage (demo purposes)
     const existingReports = JSON.parse(localStorage.getItem('curby-error-reports') || '[]');
     existingReports.push(report);
     localStorage.setItem('curby-error-reports', JSON.stringify(existingReports));
 
-    showSuccess('Error report submitted! Thank you for helping improve Curby.');
+    showSuccess('🎉 Thanks for helping make Curby better!');
     
     setDescription('');
     setIsSubmitting(false);
@@ -47,44 +46,70 @@ export function ErrorReportDialog({ open, onOpenChange, blockface }: ErrorReport
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] rounded-2xl">
         <DialogHeader>
-          <DialogTitle>Report Incorrect Rule</DialogTitle>
-          <DialogDescription>
-            Help us improve parking data accuracy. Describe what's incorrect about the parking rules for this location.
+          <DialogTitle className="text-xl flex items-center gap-2">
+            <span className="text-2xl">🤝</span>
+            Help Us Get It Right
+          </DialogTitle>
+          <DialogDescription className="text-sm text-gray-600 leading-relaxed">
+            Spotted something off? We'd love to know! Your feedback helps everyone find parking more easily.
           </DialogDescription>
         </DialogHeader>
 
         {blockface && (
           <div className="py-4 space-y-4">
-            <div className="text-sm">
-              <p className="font-medium text-gray-900">{blockface.streetName}</p>
-              <p className="text-gray-600 capitalize">{blockface.side} side</p>
+            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border-2 border-purple-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xl">📍</span>
+                <p className="font-semibold text-gray-900">{blockface.streetName}</p>
+              </div>
+              <p className="text-sm text-gray-600 capitalize ml-7">{blockface.side} side</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="description">What's incorrect?</Label>
+              <Label htmlFor="description" className="text-sm font-semibold text-gray-900">
+                What's not quite right?
+              </Label>
               <Textarea
                 id="description"
-                placeholder="Example: The street sweeping time is wrong - it's actually Wednesday 10am-12pm, not Tuesday..."
+                placeholder="For example: 'The street sweeping is actually on Wednesday mornings, not Tuesday' or 'There's a new 2-hour limit sign here now'"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
-                className="resize-none"
+                className="resize-none rounded-xl border-2 focus:border-purple-300"
               />
+              <p className="text-xs text-gray-500 flex items-center gap-1">
+                💡 The more details, the better we can help!
+              </p>
             </div>
           </div>
         )}
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+        <DialogFooter className="gap-2">
+          <Button 
+            variant="outline" 
+            onClick={() => onOpenChange(false)}
+            className="rounded-xl"
+          >
+            Maybe Later
           </Button>
           <Button 
             onClick={handleSubmit} 
             disabled={!description.trim() || isSubmitting}
+            className="rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Report'}
+            {isSubmitting ? (
+              <>
+                <Heart className="mr-2 h-4 w-4 animate-pulse" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send className="mr-2 h-4 w-4" />
+                Send Feedback
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
