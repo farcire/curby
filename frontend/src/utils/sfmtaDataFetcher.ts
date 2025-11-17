@@ -5,12 +5,12 @@ const SFMTA_REGULATIONS_API = 'https://data.sfgov.org/resource/qbyz-te2i.json';
 const CACHE_KEY = 'curby-sfmta-data';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
-// Mission + SOMA bounding box (approximate)
+// Expanded Mission + SOMA bounding box (approximate)
 const MISSION_SOMA_BOUNDS = {
-  minLat: 37.75,
-  maxLat: 37.78,
-  minLng: -122.43,
-  maxLng: -122.39,
+  minLat: 37.74,
+  maxLat: 37.79,
+  minLng: -122.44,
+  maxLng: -122.38,
 };
 
 // Bryant & 24th area (tighter bounds for demo)
