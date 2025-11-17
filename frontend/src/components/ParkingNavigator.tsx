@@ -228,7 +228,7 @@ export function ParkingNavigator({ blockfaces, durationMinutes, onShowMap }: Par
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-orange-50 to-red-50 p-6">
         <Card className="p-6 max-w-md">
           <div className="text-center">
-            <div className="text-5xl mb-4">📍</div>
+            <MapPin className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-bold text-gray-900 mb-2">Location Needed</h3>
             <p className="text-sm text-gray-600 mb-4">
               We need your location to show you nearby parking. Please enable location access in your browser settings.
