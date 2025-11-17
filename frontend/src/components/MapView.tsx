@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -21,10 +21,12 @@ function MapEventHandler({
 }: MapViewProps) {
   const map = useMap();
 
-  useEffect(() => {
-    const handleClick = (e: L.LeafletMouseEvent) => {
+  // Handle click events on the map
+  useMemo(() => {
+    map.on('click', (e: L.LeafletMouseEvent) => {
       const clickedPoint = e.latlng;
       
+      // Find the closest blockface to the click
       let closestBlockface: Blockface | null = null;
       let minDistance = Infinity;
 
@@ -32,7 +34,7 @@ function MapEventHandler({
         const coords = blockface.geometry.coordinates;
         coords.forEach(([lng, lat]) => {
           const distance = clickedPoint.distanceTo(L.latLng(lat, lng));
-          if (distance < minDistance && distance < 50) {
+          if (distance < minDistance && distance < 50) { // 50 meter threshold
             minDistance = distance;
             closestBlockface = blockface;
           }
@@ -43,12 +45,10 @@ function MapEventHandler({
         const result = evaluateLegality(closestBlockface, checkTime, durationMinutes);
         onBlockfaceClick(closestBlockface, result);
       }
-    };
-
-    map.on('click', handleClick);
+    });
 
     return () => {
-      map.off('click', handleClick);
+      map.off('click');
     };
   }, [map, blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
 
@@ -56,6 +56,7 @@ function MapEventHandler({
 }
 
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
+  // Generate GeoJSON data with legality colors
   const geojsonData = useMemo(() => {
     const features = blockfaces.map((blockface) => {
       const result = evaluateLegality(blockface, checkTime, durationMinutes);
@@ -76,6 +77,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     };
   }, [blockfaces, checkTime, durationMinutes]);
 
+  // Style function for GeoJSON features
   const styleFeature = (feature: any) => {
     return {
       color: feature.properties.color,
@@ -84,6 +86,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     };
   };
 
+  // Handle feature click
   const onEachFeature = (feature: any, layer: L.Layer) => {
     layer.on({
       click: () => {
@@ -107,6 +110,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       },
     });
 
+    // Add tooltip
     layer.bindTooltip(feature.properties.streetName, {
       permanent: false,
       direction: 'top',
@@ -114,31 +118,31 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   };
 
   return (
-    <MapContainer
-      center={[37.7527, -122.4078]}
-      zoom={16}
-      style={{ width: '100%', height: '100%' }}
-      zoomControl={true}
-      scrollWheelZoom={true}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      
-      <GeoJSON
-        key={JSON.stringify(geojsonData)}
-        data={geojsonData}
-        style={styleFeature}
-        onEachFeature={onEachFeature}
-      />
+    <div className="absolute inset-0 w-full h-full">
+      <MapContainer
+        center={[37.7527, -122.4078]}
+        zoom={16}
+        style={{ width: '100%', height: '100%' }}
+        zoomControl={true}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        
+        <GeoJSON
+          data={geojsonData}
+          style={styleFeature}
+          onEachFeature={onEachFeature}
+        />
 
-      <MapEventHandler
-        blockfaces={blockfaces}
-        checkTime={checkTime}
-        durationMinutes={durationMinutes}
-        onBlockfaceClick={onBlockfaceClick}
-      />
-    </MapContainer>
+        <MapEventHandler
+          blockfaces={blockfaces}
+          checkTime={checkTime}
+          durationMinutes={durationMinutes}
+          onBlockfaceClick={onBlockfaceClick}
+        />
+      </MapContainer>
+    </div>
   );
 }
