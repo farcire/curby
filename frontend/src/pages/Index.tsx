@@ -125,7 +125,7 @@ const Index = () => {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs text-amber-900">
               <span className="text-lg">🎪</span>
-              <span>Demo mode - showing sample data</span>
+              <span>Demo mode - 5 blocks around 20th & Bryant</span>
             </div>
             <Button
               variant="ghost"

@@ -16,13 +16,13 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
 
-  // Initialize map
+  // Initialize map centered on 20th & Bryant
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Create map
+    // Create map centered on 20th & Bryant Street
     const map = L.map(mapContainerRef.current, {
-      center: [37.7527, -122.4078],
+      center: [37.7588, -122.4093], // 20th & Bryant
       zoom: 16,
       zoomControl: true,
     });
