@@ -10,61 +10,19 @@ const PRECEDENCE = {
   'rpp-zone': 50,
 };
 
-// Sample rules for different scenarios
-const createStreetSweepingRule = (day: number, startTime: string, endTime: string): ParkingRule => ({
-  id: `sweep-${day}-${startTime}`,
-  type: 'street-sweeping',
-  timeRanges: [{
-    startTime,
-    endTime,
-    daysOfWeek: [day],
-  }],
-  description: `Street sweeping ${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day]} ${startTime}-${endTime}`,
-  precedence: PRECEDENCE['street-sweeping'],
-});
-
-const createMeterRule = (): ParkingRule => ({
-  id: 'meter-weekday',
-  type: 'meter',
-  timeRanges: [{
-    startTime: '09:00',
-    endTime: '18:00',
-    daysOfWeek: [1, 2, 3, 4, 5], // Mon-Fri
-  }],
-  description: 'Meter parking required Mon-Fri 9am-6pm',
-  precedence: PRECEDENCE['meter'],
-  metadata: {
-    meterRate: 3.50,
-  },
-});
-
+// Simplified rules for demo
 const createTimeLimitRule = (minutes: number): ParkingRule => ({
   id: `time-limit-${minutes}`,
   type: 'time-limit',
   timeRanges: [{
-    startTime: '08:00',
-    endTime: '20:00',
+    startTime: '09:00',
+    endTime: '18:00',
     daysOfWeek: [1, 2, 3, 4, 5, 6], // Mon-Sat
   }],
-  description: `${minutes / 60}-hour parking limit`,
+  description: `${minutes / 60}-hour limit (9 AM-6 PM Mon-Sat)`,
   precedence: PRECEDENCE['time-limit'],
   metadata: {
     timeLimit: minutes,
-  },
-});
-
-const createRPPRule = (zone: string): ParkingRule => ({
-  id: `rpp-${zone}`,
-  type: 'rpp-zone',
-  timeRanges: [{
-    startTime: '00:00',
-    endTime: '23:59',
-    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-  }],
-  description: `Residential Permit Zone ${zone} required`,
-  precedence: PRECEDENCE['rpp-zone'],
-  metadata: {
-    permitZone: zone,
   },
 });
 
@@ -80,47 +38,26 @@ const createNoParkingRule = (): ParkingRule => ({
   precedence: PRECEDENCE['no-parking'],
 });
 
-// Real traced coordinates from OpenStreetMap for SF Mission streets
-// Streets run at approximately 38-40 degrees from true north
+const createRPPRule = (): ParkingRule => ({
+  id: 'rpp-zone',
+  type: 'rpp-zone',
+  timeRanges: [{
+    startTime: '00:00',
+    endTime: '23:59',
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+  }],
+  description: 'Permit required (Zone P)',
+  precedence: PRECEDENCE['rpp-zone'],
+  metadata: {
+    permitZone: 'P',
+  },
+});
+
+// Simplified 3-block radius demo around 20th & Bryant
 export const mockBlockfaces: Blockface[] = [
-  // ===== BRYANT STREET (runs NW-SE) =====
+  // ===== BRYANT STREET (your location) =====
   
-  // Bryant: 18th to 19th - LEGAL (east side)
-  {
-    id: 'bryant-18th-19th-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40985, 37.76145],
-        [-122.40895, 37.76035],
-      ],
-    },
-    streetName: 'Bryant St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(2, '08:00', '10:00'),
-      createTimeLimitRule(120),
-    ],
-  },
-  
-  // Bryant: 18th to 19th - ILLEGAL (west side) - Creates YELLOW with east side
-  {
-    id: 'bryant-18th-19th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40995, 37.76145],
-        [-122.40905, 37.76035],
-      ],
-    },
-    streetName: 'Bryant St',
-    side: 'west',
-    rules: [
-      createNoParkingRule(),
-    ],
-  },
-  
-  // Bryant: 19th to 20th - LEGAL (east side)
+  // Bryant: 19th to 20th - LEGAL (east side) ✅
   {
     id: 'bryant-19th-20th-east',
     geometry: {
@@ -133,12 +70,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Bryant St',
     side: 'east',
     rules: [
-      createStreetSweepingRule(4, '12:00', '14:00'),
-      createTimeLimitRule(180),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // Bryant: 19th to 20th - LEGAL (west side) - Both sides legal = GREEN
+  // Bryant: 19th to 20th - LEGAL (west side) ✅
   {
     id: 'bryant-19th-20th-west',
     geometry: {
@@ -151,12 +87,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Bryant St',
     side: 'west',
     rules: [
-      createStreetSweepingRule(3, '08:00', '10:00'),
-      createTimeLimitRule(120),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // Bryant: 20th to 21st - ILLEGAL (east side)
+  // Bryant: 20th to 21st - ILLEGAL (east side) 🚫
   {
     id: 'bryant-20th-21st-east',
     geometry: {
@@ -173,7 +108,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Bryant: 20th to 21st - ILLEGAL (west side) - Both sides illegal = RED
+  // Bryant: 20th to 21st - ILLEGAL (west side) 🚫
   {
     id: 'bryant-20th-21st-west',
     geometry: {
@@ -190,45 +125,9 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Bryant: 21st to 22nd - LEGAL (east side)
-  {
-    id: 'bryant-21st-22nd-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40715, 37.75815],
-        [-122.40625, 37.75705],
-      ],
-    },
-    streetName: 'Bryant St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(3, '08:00', '10:00'),
-      createTimeLimitRule(120),
-    ],
-  },
+  // ===== HARRISON STREET (1 block west) =====
   
-  // ===== HARRISON STREET (runs NW-SE, parallel to Bryant, ~200m west) =====
-  
-  // Harrison: 18th to 19th - LEGAL (east side)
-  {
-    id: 'harrison-18th-19th-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41185, 37.76145],
-        [-122.41095, 37.76035],
-      ],
-    },
-    streetName: 'Harrison St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'),
-      createTimeLimitRule(240),
-    ],
-  },
-  
-  // Harrison: 19th to 20th - LEGAL (east side)
+  // Harrison: 19th to 20th - LEGAL (east side) ✅
   {
     id: 'harrison-19th-20th-east',
     geometry: {
@@ -241,12 +140,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Harrison St',
     side: 'east',
     rules: [
-      createStreetSweepingRule(5, '08:00', '10:00'),
-      createTimeLimitRule(240),
+      createTimeLimitRule(240), // 4-hour limit
     ],
   },
   
-  // Harrison: 19th to 20th - ILLEGAL (west side) - Creates YELLOW with east side
+  // Harrison: 19th to 20th - ILLEGAL (west side) ⚠️ Creates YELLOW
   {
     id: 'harrison-19th-20th-west',
     geometry: {
@@ -259,11 +157,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Harrison St',
     side: 'west',
     rules: [
-      createRPPRule('P'),
+      createRPPRule(),
     ],
   },
   
-  // Harrison: 20th to 21st - LEGAL (east side, meters)
+  // Harrison: 20th to 21st - LEGAL (east side) ✅
   {
     id: 'harrison-20th-21st-east',
     geometry: {
@@ -276,50 +174,13 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Harrison St',
     side: 'east',
     rules: [
-      createMeterRule(),
-      createTimeLimitRule(120),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // Harrison: 21st to 22nd - LEGAL (east side)
-  {
-    id: 'harrison-21st-22nd-east',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40915, 37.75815],
-        [-122.40825, 37.75705],
-      ],
-    },
-    streetName: 'Harrison St',
-    side: 'east',
-    rules: [
-      createStreetSweepingRule(2, '12:00', '14:00'),
-      createTimeLimitRule(180),
-    ],
-  },
+  // ===== FOLSOM STREET (1 block east) =====
   
-  // ===== FOLSOM STREET (runs NW-SE, parallel to Bryant, ~200m east) =====
-  
-  // Folsom: 18th to 19th - LEGAL (west side)
-  {
-    id: 'folsom-18th-19th-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40785, 37.76145],
-        [-122.40695, 37.76035],
-      ],
-    },
-    streetName: 'Folsom St',
-    side: 'west',
-    rules: [
-      createStreetSweepingRule(3, '08:00', '10:00'),
-      createTimeLimitRule(120),
-    ],
-  },
-  
-  // Folsom: 19th to 20th - LEGAL (west side)
+  // Folsom: 19th to 20th - LEGAL (west side) ✅
   {
     id: 'folsom-19th-20th-west',
     geometry: {
@@ -332,12 +193,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Folsom St',
     side: 'west',
     rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'),
-      createTimeLimitRule(120),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // Folsom: 20th to 21st - ILLEGAL (west side, RPP zone)
+  // Folsom: 20th to 21st - ILLEGAL (west side) 🚫
   {
     id: 'folsom-20th-21st-west',
     geometry: {
@@ -350,11 +210,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Folsom St',
     side: 'west',
     rules: [
-      createRPPRule('P'),
+      createRPPRule(),
     ],
   },
   
-  // Folsom: 20th to 21st - LEGAL (east side) - Creates YELLOW with west side
+  // Folsom: 20th to 21st - LEGAL (east side) ⚠️ Creates YELLOW
   {
     id: 'folsom-20th-21st-east',
     geometry: {
@@ -367,69 +227,13 @@ export const mockBlockfaces: Blockface[] = [
     streetName: 'Folsom St',
     side: 'east',
     rules: [
-      createStreetSweepingRule(2, '08:00', '10:00'),
-      createTimeLimitRule(180),
+      createTimeLimitRule(180), // 3-hour limit
     ],
   },
   
-  // Folsom: 21st to 22nd - LEGAL (west side)
-  {
-    id: 'folsom-21st-22nd-west',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40515, 37.75815],
-        [-122.40425, 37.75705],
-      ],
-    },
-    streetName: 'Folsom St',
-    side: 'west',
-    rules: [
-      createStreetSweepingRule(4, '12:00', '14:00'),
-      createTimeLimitRule(180),
-    ],
-  },
+  // ===== 19TH STREET (perpendicular) =====
   
-  // ===== 18TH STREET (runs SW-NE, perpendicular to Bryant) =====
-  
-  // 18th: Harrison to Bryant - ILLEGAL (north side)
-  {
-    id: '18th-harrison-bryant-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41185, 37.76145],
-        [-122.40985, 37.76145],
-      ],
-    },
-    streetName: '18th St',
-    side: 'north',
-    rules: [
-      createNoParkingRule(),
-    ],
-  },
-  
-  // 18th: Bryant to Folsom - LEGAL (north side, meters)
-  {
-    id: '18th-bryant-folsom-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40985, 37.76145],
-        [-122.40785, 37.76145],
-      ],
-    },
-    streetName: '18th St',
-    side: 'north',
-    rules: [
-      createMeterRule(),
-      createTimeLimitRule(60),
-    ],
-  },
-  
-  // ===== 19TH STREET (runs SW-NE) =====
-  
-  // 19th: Harrison to Bryant - LEGAL (south side)
+  // 19th: Harrison to Bryant - LEGAL (south side) ✅
   {
     id: '19th-harrison-bryant-south',
     geometry: {
@@ -442,12 +246,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '19th St',
     side: 'south',
     rules: [
-      createStreetSweepingRule(1, '08:00', '10:00'),
-      createTimeLimitRule(120),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
   
-  // 19th: Bryant to Folsom - LEGAL (south side)
+  // 19th: Bryant to Folsom - LEGAL (south side) ✅
   {
     id: '19th-bryant-folsom-south',
     geometry: {
@@ -460,14 +263,13 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '19th St',
     side: 'south',
     rules: [
-      createStreetSweepingRule(5, '12:00', '14:00'),
-      createTimeLimitRule(180),
+      createTimeLimitRule(180), // 3-hour limit
     ],
   },
   
-  // ===== 20TH STREET (runs SW-NE) - YOUR STARTING POINT =====
+  // ===== 20TH STREET (your location) =====
   
-  // 20th: Harrison to Bryant - LEGAL (north side)
+  // 20th: Harrison to Bryant - LEGAL (north side) ✅
   {
     id: '20th-harrison-bryant-north',
     geometry: {
@@ -480,12 +282,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '20th St',
     side: 'north',
     rules: [
-      createStreetSweepingRule(2, '12:00', '14:00'),
-      createTimeLimitRule(180),
+      createTimeLimitRule(180), // 3-hour limit
     ],
   },
   
-  // 20th: Bryant to Folsom - LEGAL (north side)
+  // 20th: Bryant to Folsom - LEGAL (north side) ✅
   {
     id: '20th-bryant-folsom-north',
     geometry: {
@@ -498,14 +299,13 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '20th St',
     side: 'north',
     rules: [
-      createStreetSweepingRule(4, '08:00', '10:00'),
-      createTimeLimitRule(240),
+      createTimeLimitRule(240), // 4-hour limit
     ],
   },
   
-  // ===== 21ST STREET (runs SW-NE) =====
+  // ===== 21ST STREET (perpendicular) =====
   
-  // 21st: Harrison to Bryant - LEGAL (north side, meters)
+  // 21st: Harrison to Bryant - LEGAL (north side) ✅
   {
     id: '21st-harrison-bryant-north',
     geometry: {
@@ -518,12 +318,11 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '21st St',
     side: 'north',
     rules: [
-      createMeterRule(),
-      createTimeLimitRule(60),
+      createTimeLimitRule(60), // 1-hour limit
     ],
   },
   
-  // 21st: Bryant to Folsom - LEGAL (north side)
+  // 21st: Bryant to Folsom - LEGAL (north side) ✅
   {
     id: '21st-bryant-folsom-north',
     geometry: {
@@ -536,45 +335,7 @@ export const mockBlockfaces: Blockface[] = [
     streetName: '21st St',
     side: 'north',
     rules: [
-      createStreetSweepingRule(2, '08:00', '10:00'),
-      createTimeLimitRule(120),
-    ],
-  },
-  
-  // ===== 22ND STREET (runs SW-NE) =====
-  
-  // 22nd: Harrison to Bryant - LEGAL (south side)
-  {
-    id: '22nd-harrison-bryant-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40825, 37.75705],
-        [-122.40625, 37.75705],
-      ],
-    },
-    streetName: '22nd St',
-    side: 'south',
-    rules: [
-      createStreetSweepingRule(5, '08:00', '10:00'),
-      createTimeLimitRule(120),
-    ],
-  },
-  
-  // 22nd: Bryant to Folsom - ILLEGAL (south side, RPP)
-  {
-    id: '22nd-bryant-folsom-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40625, 37.75705],
-        [-122.40425, 37.75705],
-      ],
-    },
-    streetName: '22nd St',
-    side: 'south',
-    rules: [
-      createRPPRule('P'),
+      createTimeLimitRule(120), // 2-hour limit
     ],
   },
 ];
