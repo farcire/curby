@@ -44,13 +44,6 @@ export function SimpleDurationPicker({ durationMinutes, onDurationChange }: Simp
           </Button>
         ))}
       </div>
-
-      <div className="text-xs text-gray-600 bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-xl border border-purple-100 flex items-center gap-2">
-        <span className="text-base">🔍</span>
-        <span>
-          Looking for parking <strong>right now</strong> for <strong>{durationMinutes / 60}hr</strong>
-        </span>
-      </div>
     </div>
   );
 }
