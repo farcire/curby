@@ -65,7 +65,8 @@ const createRPPRule = (): ParkingRule => ({
   },
 });
 
-// Corrected GPS coordinates based on visible map - shifted south significantly
+// Coordinates matched to actual visible street positions on the map
+// Based on where the street labels appear in the screenshot
 export const mockBlockfaces: Blockface[] = [
   // ===== 20TH STREET (runs east-west) =====
   
@@ -75,8 +76,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41100, 37.75650],
-        [-122.40920, 37.75650],
+        [-122.41100, 37.75880],
+        [-122.40920, 37.75880],
       ],
     },
     streetName: '20th St',
@@ -92,8 +93,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41100, 37.75635],
-        [-122.40920, 37.75635],
+        [-122.41100, 37.75865],
+        [-122.40920, 37.75865],
       ],
     },
     streetName: '20th St',
@@ -109,8 +110,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40920, 37.75650],
-        [-122.40620, 37.75650],
+        [-122.40920, 37.75880],
+        [-122.40620, 37.75880],
       ],
     },
     streetName: '20th St',
@@ -126,8 +127,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40920, 37.75635],
-        [-122.40620, 37.75635],
+        [-122.40920, 37.75865],
+        [-122.40620, 37.75865],
       ],
     },
     streetName: '20th St',
@@ -145,8 +146,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41190, 37.75760],
-        [-122.41010, 37.75760],
+        [-122.41190, 37.75990],
+        [-122.41010, 37.75990],
       ],
     },
     streetName: '19th St',
@@ -162,8 +163,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41190, 37.75775],
-        [-122.41010, 37.75775],
+        [-122.41190, 37.76005],
+        [-122.41010, 37.76005],
       ],
     },
     streetName: '19th St',
@@ -179,8 +180,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41010, 37.75760],
-        [-122.40710, 37.75760],
+        [-122.41010, 37.75990],
+        [-122.40710, 37.75990],
       ],
     },
     streetName: '19th St',
@@ -196,8 +197,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41010, 37.75775],
-        [-122.40710, 37.75775],
+        [-122.41010, 37.76005],
+        [-122.40710, 37.76005],
       ],
     },
     streetName: '19th St',
@@ -215,8 +216,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41010, 37.75540],
-        [-122.40830, 37.75540],
+        [-122.41010, 37.75770],
+        [-122.40830, 37.75770],
       ],
     },
     streetName: '21st St',
@@ -232,8 +233,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41010, 37.75525],
-        [-122.40830, 37.75525],
+        [-122.41010, 37.75755],
+        [-122.40830, 37.75755],
       ],
     },
     streetName: '21st St',
@@ -249,8 +250,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40830, 37.75540],
-        [-122.40530, 37.75540],
+        [-122.40830, 37.75770],
+        [-122.40530, 37.75770],
       ],
     },
     streetName: '21st St',
@@ -266,8 +267,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40830, 37.75525],
-        [-122.40530, 37.75525],
+        [-122.40830, 37.75755],
+        [-122.40530, 37.75755],
       ],
     },
     streetName: '21st St',
@@ -285,8 +286,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41000, 37.75760],
-        [-122.41000, 37.75650],
+        [-122.41000, 37.75990],
+        [-122.41000, 37.75880],
       ],
     },
     streetName: 'Bryant St',
@@ -303,8 +304,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41020, 37.75760],
-        [-122.41020, 37.75650],
+        [-122.41020, 37.75990],
+        [-122.41020, 37.75880],
       ],
     },
     streetName: 'Bryant St',
@@ -321,8 +322,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40820, 37.75650],
-        [-122.40820, 37.75540],
+        [-122.40820, 37.75880],
+        [-122.40820, 37.75770],
       ],
     },
     streetName: 'Bryant St',
@@ -338,8 +339,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40840, 37.75650],
-        [-122.40840, 37.75540],
+        [-122.40840, 37.75880],
+        [-122.40840, 37.75770],
       ],
     },
     streetName: 'Bryant St',
@@ -357,8 +358,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41090, 37.75760],
-        [-122.41090, 37.75650],
+        [-122.41090, 37.75990],
+        [-122.41090, 37.75880],
       ],
     },
     streetName: 'Harrison St',
@@ -374,8 +375,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41110, 37.75760],
-        [-122.41110, 37.75650],
+        [-122.41110, 37.75990],
+        [-122.41110, 37.75880],
       ],
     },
     streetName: 'Harrison St',
@@ -391,8 +392,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41000, 37.75650],
-        [-122.41000, 37.75540],
+        [-122.41000, 37.75880],
+        [-122.41000, 37.75770],
       ],
     },
     streetName: 'Harrison St',
@@ -408,8 +409,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41020, 37.75650],
-        [-122.41020, 37.75540],
+        [-122.41020, 37.75880],
+        [-122.41020, 37.75770],
       ],
     },
     streetName: 'Harrison St',
@@ -427,8 +428,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40630, 37.75760],
-        [-122.40630, 37.75650],
+        [-122.40630, 37.75990],
+        [-122.40630, 37.75880],
       ],
     },
     streetName: 'Folsom St',
@@ -444,8 +445,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40610, 37.75760],
-        [-122.40610, 37.75650],
+        [-122.40610, 37.75990],
+        [-122.40610, 37.75880],
       ],
     },
     streetName: 'Folsom St',
@@ -461,8 +462,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40540, 37.75650],
-        [-122.40540, 37.75540],
+        [-122.40540, 37.75880],
+        [-122.40540, 37.75770],
       ],
     },
     streetName: 'Folsom St',
@@ -478,8 +479,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40520, 37.75650],
-        [-122.40520, 37.75540],
+        [-122.40520, 37.75880],
+        [-122.40520, 37.75770],
       ],
     },
     streetName: 'Folsom St',
