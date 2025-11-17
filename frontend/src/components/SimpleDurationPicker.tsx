@@ -10,6 +10,9 @@ const QUICK_DURATIONS = [
   { value: 60, label: '1 hour', emoji: '☕' },
   { value: 120, label: '2 hours', emoji: '🍽️' },
   { value: 180, label: '3 hours', emoji: '🛍️' },
+  { value: 360, label: '6 hours', emoji: '🎬' },
+  { value: 720, label: '12 hours', emoji: '🌙' },
+  { value: 1440, label: '24 hours', emoji: '📅' },
 ];
 
 export function SimpleDurationPicker({ durationMinutes, onDurationChange }: SimpleDurationPickerProps) {
