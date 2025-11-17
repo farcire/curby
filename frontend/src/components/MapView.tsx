@@ -21,55 +21,76 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
+  // Debug: Log component render
+  console.log('🗺️ MapView component rendered');
+  console.log('Token available:', !!MAPBOX_TOKEN);
+  console.log('Token value:', MAPBOX_TOKEN.substring(0, 20) + '...');
+
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    console.log('🔄 MapView useEffect running');
+    console.log('mapContainer.current:', !!mapContainer.current);
+    console.log('map.current:', !!map.current);
 
-    console.log('Initializing map...');
-    console.log('Mapbox token exists:', !!MAPBOX_TOKEN);
-    console.log('Token starts with pk.:', MAPBOX_TOKEN.startsWith('pk.'));
+    if (!mapContainer.current) {
+      console.error('❌ Map container ref is null!');
+      return;
+    }
+
+    if (map.current) {
+      console.log('✅ Map already initialized, skipping');
+      return;
+    }
+
+    console.log('🚀 Starting map initialization...');
 
     // Check if token exists
     if (!MAPBOX_TOKEN) {
+      console.error('❌ No Mapbox token found');
       setMapError('Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to .env.local');
       setIsInitializing(false);
       return;
     }
 
     if (!MAPBOX_TOKEN.startsWith('pk.')) {
+      console.error('❌ Invalid token format');
       setMapError('Invalid Mapbox token format. Token should start with "pk."');
       setIsInitializing(false);
       return;
     }
 
+    console.log('✅ Token validated, setting accessToken');
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     try {
-      console.log('Creating Mapbox map instance...');
+      console.log('📍 Creating map at Bryant & 24th...');
       
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-122.4078, 37.7527], // Bryant & 24th intersection
+        center: [-122.4078, 37.7527],
         zoom: 16,
         pitch: 0,
       });
 
+      console.log('✅ Map instance created');
+
       map.current.on('load', () => {
-        console.log('Map loaded successfully!');
+        console.log('🎉 Map loaded successfully!');
         setMapLoaded(true);
         setMapError(null);
         setIsInitializing(false);
       });
 
       map.current.on('error', (e) => {
-        console.error('Mapbox error:', e);
+        console.error('❌ Mapbox error:', e);
         setMapError(`Map error: ${e.error?.message || 'Unknown error'}`);
         setIsInitializing(false);
       });
 
       // Add navigation controls
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      console.log('✅ Navigation controls added');
 
       // Add geolocate control
       map.current.addControl(
@@ -81,17 +102,17 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         }),
         'top-right'
       );
+      console.log('✅ Geolocate control added');
 
-      console.log('Map controls added');
     } catch (error) {
-      console.error('Error initializing map:', error);
+      console.error('❌ Error initializing map:', error);
       setMapError(`Failed to initialize map: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setIsInitializing(false);
     }
 
     return () => {
       if (map.current) {
-        console.log('Cleaning up map...');
+        console.log('🧹 Cleaning up map...');
         map.current.remove();
         map.current = null;
       }
@@ -100,16 +121,21 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   // Update blockfaces when time/duration changes or blockfaces data changes
   useEffect(() => {
-    if (!map.current || !mapLoaded) return;
+    if (!map.current || !mapLoaded) {
+      console.log('⏸️ Skipping blockface update - map not ready');
+      return;
+    }
 
-    console.log('Updating blockfaces on map...', blockfaces.length, 'blockfaces');
+    console.log('🔄 Updating blockfaces on map...', blockfaces.length, 'blockfaces');
 
     // Remove existing layers and sources
     if (map.current.getLayer('blockfaces')) {
       map.current.removeLayer('blockfaces');
+      console.log('🗑️ Removed old blockfaces layer');
     }
     if (map.current.getSource('blockfaces')) {
       map.current.removeSource('blockfaces');
+      console.log('🗑️ Removed old blockfaces source');
     }
 
     // Evaluate legality for all blockfaces
@@ -128,7 +154,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       };
     });
 
-    console.log('Created', features.length, 'features for map');
+    console.log('✅ Created', features.length, 'features for map');
 
     // Add source
     map.current.addSource('blockfaces', {
@@ -138,6 +164,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         features,
       },
     });
+    console.log('✅ Added blockfaces source');
 
     // Add layer
     map.current.addLayer({
@@ -150,8 +177,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         'line-opacity': 0.9,
       },
     });
-
-    console.log('Blockfaces layer added to map');
+    console.log('✅ Added blockfaces layer');
 
     // Add click handler
     map.current.on('click', 'blockfaces', (e) => {
@@ -162,6 +188,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       const blockface = blockfaces.find((b) => b.id === blockfaceId);
 
       if (blockface) {
+        console.log('👆 Clicked blockface:', blockface.streetName);
         const result = evaluateLegality(blockface, checkTime, durationMinutes);
         onBlockfaceClick(blockface, result);
       }
@@ -183,11 +210,13 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   // Show loading state
   if (isInitializing) {
+    console.log('⏳ Showing loading state');
     return (
-      <div className="relative w-full h-full bg-gray-100 flex items-center justify-center">
+      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-sm text-gray-600">Loading map...</p>
+          <p className="text-xs text-gray-500 mt-2">Check console for details</p>
         </div>
       </div>
     );
@@ -195,8 +224,9 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   // Show error message if map fails to load
   if (mapError) {
+    console.log('❌ Showing error state:', mapError);
     return (
-      <div className="relative w-full h-full bg-gray-100 flex items-center justify-center">
+      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
         <div className="text-center p-8 max-w-md">
           <div className="text-red-600 text-4xl mb-4">🗺️</div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Map Not Available</h3>
@@ -215,9 +245,14 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     );
   }
 
+  console.log('✅ Rendering map container');
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapContainer} className="absolute inset-0 w-full h-full" style={{ minHeight: '400px' }} />
+    <div className="w-full h-full relative">
+      <div 
+        ref={mapContainer} 
+        className="absolute inset-0" 
+        style={{ width: '100%', height: '100%' }}
+      />
       
       {/* Legend */}
       {mapLoaded && (
