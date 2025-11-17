@@ -31,36 +31,22 @@ export function ParkingNavigator({ blockfaces, durationMinutes, onShowMap }: Par
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [nearbyParking, setNearbyParking] = useState<ParkingDirection[]>([]);
 
-  // Get user location
+  // Get user location (DEMO MODE)
   useEffect(() => {
-    if (!navigator.geolocation) {
-      setLocationError('Location not supported on this device');
+    // Hardcoded location for demo: 20th St & Bryant St, SF
+    const demoLocation = {
+      lat: 37.7588,
+      lng: -122.4093,
+      heading: 0, // Facing North
+    };
+
+    // Simulate a short delay for a better demo experience
+    const timer = setTimeout(() => {
+      setLocation(demoLocation);
       setIsLoadingLocation(false);
-      return;
-    }
+    }, 1000);
 
-    const watchId = navigator.geolocation.watchPosition(
-      (position) => {
-        setLocation({
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-          heading: position.coords.heading,
-        });
-        setLocationError(null);
-        setIsLoadingLocation(false);
-      },
-      (error) => {
-        setLocationError(error.message);
-        setIsLoadingLocation(false);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 5000,
-        timeout: 10000,
-      }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
+    return () => clearTimeout(timer);
   }, []);
 
   // Get device orientation for heading if not provided by GPS
