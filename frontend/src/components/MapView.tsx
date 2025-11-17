@@ -14,26 +14,26 @@ interface MapViewProps {
 }
 
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
-  const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
+  const initializationAttempted = useRef(false);
 
-  // Callback ref to ensure container is mounted
-  const setMapContainer = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      console.log('📦 Container mounted with dimensions:', {
-        width: node.offsetWidth,
-        height: node.offsetHeight,
-      });
-      mapContainer.current = node;
+  // Initialize map when container is mounted
+  const initializeMap = useCallback((container: HTMLDivElement) => {
+    if (initializationAttempted.current) {
+      console.log('⚠️ Map initialization already attempted');
+      return;
     }
-  }, []);
 
-  // Initialize map
-  useEffect(() => {
-    console.log('🎬 MapView useEffect triggered');
+    initializationAttempted.current = true;
+
+    console.log('🎬 Starting map initialization from callback ref');
+    console.log('📦 Container dimensions:', {
+      width: container.offsetWidth,
+      height: container.offsetHeight,
+    });
 
     if (!MAPBOX_TOKEN) {
       console.error('❌ No Mapbox token');
@@ -49,77 +49,66 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       return;
     }
 
-    if (map.current) {
-      console.log('⚠️ Map already exists, skipping initialization');
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    if (containerWidth === 0 || containerHeight === 0) {
+      console.error('❌ Container has no dimensions');
+      setMapError('Map container has no dimensions. Please check the layout.');
+      setIsInitializing(false);
       return;
     }
 
-    // Wait for container to be ready with dimensions
-    const initMap = () => {
-      if (!mapContainer.current) {
-        console.error('❌ Map container not available');
-        return;
-      }
+    console.log('🏗️ Creating Mapbox map instance...');
 
-      const containerWidth = mapContainer.current.offsetWidth;
-      const containerHeight = mapContainer.current.offsetHeight;
+    mapboxgl.accessToken = MAPBOX_TOKEN;
 
-      console.log('📏 Container dimensions:', { width: containerWidth, height: containerHeight });
+    try {
+      const newMap = new mapboxgl.Map({
+        container: container,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-122.4078, 37.7527],
+        zoom: 16,
+      });
 
-      if (containerWidth === 0 || containerHeight === 0) {
-        console.warn('⚠️ Container has no dimensions, retrying...');
-        setTimeout(initMap, 100);
-        return;
-      }
+      console.log('✅ Map instance created, waiting for load event...');
 
-      console.log('🏗️ Starting map initialization...');
-
-      mapboxgl.accessToken = MAPBOX_TOKEN;
-
-      try {
-        console.log('🎯 Creating Mapbox map instance...');
-        const newMap = new mapboxgl.Map({
-          container: mapContainer.current,
-          style: 'mapbox://styles/mapbox/streets-v12',
-          center: [-122.4078, 37.7527],
-          zoom: 16,
-        });
-
-        console.log('✅ Map instance created, waiting for load event...');
-
-        newMap.on('load', () => {
-          console.log('🎉 Map loaded successfully!');
-          map.current = newMap;
-          setMapLoaded(true);
-          setIsInitializing(false);
-        });
-
-        newMap.on('error', (e) => {
-          console.error('❌ Map error:', e);
-          setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
-          setIsInitializing(false);
-        });
-
-        newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
-        newMap.addControl(
-          new mapboxgl.GeolocateControl({
-            positionOptions: { enableHighAccuracy: true },
-            trackUserLocation: true,
-          }),
-          'top-right'
-        );
-      } catch (error) {
-        console.error('💥 Error creating map:', error);
-        setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
+      newMap.on('load', () => {
+        console.log('🎉 Map loaded successfully!');
+        map.current = newMap;
+        setMapLoaded(true);
         setIsInitializing(false);
-      }
-    };
+      });
 
-    // Start initialization after a short delay
-    const timer = setTimeout(initMap, 100);
+      newMap.on('error', (e) => {
+        console.error('❌ Map error:', e);
+        setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
+        setIsInitializing(false);
+      });
 
-    return () => clearTimeout(timer);
+      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      newMap.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: { enableHighAccuracy: true },
+          trackUserLocation: true,
+        }),
+        'top-right'
+      );
+    } catch (error) {
+      console.error('💥 Error creating map:', error);
+      setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
+      setIsInitializing(false);
+    }
   }, []);
+
+  // Callback ref that triggers initialization
+  const mapContainer = useCallback((node: HTMLDivElement | null) => {
+    if (node && !map.current) {
+      console.log('📦 Container ref callback triggered');
+      // Small delay to ensure container is fully rendered
+      setTimeout(() => initializeMap(node), 50);
+    }
+  }, [initializeMap]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -232,7 +221,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
 
   return (
     <div 
-      ref={setMapContainer}
+      ref={mapContainer}
       className="absolute inset-0 w-full h-full bg-gray-200" 
       style={{ minHeight: '400px' }}
     />
