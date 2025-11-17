@@ -20,8 +20,9 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
 
-  // Check token on mount
+  // Initialize map
   useEffect(() => {
+    console.log('🎬 MapView useEffect triggered');
     console.log('🔑 Mapbox token check:', {
       hasToken: !!MAPBOX_TOKEN,
       tokenLength: MAPBOX_TOKEN.length,
@@ -30,40 +31,39 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     });
 
     if (!MAPBOX_TOKEN) {
+      console.error('❌ No Mapbox token');
       setMapError('Mapbox token not configured. Please add VITE_MAPBOX_TOKEN to your .env.local file and restart the server.');
       setIsInitializing(false);
       return;
     }
     
     if (!MAPBOX_TOKEN.startsWith('pk.')) {
+      console.error('❌ Invalid Mapbox token format');
       setMapError('Your Mapbox token is invalid. It should start with "pk.". Please check your .env.local file.');
       setIsInitializing(false);
       return;
     }
 
-    // Initialize map after a short delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      if (mapContainer.current && !map.current) {
-        console.log('🎯 Initializing map...');
-        initializeMap();
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const initializeMap = () => {
     if (!mapContainer.current) {
-      console.error('❌ Container not available');
-      setMapError('Map container not ready');
-      setIsInitializing(false);
+      console.error('❌ Map container not available');
       return;
     }
+
+    if (map.current) {
+      console.log('⚠️ Map already exists, skipping initialization');
+      return;
+    }
+
+    console.log('🏗️ Starting map initialization...');
+    console.log('📦 Container dimensions:', {
+      width: mapContainer.current.offsetWidth,
+      height: mapContainer.current.offsetHeight,
+    });
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     try {
-      console.log('🏗️ Creating Mapbox map instance...');
+      console.log('🎯 Creating Mapbox map instance...');
       const newMap = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
@@ -71,8 +71,10 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         zoom: 16,
       });
 
+      console.log('✅ Map instance created, waiting for load event...');
+
       newMap.on('load', () => {
-        console.log('✅ Map loaded successfully!');
+        console.log('🎉 Map loaded successfully!');
         map.current = newMap;
         setMapLoaded(true);
         setIsInitializing(false);
@@ -97,7 +99,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
       setIsInitializing(false);
     }
-  };
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -113,8 +115,11 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   // Update blockfaces on map
   useEffect(() => {
     if (!map.current || !mapLoaded) {
+      console.log('⏳ Waiting for map to load before updating blockfaces');
       return;
     }
+
+    console.log('🔄 Updating blockfaces on map...');
 
     const source = map.current.getSource('blockfaces');
     const features = blockfaces.map((blockface) => {
@@ -206,6 +211,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   }
 
   return (
-    <div className="absolute inset-0 bg-gray-200" ref={mapContainer} />
+    <div className="absolute inset-0 w-full h-full bg-gray-200" ref={mapContainer} />
   );
 }
