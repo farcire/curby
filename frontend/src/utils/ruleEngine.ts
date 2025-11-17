@@ -1,9 +1,10 @@
 import { ParkingRule, LegalityResult, LegalityStatus, Blockface } from '@/types/parking';
-import { isWithinInterval, addMinutes, getDay, format } from 'date-fns';
+import { addMinutes, getDay, format } from 'date-fns';
 
 /**
  * Evaluates parking legality for a blockface at a specific time and duration
- * Returns simplified status: legal (green), illegal (red), or insufficient-data (gray)
+ * Returns simplified status: legal (green) or illegal (red)
+ * Rule: If you can park for the FULL duration without any restrictions, it's legal. Otherwise, illegal.
  */
 export function evaluateLegality(
   blockface: Blockface,
@@ -30,9 +31,6 @@ export function evaluateLegality(
     }
   }
 
-  // Sort by precedence (highest first)
-  applicableRules.sort((a, b) => b.precedence - a.precedence);
-
   // If no rules apply, it's legal
   if (applicableRules.length === 0) {
     return {
@@ -41,6 +39,9 @@ export function evaluateLegality(
       applicableRules: [],
     };
   }
+
+  // Sort by precedence (highest first)
+  applicableRules.sort((a, b) => b.precedence - a.precedence);
 
   const primaryRule = applicableRules[0];
   
@@ -87,7 +88,7 @@ function timeOverlaps(checkTime: string, rangeStart: string, rangeEnd: string): 
 
 /**
  * Generates a legality result with plain-language explanation
- * Simplified to return only 'legal' or 'illegal' (no 'limited')
+ * Simplified to return only 'legal' or 'illegal'
  */
 function generateLegalityResult(
   primaryRule: ParkingRule,
@@ -115,11 +116,6 @@ function generateLegalityResult(
       break;
 
     case 'meter':
-      // Meters are legal if you pay - simplified to "legal" with note about payment
-      status = 'legal';
-      const rate = primaryRule.metadata?.meterRate || 3.50;
-      explanation = `✅ You can park here! ${primaryRule.description}. Rate: $${rate}/hour.`;
-      
       // Check for time limits
       const timeLimitRule = allRules.find(r => r.type === 'time-limit');
       if (timeLimitRule && timeLimitRule.metadata?.timeLimit) {
@@ -127,9 +123,18 @@ function generateLegalityResult(
         if (durationMinutes > limitMinutes) {
           status = 'illegal';
           explanation = `🚫 Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
-        } else {
-          explanation += ` ${limitMinutes / 60}-hour limit applies.`;
+          break;
         }
+      }
+      
+      // Meters are legal if you pay and within time limit
+      status = 'legal';
+      const rate = primaryRule.metadata?.meterRate || 3.50;
+      explanation = `✅ You can park here! ${primaryRule.description}. Rate: $${rate}/hour.`;
+      
+      if (timeLimitRule && timeLimitRule.metadata?.timeLimit) {
+        const limitMinutes = timeLimitRule.metadata.timeLimit;
+        explanation += ` ${limitMinutes / 60}-hour limit applies.`;
       }
       break;
 
