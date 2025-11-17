@@ -32,14 +32,16 @@ export function RadiusControl({
           </button>
         </div>
         
-        <Slider
-          value={[radiusBlocks]}
-          onValueChange={(value) => onRadiusChange(value[0])}
-          min={1}
-          max={8}
-          step={1}
-          className="w-full"
-        />
+        <div dir="ltr">
+          <Slider
+            value={[radiusBlocks]}
+            onValueChange={(value) => onRadiusChange(value[0])}
+            min={1}
+            max={8}
+            step={1}
+            className="w-full"
+          />
+        </div>
         
         <div className="flex justify-between text-xs text-gray-500">
           <span>1 block</span>
