@@ -201,21 +201,21 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         style={{ width: '100%', height: '100%' }}
       />
       
-      {/* Simple, Action-Oriented Legend */}
+      {/* Simple Legend */}
       {mapLoaded && (
         <div className="absolute bottom-6 left-6 bg-white rounded-2xl shadow-xl p-3 text-xs z-10 border-2 border-purple-200">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-green-600 rounded-full"></div>
-              <span className="text-gray-900 font-semibold">Go for it!</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-amber-600 rounded-full"></div>
-              <span className="text-gray-900 font-semibold">Check details</span>
+              <span className="text-gray-900 font-semibold">Park here</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 bg-red-600 rounded-full"></div>
               <span className="text-gray-900 font-semibold">Don't park</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-gray-400 rounded-full"></div>
+              <span className="text-gray-900 font-semibold">No data</span>
             </div>
           </div>
         </div>

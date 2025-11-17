@@ -1,4 +1,4 @@
-export type LegalityStatus = 'legal' | 'limited' | 'illegal' | 'insufficient-data';
+export type LegalityStatus = 'legal' | 'illegal' | 'insufficient-data';
 
 export type RuleType = 
   | 'tow-away'

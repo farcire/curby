@@ -3,6 +3,7 @@ import { isWithinInterval, addMinutes, getDay, format } from 'date-fns';
 
 /**
  * Evaluates parking legality for a blockface at a specific time and duration
+ * Returns simplified status: legal (green), illegal (red), or insufficient-data (gray)
  */
 export function evaluateLegality(
   blockface: Blockface,
@@ -13,7 +14,7 @@ export function evaluateLegality(
   if (!blockface.rules || blockface.rules.length === 0) {
     return {
       status: 'insufficient-data',
-      explanation: 'Insufficient parking data available for this location. Please verify signs on-site.',
+      explanation: 'No parking data available for this location. Always check signs on-site!',
       applicableRules: [],
       warnings: ['Always verify parking signs at the location'],
     };
@@ -32,11 +33,11 @@ export function evaluateLegality(
   // Sort by precedence (highest first)
   applicableRules.sort((a, b) => b.precedence - a.precedence);
 
-  // Determine status based on highest precedence rule
+  // If no rules apply, it's legal
   if (applicableRules.length === 0) {
     return {
       status: 'legal',
-      explanation: 'Legal to park. No restrictions apply during this time.',
+      explanation: '✅ You can park here! No restrictions apply during your time.',
       applicableRules: [],
     };
   }
@@ -86,6 +87,7 @@ function timeOverlaps(checkTime: string, rangeStart: string, rangeEnd: string): 
 
 /**
  * Generates a legality result with plain-language explanation
+ * Simplified to return only 'legal' or 'illegal' (no 'limited')
  */
 function generateLegalityResult(
   primaryRule: ParkingRule,
@@ -99,33 +101,34 @@ function generateLegalityResult(
   switch (primaryRule.type) {
     case 'tow-away':
       status = 'illegal';
-      explanation = `🚫 Illegal to park: ${primaryRule.description}. Your vehicle will be towed.`;
+      explanation = `🚫 Don't park here! ${primaryRule.description}. Your car will be towed.`;
       break;
 
     case 'street-sweeping':
       status = 'illegal';
-      explanation = `🚫 Illegal to park: ${primaryRule.description}. Parking during street sweeping results in citations.`;
+      explanation = `🚫 Don't park here! ${primaryRule.description}. You'll get a ticket.`;
       break;
 
     case 'no-parking':
       status = 'illegal';
-      explanation = `🚫 Illegal to park: ${primaryRule.description}.`;
+      explanation = `🚫 Don't park here! ${primaryRule.description}.`;
       break;
 
     case 'meter':
-      status = 'limited';
+      // Meters are legal if you pay - simplified to "legal" with note about payment
+      status = 'legal';
       const rate = primaryRule.metadata?.meterRate || 3.50;
-      explanation = `⚠️ Limited parking: ${primaryRule.description}. Rate: $${rate}/hour.`;
+      explanation = `✅ You can park here! ${primaryRule.description}. Rate: $${rate}/hour.`;
       
-      // Check for additional restrictions
+      // Check for time limits
       const timeLimitRule = allRules.find(r => r.type === 'time-limit');
       if (timeLimitRule && timeLimitRule.metadata?.timeLimit) {
         const limitMinutes = timeLimitRule.metadata.timeLimit;
         if (durationMinutes > limitMinutes) {
-          explanation += ` ${limitMinutes / 60}-hour time limit applies - your ${durationMinutes / 60}-hour duration exceeds this.`;
-          warnings.push('Your parking duration exceeds the time limit');
+          status = 'illegal';
+          explanation = `🚫 Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
         } else {
-          explanation += ` ${limitMinutes / 60}-hour time limit.`;
+          explanation += ` ${limitMinutes / 60}-hour limit applies.`;
         }
       }
       break;
@@ -133,31 +136,25 @@ function generateLegalityResult(
     case 'time-limit':
       const limitMinutes = primaryRule.metadata?.timeLimit || 120;
       if (durationMinutes > limitMinutes) {
-        status = 'limited';
-        explanation = `⚠️ Limited parking: ${primaryRule.description}. Your ${durationMinutes / 60}-hour duration exceeds the ${limitMinutes / 60}-hour limit.`;
-        warnings.push('Your parking duration exceeds the time limit');
+        status = 'illegal';
+        explanation = `🚫 Don't park here! Your ${durationMinutes / 60}-hour stay exceeds the ${limitMinutes / 60}-hour limit.`;
       } else {
         status = 'legal';
-        explanation = `✅ Legal to park: ${primaryRule.description} applies, but your ${durationMinutes / 60}-hour duration is within the limit.`;
+        explanation = `✅ You can park here! ${primaryRule.description} - you're within the limit.`;
       }
       break;
 
     case 'rpp-zone':
-      status = 'limited';
+      // RPP zones are illegal for non-residents during enforcement hours
+      status = 'illegal';
       const zone = primaryRule.metadata?.permitZone || 'Unknown';
-      explanation = `⚠️ Limited parking: ${primaryRule.description}. Permit required for extended parking.`;
-      warnings.push(`Residential Permit Zone ${zone} - visitors may have time limits`);
+      explanation = `🚫 Don't park here! Residential Permit Zone ${zone} - permit required.`;
+      warnings.push('Visitors may have limited time - check signs carefully');
       break;
 
     default:
       status = 'insufficient-data';
       explanation = 'Unable to determine parking legality. Please verify signs on-site.';
-  }
-
-  // Add sweeping warnings if applicable
-  const sweepingRule = allRules.find(r => r.type === 'street-sweeping' && r !== primaryRule);
-  if (sweepingRule) {
-    warnings.push(`Note: ${sweepingRule.description}`);
   }
 
   warnings.push('Always verify parking signs at the location');
@@ -177,13 +174,11 @@ export function getStatusColor(status: LegalityStatus): string {
   switch (status) {
     case 'legal':
       return '#10b981'; // green
-    case 'limited':
-      return '#f59e0b'; // yellow/amber
     case 'illegal':
       return '#ef4444'; // red
     case 'insufficient-data':
-      return '#6b7280'; // gray
+      return '#9ca3af'; // gray
     default:
-      return '#6b7280';
+      return '#9ca3af';
   }
 }
