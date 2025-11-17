@@ -13,12 +13,15 @@ const QUICK_DURATIONS = [
 ];
 
 export function SimpleDurationPicker({ durationMinutes, onDurationChange }: SimpleDurationPickerProps) {
+  const durationHours = durationMinutes / 60;
+  const hourText = durationHours === 1 ? 'hour' : 'hours';
+
   return (
     <div className="bg-white border-b-2 border-purple-100 p-4 space-y-3 shadow-sm">
       <div className="flex items-center gap-2 mb-2">
         <Clock className="h-5 w-5 text-purple-600" />
         <h2 className="text-base font-bold text-gray-900">
-          How long do you need to park?
+          Find street parking for the next {durationHours} {hourText}
         </h2>
       </div>
       
