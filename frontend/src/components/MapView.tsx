@@ -16,21 +16,50 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
 
-  // Initialize map centered on 20th & Bryant
+  // Initialize map centered on Bryant & 20th with 5-block radius view
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Create map centered on 20th & Bryant Street
+    // Create map centered on Bryant & 20th Street
     const map = L.map(mapContainerRef.current, {
-      center: [37.7588, -122.4093], // 20th & Bryant
-      zoom: 16,
+      center: [37.75885, -122.40935], // Bryant & 20th
+      zoom: 16, // Shows approximately 5-block radius
       zoomControl: true,
+      minZoom: 14,
+      maxZoom: 18,
     });
 
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
+
+    // Add a subtle circle to show the 5-block radius area
+    L.circle([37.75885, -122.40935], {
+      radius: 550, // approximately 5 blocks (110m per block)
+      color: '#8b5cf6',
+      fillColor: '#8b5cf6',
+      fillOpacity: 0.05,
+      weight: 2,
+      opacity: 0.3,
+      dashArray: '5, 10',
+    }).addTo(map);
+
+    // Add a marker at Bryant & 20th
+    const centerMarker = L.marker([37.75885, -122.40935], {
+      icon: L.divIcon({
+        className: 'custom-center-marker',
+        html: '<div style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      }),
+    }).addTo(map);
+
+    centerMarker.bindTooltip('Bryant & 20th', {
+      permanent: false,
+      direction: 'top',
+      offset: [0, -10],
+    });
 
     mapRef.current = map;
 
