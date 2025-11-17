@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Blockface, LegalityResult } from '@/types/parking';
@@ -14,19 +14,13 @@ interface MapViewProps {
 }
 
 export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
+  const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
-  const mapContainerRef = useCallback((node: HTMLDivElement | null) => {
-    if (node) {
-      console.log('🗺️ Map container ref set:', node);
-      setContainer(node);
-    }
-  }, []);
-
+  // Check token on mount
   useEffect(() => {
     console.log('🔑 Mapbox token check:', {
       hasToken: !!MAPBOX_TOKEN,
@@ -44,30 +38,28 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     }
   }, []);
 
+  // Initialize map
   useEffect(() => {
-    console.log('🚀 Map initialization effect:', {
-      hasContainer: !!container,
-      hasError: !!mapError,
-      hasExistingMap: !!map.current,
-    });
-
-    if (!container || mapError || map.current) {
+    if (!mapContainer.current) {
+      console.log('⏳ Waiting for container to be available...');
       return;
     }
 
-    console.log('🎯 Setting Mapbox access token and creating map...');
+    if (mapError || map.current) {
+      return;
+    }
+
+    console.log('🎯 Container is ready, initializing map...');
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
     try {
-      console.log('🏗️ Creating new Mapbox map instance...');
+      console.log('🏗️ Creating Mapbox map instance...');
       const newMap = new mapboxgl.Map({
-        container: container,
+        container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
         center: [-122.4078, 37.7527],
         zoom: 16,
       });
-
-      console.log('📡 Map instance created, waiting for load event...');
 
       newMap.on('load', () => {
         console.log('✅ Map loaded successfully!');
@@ -86,10 +78,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         console.log('🎨 Map style loaded');
       });
 
-      newMap.on('sourcedata', (e) => {
-        console.log('📊 Map source data:', e.sourceId, e.isSourceLoaded);
-      });
-
       newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
       newMap.addControl(
         new mapboxgl.GeolocateControl({
@@ -98,7 +86,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         }),
         'top-right'
       );
-
     } catch (error) {
       console.error('💥 Error creating map:', error);
       setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
@@ -112,68 +99,66 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         map.current = null;
       }
     };
-  }, [container, mapError]);
+  }, [mapError]);
 
+  // Update blockfaces on map
   useEffect(() => {
-    console.log('🔄 Blockfaces update effect:', {
-      hasMap: !!map.current,
-      mapLoaded,
-      blockfaceCount: blockfaces.length,
-    });
-
     if (!map.current || !mapLoaded) {
       return;
     }
 
     const source = map.current.getSource('blockfaces');
     const features = blockfaces.map((blockface) => {
-        const result = evaluateLegality(blockface, checkTime, durationMinutes);
-        return {
-            type: 'Feature' as const,
-            properties: {
-                id: blockface.id,
-                color: getStatusColor(result.status),
-            },
-            geometry: blockface.geometry,
-        };
+      const result = evaluateLegality(blockface, checkTime, durationMinutes);
+      return {
+        type: 'Feature' as const,
+        properties: {
+          id: blockface.id,
+          color: getStatusColor(result.status),
+        },
+        geometry: blockface.geometry,
+      };
     });
     const geojsonData = { type: 'FeatureCollection' as const, features };
 
-    console.log('📍 Adding/updating blockfaces:', features.length, 'features');
+    console.log('📍 Updating blockfaces:', features.length, 'features');
 
     if (source) {
-        console.log('🔄 Updating existing source');
-        (source as mapboxgl.GeoJSONSource).setData(geojsonData);
+      console.log('🔄 Updating existing source');
+      (source as mapboxgl.GeoJSONSource).setData(geojsonData);
     } else {
-        console.log('➕ Adding new source and layer');
-        map.current.addSource('blockfaces', {
-            type: 'geojson',
-            data: geojsonData,
-        });
+      console.log('➕ Adding new source and layer');
+      map.current.addSource('blockfaces', {
+        type: 'geojson',
+        data: geojsonData,
+      });
 
-        map.current.addLayer({
-            id: 'blockfaces',
-            type: 'line',
-            source: 'blockfaces',
-            paint: {
-                'line-color': ['get', 'color'],
-                'line-width': 8,
-                'line-opacity': 0.9,
-            },
-        });
+      map.current.addLayer({
+        id: 'blockfaces',
+        type: 'line',
+        source: 'blockfaces',
+        paint: {
+          'line-color': ['get', 'color'],
+          'line-width': 8,
+          'line-opacity': 0.9,
+        },
+      });
 
-        map.current.on('click', 'blockfaces', (e) => {
-            console.log('🖱️ Blockface clicked:', e.features?.[0]?.properties?.id);
-            if (!e.features?.length) return;
-            const blockfaceId = e.features[0].properties?.id;
-            const blockface = blockfaces.find((b) => b.id === blockfaceId);
-            if (blockface) {
-                onBlockfaceClick(blockface, evaluateLegality(blockface, checkTime, durationMinutes));
-            }
-        });
+      map.current.on('click', 'blockfaces', (e) => {
+        if (!e.features?.length) return;
+        const blockfaceId = e.features[0].properties?.id;
+        const blockface = blockfaces.find((b) => b.id === blockfaceId);
+        if (blockface) {
+          onBlockfaceClick(blockface, evaluateLegality(blockface, checkTime, durationMinutes));
+        }
+      });
 
-        map.current.on('mouseenter', 'blockfaces', () => map.current!.getCanvas().style.cursor = 'pointer');
-        map.current.on('mouseleave', 'blockfaces', () => map.current!.getCanvas().style.cursor = '');
+      map.current.on('mouseenter', 'blockfaces', () => {
+        map.current!.getCanvas().style.cursor = 'pointer';
+      });
+      map.current.on('mouseleave', 'blockfaces', () => {
+        map.current!.getCanvas().style.cursor = '';
+      });
     }
   }, [mapLoaded, checkTime, durationMinutes, blockfaces, onBlockfaceClick]);
 
@@ -212,19 +197,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   }
 
   return (
-    <div className="w-full h-full relative">
-      <div 
-        ref={mapContainerRef} 
-        className="absolute inset-0 w-full h-full bg-gray-200"
-      />
-      {!mapLoaded && (
-        <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-            <p className="text-xs text-gray-600">Rendering map...</p>
-          </div>
-        </div>
-      )}
-    </div>
+    <div className="w-full h-full bg-gray-200" ref={mapContainer} />
   );
 }
+</antml>
