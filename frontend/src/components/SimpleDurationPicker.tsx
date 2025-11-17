@@ -7,12 +7,9 @@ interface SimpleDurationPickerProps {
 }
 
 const QUICK_DURATIONS = [
-  { value: 15, label: '15 min', emoji: '⚡' },
-  { value: 30, label: '30 min', emoji: '🏃' },
   { value: 60, label: '1 hour', emoji: '☕' },
   { value: 120, label: '2 hours', emoji: '🍽️' },
   { value: 180, label: '3 hours', emoji: '🛍️' },
-  { value: 240, label: '4 hours', emoji: '🎨' },
 ];
 
 export function SimpleDurationPicker({ durationMinutes, onDurationChange }: SimpleDurationPickerProps) {
