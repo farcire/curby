@@ -1,7 +1,7 @@
 import { Blockface, LegalityResult } from '@/types/parking';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { AlertTriangle, CheckCircle, XCircle, HelpCircle, Flag, Sparkles, PartyPopper } from 'lucide-react';
+import { XCircle, HelpCircle, Flag, Sparkles, PartyPopper } from 'lucide-react';
 import { getStatusColor } from '@/utils/ruleEngine';
 
 interface BlockfaceDetailProps {
@@ -16,8 +16,6 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
     switch (legalityResult.status) {
       case 'legal':
         return <PartyPopper className="h-8 w-8 text-green-600" />;
-      case 'limited':
-        return <AlertTriangle className="h-8 w-8 text-amber-600" />;
       case 'illegal':
         return <XCircle className="h-8 w-8 text-red-600" />;
       case 'insufficient-data':
@@ -29,8 +27,6 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
     switch (legalityResult.status) {
       case 'legal':
         return '🎉';
-      case 'limited':
-        return '⚠️';
       case 'illegal':
         return '🚫';
       case 'insufficient-data':
@@ -42,12 +38,10 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
     switch (legalityResult.status) {
       case 'legal':
         return 'Perfect Spot!';
-      case 'limited':
-        return 'Possible (with conditions)';
       case 'illegal':
         return 'Keep Looking';
       case 'insufficient-data':
-        return 'Mystery Spot';
+        return 'No Data';
     }
   };
 
@@ -55,12 +49,10 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
     switch (legalityResult.status) {
       case 'legal':
         return "You found a winner! This spot is all yours. 🌟";
-      case 'limited':
-        return "This could work, but there are some rules to follow.";
       case 'illegal':
         return "Not this one! Let's find you something better.";
       case 'insufficient-data':
-        return "We're not 100% sure about this spot. Check the signs to be safe!";
+        return "We don't have data for this spot yet. Check the signs to be safe!";
     }
   };
 
@@ -149,7 +141,7 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
           <div className="space-y-3">
             <h4 className="font-semibold text-sm text-gray-900 flex items-center gap-2">
               <span>📋</span>
-              The Fine Print
+              The Details
             </h4>
             <div className="space-y-2">
               {legalityResult.applicableRules.map((rule) => (
