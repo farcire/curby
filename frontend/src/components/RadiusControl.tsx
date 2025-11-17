@@ -1,7 +1,6 @@
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Navigation2 } from 'lucide-react';
-import { format } from 'date-fns';
 
 interface RadiusControlProps {
   radiusBlocks: number;
@@ -37,7 +36,6 @@ export function RadiusControl({
   radiusBlocks,
   onRadiusChange,
   legalBlocksInRadius,
-  totalBlocksInRadius,
   nearestLegalDistance,
   nearestLegalStreet,
   selectedTime,
@@ -45,8 +43,6 @@ export function RadiusControl({
   onTimeChange,
   onDurationChange,
 }: RadiusControlProps) {
-  const walkMinutes = Math.round((radiusBlocks * 110) / 80); // ~80m/min walking speed
-
   const handleTimeSelect = (value: string) => {
     const now = new Date();
     switch (value) {
@@ -106,19 +102,13 @@ export function RadiusControl({
           <span>8</span>
         </div>
 
-        {/* Status Info */}
-        <div className="text-sm text-gray-400">
-          {legalBlocksInRadius > 0 ? (
-            <span>{legalBlocksInRadius} spots • ~{walkMinutes} min walk</span>
-          ) : nearestLegalStreet && nearestLegalDistance ? (
-            <div className="flex items-center gap-2 text-amber-400">
-              <Navigation2 className="h-4 w-4" />
-              <span>Nearest: {nearestLegalStreet} (~{Math.round(nearestLegalDistance)}m)</span>
-            </div>
-          ) : (
-            <span>Checking {totalBlocksInRadius} blocks...</span>
-          )}
-        </div>
+        {/* Status Info - Only show if no legal spots in radius */}
+        {legalBlocksInRadius === 0 && nearestLegalStreet && nearestLegalDistance && (
+          <div className="text-sm text-amber-400 flex items-center gap-2">
+            <Navigation2 className="h-4 w-4" />
+            <span>Nearest: {nearestLegalStreet} (~{Math.round(nearestLegalDistance)}m)</span>
+          </div>
+        )}
       </div>
 
       {/* Time and Duration Controls */}
