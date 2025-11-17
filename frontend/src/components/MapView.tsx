@@ -150,45 +150,6 @@ export function MapView({
     return [centerLat, centerLng];
   };
 
-  // Helper function to get street segment key
-  const getStreetSegmentKey = (blockface: Blockface): string => {
-    const coords = blockface.geometry.coordinates;
-    const avgLat = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
-    const avgLng = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
-    
-    const latKey = Math.round(avgLat * 1000);
-    const lngKey = Math.round(avgLng * 1000);
-    
-    return `${blockface.streetName}-${latKey}-${lngKey}`;
-  };
-
-  // Helper function to determine color based on opposite sides
-  const getBlockfaceColor = (
-    blockface: Blockface,
-    result: LegalityResult,
-    allBlockfacesWithResults: BlockfaceWithResult[]
-  ): string => {
-    const segmentKey = getStreetSegmentKey(blockface);
-    const sameSegment = allBlockfacesWithResults.filter(
-      bwr => getStreetSegmentKey(bwr.blockface) === segmentKey
-    );
-
-    if (sameSegment.length === 1) {
-      return getStatusColor(result.status);
-    }
-
-    const hasLegal = sameSegment.some(bwr => bwr.result.status === 'legal');
-    const hasIllegal = sameSegment.some(
-      bwr => bwr.result.status === 'illegal' || bwr.result.status === 'insufficient-data'
-    );
-
-    if (hasLegal && hasIllegal) {
-      return '#eab308'; // yellow-500
-    }
-
-    return getStatusColor(result.status);
-  };
-
   // Update blockfaces when data changes
   useEffect(() => {
     if (!mapRef.current) return;
@@ -216,7 +177,9 @@ export function MapView({
     // Add blockfaces as polylines
     blockfacesWithResults.forEach(({ blockface, result, distance }) => {
       const isInRadius = distance <= radiusMeters;
-      const color = getBlockfaceColor(blockface, result, blockfacesWithResults);
+      
+      // Each blockface shows only its own status color
+      const color = isInRadius ? getStatusColor(result.status) : '#d1d5db'; // gray-300 for out of radius
 
       // Convert coordinates to Leaflet format [lat, lng]
       const latlngs: [number, number][] = blockface.geometry.coordinates.map(
@@ -224,7 +187,7 @@ export function MapView({
       );
 
       const polyline = L.polyline(latlngs, {
-        color: isInRadius ? color : '#d1d5db', // gray-300 for out of radius
+        color: color,
         weight: 10,
         opacity: isInRadius ? 0.9 : 0.3,
       });
@@ -233,8 +196,6 @@ export function MapView({
       let statusEmoji = '';
       if (!isInRadius) {
         statusEmoji = '🚫 '; // Out of radius
-      } else if (color === '#eab308') {
-        statusEmoji = '⚠️ ';
       } else if (result.status === 'legal') {
         statusEmoji = '✅ ';
       } else if (result.status === 'illegal') {
