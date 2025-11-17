@@ -3,7 +3,6 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { evaluateLegality, getStatusColor } from '@/utils/ruleEngine';
-import { mockBlockfaces } from '@/data/mockBlockfaces';
 
 // Note: In production, use environment variable
 const MAPBOX_TOKEN = 'pk.eyJ1IjoiY3VyYnktZGVtbyIsImEiOiJjbTBkZW1vMTIzNDU2In0.demo_token_replace_in_production';
@@ -12,9 +11,10 @@ interface MapViewProps {
   checkTime: Date;
   durationMinutes: number;
   onBlockfaceClick: (blockface: Blockface, result: LegalityResult) => void;
+  blockfaces: Blockface[];
 }
 
-export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapViewProps) {
+export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfaces }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -57,7 +57,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
     };
   }, []);
 
-  // Update blockfaces when time/duration changes
+  // Update blockfaces when time/duration changes or blockfaces data changes
   useEffect(() => {
     if (!map.current || !mapLoaded) return;
 
@@ -70,7 +70,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
     }
 
     // Evaluate legality for all blockfaces
-    const features = mockBlockfaces.map((blockface) => {
+    const features = blockfaces.map((blockface) => {
       const result = evaluateLegality(blockface, checkTime, durationMinutes);
       
       return {
@@ -112,7 +112,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
 
       const feature = e.features[0];
       const blockfaceId = feature.properties?.id;
-      const blockface = mockBlockfaces.find((b) => b.id === blockfaceId);
+      const blockface = blockfaces.find((b) => b.id === blockfaceId);
 
       if (blockface) {
         const result = evaluateLegality(blockface, checkTime, durationMinutes);
@@ -132,7 +132,7 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
         map.current.getCanvas().style.cursor = '';
       }
     });
-  }, [mapLoaded, checkTime, durationMinutes, onBlockfaceClick]);
+  }, [mapLoaded, checkTime, durationMinutes, onBlockfaceClick, blockfaces]);
 
   return (
     <div className="relative w-full h-full">

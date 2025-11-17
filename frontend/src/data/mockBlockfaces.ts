@@ -68,7 +68,7 @@ const createRPPRule = (zone: string): ParkingRule => ({
   },
 });
 
-// Mock blockfaces for Mission + SOMA
+// Mock blockfaces for Mission + SOMA (FALLBACK DATA)
 export const mockBlockfaces: Blockface[] = [
   // ===== BRYANT & 24TH AREA (DEMO SCENARIO) =====
   

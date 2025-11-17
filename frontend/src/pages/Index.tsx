@@ -5,7 +5,11 @@ import { BlockfaceDetail } from '@/components/BlockfaceDetail';
 import { ErrorReportDialog } from '@/components/ErrorReportDialog';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { Card } from '@/components/ui/card';
-import { Info } from 'lucide-react';
+import { Info, AlertCircle, RefreshCw } from 'lucide-react';
+import { fetchSFMTABlockfaces, clearSFMTACache } from '@/utils/sfmtaDataFetcher';
+import { mockBlockfaces } from '@/data/mockBlockfaces';
+import { Button } from '@/components/ui/button';
+import { showSuccess, showError } from '@/utils/toast';
 
 const Index = () => {
   // Demo scenario: Monday at 12:00 PM, need 60 minutes of parking
@@ -27,6 +31,44 @@ const Index = () => {
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [showDemoHint, setShowDemoHint] = useState(true);
+  const [blockfaces, setBlockfaces] = useState<Blockface[]>(mockBlockfaces);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
+
+  // Load SFMTA data on mount
+  useEffect(() => {
+    loadSFMTAData();
+  }, []);
+
+  const loadSFMTAData = async () => {
+    setIsLoadingData(true);
+    try {
+      const sfmtaData = await fetchSFMTABlockfaces();
+      
+      if (sfmtaData.length > 0) {
+        setBlockfaces(sfmtaData);
+        setDataSource('sfmta');
+        showSuccess(`Loaded ${sfmtaData.length} blockfaces from SFMTA data`);
+      } else {
+        // Fallback to mock data
+        setBlockfaces(mockBlockfaces);
+        setDataSource('mock');
+        showError('Using demo data - SFMTA data unavailable');
+      }
+    } catch (error) {
+      console.error('Error loading SFMTA data:', error);
+      setBlockfaces(mockBlockfaces);
+      setDataSource('mock');
+      showError('Using demo data - SFMTA data unavailable');
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  const handleRefreshData = async () => {
+    clearSFMTACache();
+    await loadSFMTAData();
+  };
 
   const handleBlockfaceClick = (blockface: Blockface, result: LegalityResult) => {
     setSelectedBlockface(blockface);
@@ -54,7 +96,9 @@ const Index = () => {
           </div>
           <div className="text-xs text-blue-100 text-right">
             <div>Mission + SOMA</div>
-            <div className="font-semibold">MVP Prototype</div>
+            <div className="font-semibold">
+              {dataSource === 'sfmta' ? 'SFMTA Data' : 'Demo Data'}
+            </div>
           </div>
         </div>
       </header>
@@ -67,6 +111,29 @@ const Index = () => {
         onDurationChange={setDurationMinutes}
       />
 
+      {/* Data Source Banner */}
+      {dataSource === 'mock' && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-2">
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-start gap-2 text-amber-900">
+              <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <p>
+                Using demo data. Real SFMTA data unavailable.
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleRefreshData}
+              className="text-amber-900 hover:text-amber-950"
+            >
+              <RefreshCw className="h-3 w-3 mr-1" />
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Demo Scenario Banner */}
       <div className="bg-green-50 border-b border-green-200 px-4 py-2">
         <div className="flex items-start gap-2 text-xs text-green-900">
@@ -78,12 +145,23 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Loading Overlay */}
+      {isLoadingData && (
+        <div className="absolute inset-0 bg-white/80 z-50 flex items-center justify-center">
+          <div className="text-center">
+            <RefreshCw className="h-8 w-8 animate-spin text-blue-600 mx-auto mb-2" />
+            <p className="text-sm text-gray-600">Loading SFMTA parking data...</p>
+          </div>
+        </div>
+      )}
+
       {/* Map */}
       <div className="flex-1 relative">
         <MapView
           checkTime={selectedTime}
           durationMinutes={durationMinutes}
           onBlockfaceClick={handleBlockfaceClick}
+          blockfaces={blockfaces}
         />
       </div>
 
@@ -105,7 +183,7 @@ const Index = () => {
       />
 
       {/* Demo Instructions Card */}
-      {showDemoHint && !selectedBlockface && (
+      {showDemoHint && !selectedBlockface && !isLoadingData && (
         <div className="absolute bottom-4 right-4 max-w-sm">
           <Card className="p-4 bg-white shadow-xl border-2 border-blue-500">
             <h3 className="font-semibold text-sm text-gray-900 mb-2 flex items-center gap-2">
@@ -119,7 +197,7 @@ const Index = () => {
                 <li>🔴 Red = Illegal (sweeping/tow-away)</li>
               </ul>
               <p className="pt-2 border-t border-gray-200">
-                <strong>Try this:</strong> Tap the red Bryant St segment (south of you) to see why it's illegal right now!
+                <strong>Try this:</strong> Tap any colored street segment to see parking rules and legality details!
               </p>
             </div>
           </Card>
