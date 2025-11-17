@@ -200,4 +200,3 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
     <div className="w-full h-full bg-gray-200" ref={mapContainer} />
   );
 }
-</antml>
