@@ -40,7 +40,7 @@ const Index = () => {
       if (sfmtaData.length > 0) {
         setBlockfaces(sfmtaData);
         setDataSource('sfmta');
-        showSuccess(`🎉 Found ${sfmtaData.length} parking spots!`);
+        showSuccess(`Found ${sfmtaData.length} parking spots!`);
       } else {
         setBlockfaces(mockBlockfaces);
         setDataSource('mock');
@@ -179,7 +179,7 @@ const Index = () => {
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-4 py-2 flex-shrink-0">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs text-amber-900">
-              <span className="text-lg">🎪</span>
+              <Logo size="sm" />
               <span>Demo mode - 3 blocks around 20th & Bryant</span>
             </div>
             <Button
@@ -200,10 +200,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="text-center">
             <div className="relative mb-4">
-              <Logo size="lg" />
-              <div className="absolute inset-0 animate-ping opacity-20">
-                <Logo size="lg" />
-              </div>
+              <Logo size="lg" animated={true} />
             </div>
             <p className="text-lg font-semibold text-gray-900 mb-2">Finding spots...</p>
             <p className="text-sm text-gray-600">✨ Just a sec ✨</p>
@@ -212,7 +209,7 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden pb-48">
+      <div className="flex-1 relative overflow-hidden pb-20">
         {viewMode === 'navigator' ? (
           <ParkingNavigator
             blockfaces={blockfaces}
