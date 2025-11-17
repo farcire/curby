@@ -20,7 +20,7 @@ const Index = () => {
   const [blockfaces, setBlockfaces] = useState<Blockface[]>(mockBlockfaces);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
-  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map'); // Changed to 'map' for demo
+  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
 
   useEffect(() => {
     loadSFMTAData();
@@ -157,22 +157,22 @@ const Index = () => {
       )}
 
       {/* Main Content - Navigator or Map */}
-      {viewMode === 'navigator' ? (
-        <ParkingNavigator
-          blockfaces={blockfaces}
-          durationMinutes={durationMinutes}
-          onShowMap={() => setViewMode('map')}
-        />
-      ) : (
-        <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden">
+        {viewMode === 'navigator' ? (
+          <ParkingNavigator
+            blockfaces={blockfaces}
+            durationMinutes={durationMinutes}
+            onShowMap={() => setViewMode('map')}
+          />
+        ) : (
           <MapView
             checkTime={new Date()}
             durationMinutes={durationMinutes}
             onBlockfaceClick={handleBlockfaceClick}
             blockfaces={blockfaces}
           />
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Blockface Detail Panel */}
       {selectedBlockface && legalityResult && (
