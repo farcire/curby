@@ -19,6 +19,7 @@ const CENTER_POINT: [number, number] = [37.75885, -122.40935]; // Bryant & 20th
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(60);
   const [radiusBlocks, setRadiusBlocks] = useState(3);
+  const [selectedTime, setSelectedTime] = useState(new Date());
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
@@ -100,12 +101,11 @@ const Index = () => {
 
   // Calculate radius stats
   const radiusMeters = radiusBlocks * 110;
-  const checkTime = new Date();
   
   const blockfacesWithDistance = blockfaces.map(blockface => {
     const [centerLat, centerLng] = getBlockfaceCenter(blockface);
     const distance = calculateDistance(CENTER_POINT[0], CENTER_POINT[1], centerLat, centerLng);
-    const result = evaluateLegality(blockface, checkTime, durationMinutes);
+    const result = evaluateLegality(blockface, selectedTime, durationMinutes);
     
     return {
       blockface,
@@ -212,7 +212,7 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden pb-32">
+      <div className="flex-1 relative overflow-hidden pb-48">
         {viewMode === 'navigator' ? (
           <ParkingNavigator
             blockfaces={blockfaces}
@@ -221,7 +221,7 @@ const Index = () => {
           />
         ) : (
           <MapView
-            checkTime={checkTime}
+            checkTime={selectedTime}
             durationMinutes={durationMinutes}
             onBlockfaceClick={handleBlockfaceClick}
             blockfaces={blockfaces}
@@ -231,8 +231,8 @@ const Index = () => {
         )}
       </div>
 
-      {/* Radius Control */}
-      {viewMode === 'map' && (
+      {/* Radius Control - Only show when detail panel is NOT open */}
+      {viewMode === 'map' && !selectedBlockface && (
         <RadiusControl
           radiusBlocks={radiusBlocks}
           onRadiusChange={setRadiusBlocks}
@@ -240,6 +240,10 @@ const Index = () => {
           totalBlocksInRadius={blocksInRadius.length}
           nearestLegalDistance={nearestLegal?.distance}
           nearestLegalStreet={nearestLegal?.blockface.streetName}
+          selectedTime={selectedTime}
+          durationMinutes={durationMinutes}
+          onTimeChange={setSelectedTime}
+          onDurationChange={setDurationMinutes}
         />
       )}
 
