@@ -179,12 +179,12 @@ function generateLegalityResult(
 export function getStatusColor(status: LegalityStatus): string {
   switch (status) {
     case 'legal':
-      return '#10b981'; // green
+      return '#10b981'; // green-500
     case 'illegal':
-      return '#ef4444'; // red
+      return '#ef4444'; // red-500
     case 'insufficient-data':
-      return '#9ca3af'; // gray
+      return '#374151'; // gray-700 (dark gray)
     default:
-      return '#9ca3af';
+      return '#374151'; // gray-700 (dark gray)
   }
 }
