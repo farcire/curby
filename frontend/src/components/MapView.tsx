@@ -19,7 +19,6 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
   const [mapLoaded, setMapLoaded] = useState(false);
   const [mapError, setMapError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(true);
-  const [containerReady, setContainerReady] = useState(false);
 
   // Callback ref to ensure container is mounted
   const setMapContainer = useCallback((node: HTMLDivElement | null) => {
@@ -29,24 +28,12 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
         height: node.offsetHeight,
       });
       mapContainer.current = node;
-      setContainerReady(true);
     }
   }, []);
 
-  // Initialize map only after container is ready
+  // Initialize map
   useEffect(() => {
-    if (!containerReady) {
-      console.log('⏳ Waiting for container to be ready...');
-      return;
-    }
-
     console.log('🎬 MapView useEffect triggered');
-    console.log('🔑 Mapbox token check:', {
-      hasToken: !!MAPBOX_TOKEN,
-      tokenLength: MAPBOX_TOKEN.length,
-      tokenStart: MAPBOX_TOKEN.substring(0, 10),
-      isValidFormat: MAPBOX_TOKEN.startsWith('pk.'),
-    });
 
     if (!MAPBOX_TOKEN) {
       console.error('❌ No Mapbox token');
@@ -62,58 +49,77 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick, blockfac
       return;
     }
 
-    if (!mapContainer.current) {
-      console.error('❌ Map container not available');
-      return;
-    }
-
     if (map.current) {
       console.log('⚠️ Map already exists, skipping initialization');
       return;
     }
 
-    console.log('🏗️ Starting map initialization...');
+    // Wait for container to be ready with dimensions
+    const initMap = () => {
+      if (!mapContainer.current) {
+        console.error('❌ Map container not available');
+        return;
+      }
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+      const containerWidth = mapContainer.current.offsetWidth;
+      const containerHeight = mapContainer.current.offsetHeight;
 
-    try {
-      console.log('🎯 Creating Mapbox map instance...');
-      const newMap = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-122.4078, 37.7527],
-        zoom: 16,
-      });
+      console.log('📏 Container dimensions:', { width: containerWidth, height: containerHeight });
 
-      console.log('✅ Map instance created, waiting for load event...');
+      if (containerWidth === 0 || containerHeight === 0) {
+        console.warn('⚠️ Container has no dimensions, retrying...');
+        setTimeout(initMap, 100);
+        return;
+      }
 
-      newMap.on('load', () => {
-        console.log('🎉 Map loaded successfully!');
-        map.current = newMap;
-        setMapLoaded(true);
+      console.log('🏗️ Starting map initialization...');
+
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      try {
+        console.log('🎯 Creating Mapbox map instance...');
+        const newMap = new mapboxgl.Map({
+          container: mapContainer.current,
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: [-122.4078, 37.7527],
+          zoom: 16,
+        });
+
+        console.log('✅ Map instance created, waiting for load event...');
+
+        newMap.on('load', () => {
+          console.log('🎉 Map loaded successfully!');
+          map.current = newMap;
+          setMapLoaded(true);
+          setIsInitializing(false);
+        });
+
+        newMap.on('error', (e) => {
+          console.error('❌ Map error:', e);
+          setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
+          setIsInitializing(false);
+        });
+
+        newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        newMap.addControl(
+          new mapboxgl.GeolocateControl({
+            positionOptions: { enableHighAccuracy: true },
+            trackUserLocation: true,
+          }),
+          'top-right'
+        );
+      } catch (error) {
+        console.error('💥 Error creating map:', error);
+        setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
         setIsInitializing(false);
-      });
+      }
+    };
 
-      newMap.on('error', (e) => {
-        console.error('❌ Map error:', e);
-        setMapError(e.error?.message || 'An unknown error occurred while loading the map.');
-        setIsInitializing(false);
-      });
+    // Start initialization after a short delay
+    const timer = setTimeout(initMap, 100);
 
-      newMap.addControl(new mapboxgl.NavigationControl(), 'top-right');
-      newMap.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: { enableHighAccuracy: true },
-          trackUserLocation: true,
-        }),
-        'top-right'
-      );
-    } catch (error) {
-      console.error('💥 Error creating map:', error);
-      setMapError(error instanceof Error ? error.message : 'An unexpected error occurred.');
-      setIsInitializing(false);
-    }
-  }, [containerReady]);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {
