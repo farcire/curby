@@ -96,9 +96,9 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
   const status = getStatusConfig();
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] overflow-y-auto animate-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed inset-x-0 bottom-0 z-50 max-h-[50vh] overflow-y-auto animate-in slide-in-from-bottom-4 duration-300 shadow-2xl">
       {/* Status Header */}
-      <div className={`bg-gradient-to-r ${status.gradient} text-white p-6 shadow-2xl relative overflow-hidden`}>
+      <div className={`bg-gradient-to-r ${status.gradient} text-white p-4 shadow-2xl relative overflow-hidden`}>
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
@@ -106,17 +106,17 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
 
         <button 
           onClick={onClose}
-          className="absolute top-4 right-4 text-white/80 hover:text-white bg-white/20 hover:bg-white/30 rounded-full p-2 transition-all"
+          className="absolute top-3 right-3 text-white/80 hover:text-white bg-white/20 hover:bg-white/30 rounded-full p-1.5 transition-all"
         >
-          <X className="h-5 w-5" />
+          <X className="h-4 w-4" />
         </button>
 
-        <div className="relative space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl">{status.emoji}</span>
+        <div className="relative space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="text-3xl">{status.emoji}</span>
             <div>
-              <h2 className="text-2xl font-bold">{status.text}</h2>
-              <p className="text-sm text-white/90 capitalize">
+              <h2 className="text-xl font-bold">{status.text}</h2>
+              <p className="text-xs text-white/90 capitalize">
                 📍 {blockface.streetName} ({blockface.side} side)
               </p>
             </div>
@@ -125,12 +125,12 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
       </div>
 
       {/* Content */}
-      <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-6 space-y-4">
+      <div className="bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-4 space-y-3">
         {/* Explanation Card */}
-        <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-purple-200">
-          <div className="flex items-start gap-3">
-            <span className="text-2xl flex-shrink-0">💬</span>
-            <p className="text-gray-900 font-medium leading-relaxed">
+        <div className="bg-white rounded-xl p-3 shadow-lg border-2 border-purple-200">
+          <div className="flex items-start gap-2">
+            <span className="text-xl flex-shrink-0">💬</span>
+            <p className="text-sm text-gray-900 font-medium leading-relaxed">
               {legalityResult.explanation}
             </p>
           </div>
@@ -138,20 +138,20 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
 
         {/* Next Restriction - Only show for legal spots */}
         {legalityResult.status === 'legal' && nextRestriction && (
-          <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-2xl p-4 shadow-lg border-2 border-amber-300">
-            <div className="flex items-start gap-3 mb-3">
-              <AlertTriangle className="h-6 w-6 text-amber-700 flex-shrink-0 mt-1" />
+          <div className="bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl p-3 shadow-lg border-2 border-amber-300">
+            <div className="flex items-start gap-2 mb-2">
+              <AlertTriangle className="h-5 w-5 text-amber-700 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-amber-900 mb-1">⏰ Next Restriction</h3>
-                <p className="text-sm text-amber-800">
+                <h3 className="text-sm font-bold text-amber-900 mb-1">⏰ Next Restriction</h3>
+                <p className="text-xs text-amber-800">
                   <strong>{getDayName(nextRestriction.date)}</strong> at{' '}
                   <strong>{format(nextRestriction.date, 'h:mm a')}</strong>
                   {' '}({formatTimeUntil(nextRestriction.date)})
                 </p>
               </div>
             </div>
-            <div className="bg-white/60 rounded-xl p-3 border border-amber-200">
-              <p className="text-sm text-amber-900 font-medium">
+            <div className="bg-white/60 rounded-lg p-2 border border-amber-200">
+              <p className="text-xs text-amber-900 font-medium">
                 🧹 {nextRestriction.rule.description}
               </p>
             </div>
@@ -160,14 +160,14 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
 
         {/* Rules Section */}
         {legalityResult.applicableRules.length > 0 && (
-          <div className="bg-white rounded-2xl p-4 shadow-lg border-2 border-purple-200">
-            <h3 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-              <span className="text-lg">📋</span>
+          <div className="bg-white rounded-xl p-3 shadow-lg border-2 border-purple-200">
+            <h3 className="text-xs font-bold text-gray-900 mb-2 flex items-center gap-2">
+              <span className="text-base">📋</span>
               Parking Rules
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1.5">
               {legalityResult.applicableRules.map((rule) => (
-                <li key={rule.id} className="flex items-start gap-2 text-sm text-gray-700">
+                <li key={rule.id} className="flex items-start gap-2 text-xs text-gray-700">
                   <span className="text-purple-600 font-bold">•</span>
                   <span>{rule.description}</span>
                 </li>
@@ -178,9 +178,9 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
 
         {/* Warnings */}
         {legalityResult.warnings && legalityResult.warnings.length > 0 && (
-          <div className="bg-blue-50 rounded-2xl p-4 border-2 border-blue-200">
+          <div className="bg-blue-50 rounded-xl p-3 border-2 border-blue-200">
             <div className="flex items-start gap-2">
-              <span className="text-lg">💡</span>
+              <span className="text-base">💡</span>
               <div className="space-y-1 text-xs text-blue-900">
                 {legalityResult.warnings.map((warning, idx) => (
                   <p key={idx}>{warning}</p>
@@ -191,7 +191,7 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2 text-xs text-gray-500">
             <Clock className="h-3 w-3" />
             <span>Updated {format(new Date(), 'MMM d, yyyy')}</span>
@@ -201,7 +201,7 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
             onClick={onReportError}
             variant="ghost"
             size="sm"
-            className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-full"
+            className="text-xs text-purple-600 hover:text-purple-700 hover:bg-purple-50 rounded-full h-7 px-3"
           >
             🐛 Report Issue
           </Button>
