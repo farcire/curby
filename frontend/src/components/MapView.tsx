@@ -28,8 +28,8 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [-122.4194, 37.7649], // Mission District center
-      zoom: 14,
+      center: [-122.4078, 37.7527], // Bryant & 24th intersection
+      zoom: 16, // Closer zoom for demo
       pitch: 0,
     });
 
@@ -101,8 +101,8 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
       source: 'blockfaces',
       paint: {
         'line-color': ['get', 'color'],
-        'line-width': 6,
-        'line-opacity': 0.8,
+        'line-width': 8, // Thicker for demo visibility
+        'line-opacity': 0.9,
       },
     });
 
@@ -159,9 +159,9 @@ export function MapView({ checkTime, durationMinutes, onBlockfaceClick }: MapVie
         </div>
       </div>
 
-      {/* Coverage Notice */}
-      <div className="absolute top-4 left-4 bg-blue-600 text-white rounded-lg shadow-lg px-3 py-2 text-xs max-w-[200px]">
-        📍 MVP Coverage: Mission + SOMA only
+      {/* Demo Location Badge */}
+      <div className="absolute top-4 left-4 bg-blue-600 text-white rounded-lg shadow-lg px-3 py-2 text-xs">
+        📍 Bryant & 24th St
       </div>
     </div>
   );
