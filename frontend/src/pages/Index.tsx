@@ -85,7 +85,7 @@ const Index = () => {
                 Curby
                 <Sparkles className="h-5 w-5 animate-pulse" />
               </h1>
-              <p className="text-sm text-white/90">Your parking copilot ✨</p>
+              <p className="text-sm text-white/90">your street parking sidekick.</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
