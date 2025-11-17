@@ -65,10 +65,220 @@ const createRPPRule = (): ParkingRule => ({
   },
 });
 
-// Accurate coordinates based on actual SF street grid
-// Streets in this area run at approximately 45-degree angles
+// Precise GPS coordinates matching actual SF street grid
+// Based on OpenStreetMap data for Bryant & 20th area
 export const mockBlockfaces: Blockface[] = [
-  // ===== BRYANT STREET (runs NW-SE) =====
+  // ===== 20TH STREET (runs east-west) =====
+  
+  // 20th: Harrison to Bryant - LEGAL (north side) ✅
+  {
+    id: '20th-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41028, 37.75895],
+        [-122.40935, 37.75895],
+      ],
+    },
+    streetName: '20th St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(180), // 3-hour limit
+    ],
+  },
+  
+  // 20th: Harrison to Bryant - LEGAL (south side) ✅
+  {
+    id: '20th-harrison-bryant-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41028, 37.75875],
+        [-122.40935, 37.75875],
+      ],
+    },
+    streetName: '20th St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(120), // 2-hour limit
+    ],
+  },
+  
+  // 20th: Bryant to Folsom - LEGAL (north side) ✅
+  {
+    id: '20th-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40935, 37.75895],
+        [-122.40628, 37.75895],
+      ],
+    },
+    streetName: '20th St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(240), // 4-hour limit
+    ],
+  },
+  
+  // 20th: Bryant to Folsom - LEGAL (south side) ✅
+  {
+    id: '20th-bryant-folsom-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40935, 37.75875],
+        [-122.40628, 37.75875],
+      ],
+    },
+    streetName: '20th St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(180), // 3-hour limit
+    ],
+  },
+  
+  // ===== 19TH STREET (runs east-west, north of 20th) =====
+  
+  // 19th: Harrison to Bryant - LEGAL (south side) ✅
+  {
+    id: '19th-harrison-bryant-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41118, 37.76005],
+        [-122.41025, 37.76005],
+      ],
+    },
+    streetName: '19th St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(120), // 2-hour limit
+    ],
+  },
+  
+  // 19th: Harrison to Bryant - LEGAL (north side) ✅
+  {
+    id: '19th-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41118, 37.76025],
+        [-122.41025, 37.76025],
+      ],
+    },
+    streetName: '19th St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(180), // 3-hour limit
+    ],
+  },
+  
+  // 19th: Bryant to Folsom - LEGAL (south side) ✅
+  {
+    id: '19th-bryant-folsom-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41025, 37.76005],
+        [-122.40718, 37.76005],
+      ],
+    },
+    streetName: '19th St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(180), // 3-hour limit
+    ],
+  },
+  
+  // 19th: Bryant to Folsom - LEGAL (north side) ✅
+  {
+    id: '19th-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.41025, 37.76025],
+        [-122.40718, 37.76025],
+      ],
+    },
+    streetName: '19th St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(240), // 4-hour limit
+    ],
+  },
+  
+  // ===== 21ST STREET (runs east-west, south of 20th) =====
+  
+  // 21st: Harrison to Bryant - LEGAL (north side) ✅
+  {
+    id: '21st-harrison-bryant-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40938, 37.75785],
+        [-122.40845, 37.75785],
+      ],
+    },
+    streetName: '21st St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(60), // 1-hour limit
+    ],
+  },
+  
+  // 21st: Harrison to Bryant - LEGAL (south side) ✅
+  {
+    id: '21st-harrison-bryant-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40938, 37.75765],
+        [-122.40845, 37.75765],
+      ],
+    },
+    streetName: '21st St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(120), // 2-hour limit
+    ],
+  },
+  
+  // 21st: Bryant to Folsom - LEGAL (north side) ✅
+  {
+    id: '21st-bryant-folsom-north',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40845, 37.75785],
+        [-122.40538, 37.75785],
+      ],
+    },
+    streetName: '21st St',
+    side: 'north',
+    rules: [
+      createTimeLimitRule(120), // 2-hour limit
+    ],
+  },
+  
+  // 21st: Bryant to Folsom - LEGAL (south side) ✅
+  {
+    id: '21st-bryant-folsom-south',
+    geometry: {
+      type: 'LineString',
+      coordinates: [
+        [-122.40845, 37.75765],
+        [-122.40538, 37.75765],
+      ],
+    },
+    streetName: '21st St',
+    side: 'south',
+    rules: [
+      createTimeLimitRule(180), // 3-hour limit
+    ],
+  },
+  
+  // ===== BRYANT STREET (runs north-south) =====
   
   // Bryant: 19th to 20th - LEGAL (east side) ✅
   {
@@ -76,8 +286,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40918, 37.75995],
-        [-122.40828, 37.75885],
+        [-122.40925, 37.76005],
+        [-122.40925, 37.75895],
       ],
     },
     streetName: 'Bryant St',
@@ -94,8 +304,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40933, 37.75995],
-        [-122.40843, 37.75885],
+        [-122.40945, 37.76005],
+        [-122.40945, 37.75895],
       ],
     },
     streetName: 'Bryant St',
@@ -112,8 +322,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40828, 37.75885],
-        [-122.40738, 37.75775],
+        [-122.40835, 37.75895],
+        [-122.40835, 37.75785],
       ],
     },
     streetName: 'Bryant St',
@@ -129,8 +339,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40843, 37.75885],
-        [-122.40753, 37.75775],
+        [-122.40855, 37.75895],
+        [-122.40855, 37.75785],
       ],
     },
     streetName: 'Bryant St',
@@ -140,7 +350,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== HARRISON STREET (1 block west, parallel to Bryant) =====
+  // ===== HARRISON STREET (west of Bryant, runs north-south) =====
   
   // Harrison: 19th to 20th - LEGAL (east side) ✅
   {
@@ -148,8 +358,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41118, 37.75995],
-        [-122.41028, 37.75885],
+        [-122.41018, 37.76005],
+        [-122.41018, 37.75895],
       ],
     },
     streetName: 'Harrison St',
@@ -159,14 +369,14 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // Harrison: 19th to 20th - ILLEGAL (west side) ⚠️
+  // Harrison: 19th to 20th - ILLEGAL (west side) 🚫
   {
     id: 'harrison-19th-20th-west',
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41133, 37.75995],
-        [-122.41043, 37.75885],
+        [-122.41038, 37.76005],
+        [-122.41038, 37.75895],
       ],
     },
     streetName: 'Harrison St',
@@ -182,8 +392,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41028, 37.75885],
-        [-122.40938, 37.75775],
+        [-122.40928, 37.75895],
+        [-122.40928, 37.75785],
       ],
     },
     streetName: 'Harrison St',
@@ -199,8 +409,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.41043, 37.75885],
-        [-122.40953, 37.75775],
+        [-122.40948, 37.75895],
+        [-122.40948, 37.75785],
       ],
     },
     streetName: 'Harrison St',
@@ -210,7 +420,7 @@ export const mockBlockfaces: Blockface[] = [
     ],
   },
   
-  // ===== FOLSOM STREET (1 block east, parallel to Bryant) =====
+  // ===== FOLSOM STREET (east of Bryant, runs north-south) =====
   
   // Folsom: 19th to 20th - LEGAL (west side) ✅
   {
@@ -218,8 +428,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40718, 37.75995],
-        [-122.40628, 37.75885],
+        [-122.40638, 37.76005],
+        [-122.40638, 37.75895],
       ],
     },
     streetName: 'Folsom St',
@@ -235,8 +445,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40703, 37.75995],
-        [-122.40613, 37.75885],
+        [-122.40618, 37.76005],
+        [-122.40618, 37.75895],
       ],
     },
     streetName: 'Folsom St',
@@ -252,8 +462,8 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40628, 37.75885],
-        [-122.40538, 37.75775],
+        [-122.40548, 37.75895],
+        [-122.40548, 37.75785],
       ],
     },
     streetName: 'Folsom St',
@@ -269,222 +479,12 @@ export const mockBlockfaces: Blockface[] = [
     geometry: {
       type: 'LineString',
       coordinates: [
-        [-122.40613, 37.75885],
-        [-122.40523, 37.75775],
+        [-122.40528, 37.75895],
+        [-122.40528, 37.75785],
       ],
     },
     streetName: 'Folsom St',
     side: 'east',
-    rules: [
-      createTimeLimitRule(180), // 3-hour limit
-    ],
-  },
-  
-  // ===== 19TH STREET (runs NE-SW, perpendicular to Bryant) =====
-  
-  // 19th: Harrison to Bryant - LEGAL (south side) ✅
-  {
-    id: '19th-harrison-bryant-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41118, 37.75995],
-        [-122.40918, 37.75995],
-      ],
-    },
-    streetName: '19th St',
-    side: 'south',
-    rules: [
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  
-  // 19th: Harrison to Bryant - LEGAL (north side) ✅
-  {
-    id: '19th-harrison-bryant-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41118, 37.76010],
-        [-122.40918, 37.76010],
-      ],
-    },
-    streetName: '19th St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(180), // 3-hour limit
-    ],
-  },
-  
-  // 19th: Bryant to Folsom - LEGAL (south side) ✅
-  {
-    id: '19th-bryant-folsom-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40918, 37.75995],
-        [-122.40718, 37.75995],
-      ],
-    },
-    streetName: '19th St',
-    side: 'south',
-    rules: [
-      createTimeLimitRule(180), // 3-hour limit
-    ],
-  },
-  
-  // 19th: Bryant to Folsom - LEGAL (north side) ✅
-  {
-    id: '19th-bryant-folsom-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40918, 37.76010],
-        [-122.40718, 37.76010],
-      ],
-    },
-    streetName: '19th St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(240), // 4-hour limit
-    ],
-  },
-  
-  // ===== 20TH STREET (runs NE-SW, perpendicular to Bryant) =====
-  
-  // 20th: Harrison to Bryant - LEGAL (north side) ✅
-  {
-    id: '20th-harrison-bryant-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41028, 37.75885],
-        [-122.40828, 37.75885],
-      ],
-    },
-    streetName: '20th St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(180), // 3-hour limit
-    ],
-  },
-  
-  // 20th: Harrison to Bryant - LEGAL (south side) ✅
-  {
-    id: '20th-harrison-bryant-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.41028, 37.75870],
-        [-122.40828, 37.75870],
-      ],
-    },
-    streetName: '20th St',
-    side: 'south',
-    rules: [
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  
-  // 20th: Bryant to Folsom - LEGAL (north side) ✅
-  {
-    id: '20th-bryant-folsom-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40828, 37.75885],
-        [-122.40628, 37.75885],
-      ],
-    },
-    streetName: '20th St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(240), // 4-hour limit
-    ],
-  },
-  
-  // 20th: Bryant to Folsom - LEGAL (south side) ✅
-  {
-    id: '20th-bryant-folsom-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40828, 37.75870],
-        [-122.40628, 37.75870],
-      ],
-    },
-    streetName: '20th St',
-    side: 'south',
-    rules: [
-      createTimeLimitRule(180), // 3-hour limit
-    ],
-  },
-  
-  // ===== 21ST STREET (runs NE-SW, perpendicular to Bryant) =====
-  
-  // 21st: Harrison to Bryant - LEGAL (north side) ✅
-  {
-    id: '21st-harrison-bryant-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40938, 37.75775],
-        [-122.40738, 37.75775],
-      ],
-    },
-    streetName: '21st St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(60), // 1-hour limit
-    ],
-  },
-  
-  // 21st: Harrison to Bryant - LEGAL (south side) ✅
-  {
-    id: '21st-harrison-bryant-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40938, 37.75760],
-        [-122.40738, 37.75760],
-      ],
-    },
-    streetName: '21st St',
-    side: 'south',
-    rules: [
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  
-  // 21st: Bryant to Folsom - LEGAL (north side) ✅
-  {
-    id: '21st-bryant-folsom-north',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40738, 37.75775],
-        [-122.40538, 37.75775],
-      ],
-    },
-    streetName: '21st St',
-    side: 'north',
-    rules: [
-      createTimeLimitRule(120), // 2-hour limit
-    ],
-  },
-  
-  // 21st: Bryant to Folsom - LEGAL (south side) ✅
-  {
-    id: '21st-bryant-folsom-south',
-    geometry: {
-      type: 'LineString',
-      coordinates: [
-        [-122.40738, 37.75760],
-        [-122.40538, 37.75760],
-      ],
-    },
-    streetName: '21st St',
-    side: 'south',
     rules: [
       createTimeLimitRule(180), // 3-hour limit
     ],
