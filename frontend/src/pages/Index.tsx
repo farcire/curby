@@ -85,7 +85,7 @@ const Index = () => {
                 Curby
                 <Sparkles className="h-5 w-5 animate-pulse" />
               </h1>
-              <p className="text-sm text-white/90">street parking eligibility made easy.</p>
+              <p className="text-sm text-white/90">street parking eligibility made easy</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ const Index = () => {
           onShowMap={() => setViewMode('map')}
         />
       ) : (
-        <div className="flex-1 relative min-h-0">
+        <div className="flex-1 relative overflow-hidden">
           <MapView
             checkTime={new Date()}
             durationMinutes={durationMinutes}
