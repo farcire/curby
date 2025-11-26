@@ -12,7 +12,7 @@ source: BA-PRD Agent Refinement
 
 **Product Vision:** Curby simplifies street parking in San Francisco by providing accurate, real-time street parking eligibility based on location and duration. The MVP focuses on the **Mission and SOMA neighborhoods**, powered by a live connection to parking rule databases and a user-driven feedback loop to continuously improve accuracy.
 
-**Core Purpose:** Solve the parking legality problem by providing high-accuracy, plain-language answers to "Can I park here?". For the demo, it provides a simulation tool to select any location within the covered area, define a radius, and check parking legality for a specified duration.
+**Core Purpose:** Solve the parking legality problem by providing high-accuracy, plain-language answers to "Can I park here?". It functions as a **Street Parking Regulation Decoder**, not a "spot finder". For the demo, it provides a simulation tool to select any location within the covered area, define a radius, and check parking regulation eligibility for a specified duration.
 
 **Target Users:** 
 1. **SF residents who rely on street parking** (Primary)
@@ -101,13 +101,15 @@ source: BA-PRD Agent Refinement
 - **Acceptance Criteria:**
   - [ ] The system automatically polls the SFMTA data source on a regular schedule.
 
-**FR-009: Location & Radius Selector (MVP Use Cases)**
-- **Description:** Supports two distinct modes of operation: automatic GPS-based discovery and manual location selection.
+**FR-009: Location & Dynamic Radius Selector (MVP Use Cases)**
+- **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to radius changes.
 - **Acceptance Criteria:**
-  - [ ] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within MVP area) and defaults to a 3-block search radius.
+  - [ ] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within MVP area) and defaults to a 2-block search radius.
   - [ ] **Use Case 2 (Manual):** Users can tap anywhere on the map or select an address to set a search center.
-  - [ ] Users can adjust the search radius between 1 and 8 blocks.
-  - [ ] The map updates to show parking legality for all blockfaces within the current radius and duration settings.
+  - [ ] Users can adjust the search radius between 1 and 8 blocks using a slider.
+  - [ ] **Dynamic Resizing:** As the radius slider moves, the map view automatically zooms/pans to fit the new radius.
+  - [ ] **Dynamic Data:** The parking eligibility data (blockfaces) automatically updates to reflect the new covered area.
+  - [ ] **Loading State:** The loading message must explicitly state "Decoding street regulations..." or similar, avoiding "finding parking spots" terminology.
 
 **FR-010: Progressive Web App (PWA) Capabilities**
 - **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.

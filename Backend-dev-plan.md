@@ -20,6 +20,8 @@
   - App loads offline (App Shell).
   - Users can check parking legality for future times (e.g., "Tomorrow at 10 AM").
   - `GET /api/v1/blockfaces` returns live geospatial data (DONE).
+  - **Map dynamically resizes and updates data as user changes radius.**
+  - **UI terminology reflects "Regulation Decoding" instead of "Spot Finding".**
 
 ---
 
@@ -68,9 +70,12 @@
 ---
 
 ### 5️⃣ Frontend Audit & Feature Map
-- **Map View (`MapView.tsx`):**
+- **Map View (`MapView.tsx`) & Navigator (`ParkingNavigator.tsx`):**
   - **Action:** Switch data fetching from local mock file to `GET /api/v1/blockfaces`.
-  - **Validation:** Visual check of map markers/lines matching the new data.
+  - **Requirement:** Map viewport must automatically fit the bounds of the selected radius.
+  - **Requirement:** Data fetching must trigger on radius change (debounced).
+  - **Requirement:** Update loading states to say "Decoding regulations..." instead of "Finding spots...".
+  - **Validation:** Visual check of map markers/lines matching the new data and dynamic resizing.
 
 - **Error Reporting (`BlockfaceDetail.tsx`):**
   - **Action:** Wire up submit button to `POST /api/v1/error-reports`.
@@ -143,17 +148,25 @@
 
 ---
 
-### 🔮 S4 – Future Legality & UX Polish
+### 🔮 S4 – Runtime Spatial Join & Future Legality
 
 - **Objectives:**
+  - **CRITICAL:** Implement runtime spatial join to merge `parking_regulations` (non-metered rules) with `blockfaces`.
   - Enable checking parking for future dates.
   - Polish the "Future" time selector UI.
 
 - **Tasks:**
-  - **Task S4.1: Future Time Logic**
+  - **Task S4.1: Runtime Spatial Join Implementation**
+    - **Context:** Currently, `GET /blockfaces` returns streets with meters and sweeping, but misses general regulations (RPP, time limits) because they live in a separate collection.
+    - **Action:** Update the backend endpoint to perform a `$geoIntersects` query on the `parking_regulations` collection for each blockface in the viewport (or efficient batch query).
+    - **Logic:** Merge the found regulations into the `rules` array of the blockface before returning to frontend.
+    - **Result:** "Gray" streets will populate with their actual time limits and RPP rules.
+
+  - **Task S4.2: Future Time Logic**
     - Ensure `ruleEngine.ts` correctly handles arbitrary Date objects (not just `new Date()`).
     - **Manual Test Step:** Select a time 24 hours from now where street sweeping occurs. Verify status changes to "Illegal".
     - **User Test Prompt:** "Set the time to a known street sweeping slot tomorrow. Verify the map indicates parking is illegal."
 
 - **Definition of Done:**
+  - Users see regulations (not just gray) on non-metered residential streets.
   - Users can plan parking for tomorrow.

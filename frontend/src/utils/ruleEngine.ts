@@ -183,8 +183,8 @@ export function getStatusColor(status: LegalityStatus): string {
     case 'illegal':
       return '#ef4444'; // red-500
     case 'insufficient-data':
-      return '#374151'; // gray-700 (dark gray)
+      return '#9ca3af'; // gray-400 (lighter gray)
     default:
-      return '#374151'; // gray-700 (dark gray)
+      return '#9ca3af'; // gray-400 (lighter gray)
   }
 }
