@@ -1,22 +1,25 @@
 # Backend Development Plan: Curby Parking App
 
 ### 1️⃣ Executive Summary
-- **Current Status:** Backend environment is set up (S0 completed). Real data ingestion scripts have been written and data validation is complete.
-- **Next Phase:** Focus shifts to **S1 (Core Data Service)** to expose this validated data via API and connect the frontend.
+- **Current Status:** Core backend API and data ingestion (S0-S2) are complete. PRD has been refined to explicitly require PWA capabilities.
+- **Next Phase:** Focus shifts to **S3 (PWA Implementation)** to ensure mobile-installability and offline resilience.
 - **Constraints:** FastAPI (Python 3.13), MongoDB Atlas (Motor), No Docker, Single Branch (`main`), Manual Testing.
+- **New Requirement:** Architecture must support PWA (Service Workers, Manifest) and prioritize cost-efficiency (Leaflet/OSM).
 
 ---
 
 ### 2️⃣ In-Scope & Success Criteria
 - **In-Scope:**
-  - Serve validated `blockfaces` data via geospatial API.
-  - Connect Frontend `MapView` to real backend data.
-  - Implement Error Reporting endpoint.
-  - Formalize data ingestion as a background process.
+  - PWA configuration (Manifest, Service Worker, Splash Screens).
+  - Short-term future legality checking (backend logic).
+  - Serve validated `blockfaces` data via geospatial API (DONE).
+  - Connect Frontend `MapView` to real backend data (DONE).
+  - Implement Error Reporting endpoint (DONE).
 - **Success Criteria:**
-  - `GET /api/v1/blockfaces` returns live geospatial data.
-  - Frontend Map renders real blockfaces instead of mock data.
-  - Error reports are successfully saved to MongoDB.
+  - App is installable on iOS/Android (Add to Home Screen).
+  - App loads offline (App Shell).
+  - Users can check parking legality for future times (e.g., "Tomorrow at 10 AM").
+  - `GET /api/v1/blockfaces` returns live geospatial data (DONE).
 
 ---
 
@@ -93,57 +96,64 @@
 
 ---
 
-### 🧩 S1 – API Implementation & Frontend Integration
-
-**Context:** We have validated data in the DB. Now we must serve it.
-
-- **Objectives:**
-  - Define Pydantic models matching the ingested data.
-  - Ensure MongoDB geospatial index is created.
-  - Implement `GET /api/v1/blockfaces` endpoint.
-  - Connect Frontend to API.
-
-- **Tasks:**
-
-  - **Task S1.1: Create Models & Ensure Index**
-    - Define `Blockface` Pydantic model in `main.py` (or `models.py`).
-    - Add a startup event or script to ensuring `db.blockfaces.create_index([("geometry", "2dsphere")])`.
-    - **Manual Test Step:** Restart backend. Check MongoDB Atlas "Indexes" tab for `blockfaces` collection. Confirm `geometry_2dsphere` exists.
-    - **User Test Prompt:** "Restart the server and check MongoDB Atlas to confirm the 2dsphere index was created on the blockfaces collection."
-
-  - **Task S1.2: Implement GET /blockfaces**
-    - Implement endpoint using `find` with `$near` query.
-    - **Manual Test Step:** `curl "http://localhost:8000/api/v1/blockfaces?lat=37.76&lng=-122.41&radius_meters=500"` → Returns JSON list.
-    - **User Test Prompt:** "Use your browser or curl to hit the /blockfaces endpoint with coordinates. Verify you get a JSON list of blockfaces back."
-
-  - **Task S1.3: Connect Frontend**
-    - Modify `frontend/src/components/MapView.tsx` (and potentially `sfmtaDataFetcher.ts` or similar) to fetch from API.
-    - Remove reliance on `mockBlockfaces.ts` for the main map view.
-    - **Manual Test Step:** Open App. Pan map. Check Network tab for `/blockfaces` calls. Verify lines appear on map.
-    - **User Test Prompt:** "Open the frontend. Pan the map. verify in the Network tab that requests are going to localhost:8000/api/v1/blockfaces and the map is rendering data."
-
-- **Definition of Done:**
-  - Frontend displays real parking data from MongoDB via FastAPI.
+### ✅ S1 – API Implementation & Frontend Integration (COMPLETED)
+- **Status:** Done.
+- **Artifacts:** `GET /blockfaces` active, Frontend connected.
 
 ---
 
-### 🧱 S2 – Error Reporting & Automation
+### ✅ S2 – Error Reporting & Automation (COMPLETED)
+- **Status:** Done.
+- **Artifacts:** `POST /error-reports` implemented, `frontend` connected, `run_ingestion.sh` created.
+
+---
+
+### 📱 S3 – Progressive Web App (PWA) Implementation
+
+**Context:** To support the "Mobile-First" requirement without an app store, we must make the web app installable.
 
 - **Objectives:**
-  - Allow users to report data errors.
-  - Formalize ingestion script into a scheduled background task (if required) or documented manual process.
+  - Configure PWA manifest and assets.
+  - Implement Service Worker for offline app shell loading.
+  - Ensure mobile viewport settings prevent accidental scaling.
 
 - **Tasks:**
 
-  - **Task S2.1: Error Reporting API**
-    - Implement `POST /error-reports`.
-    - **Manual Test Step:** Send POST request via Postman. Check `error_reports` collection in Atlas.
-    - **User Test Prompt:** "Send a test POST to /error-reports. Check MongoDB to confirm the document was created."
+  - **Task S3.1: Install & Configure PWA Plugin**
+    - Install `vite-plugin-pwa`.
+    - Configure `vite.config.ts` with `VitePWA` plugin.
+    - Define manifest (name: "Curby", short_name: "Curby", theme_color: "#ffffff").
+    - **Manual Test Step:** Run `npm run build`. Verify `dist/manifest.webmanifest` exists.
+    - **User Test Prompt:** "Build the frontend and check if the manifest file is generated in the dist folder."
 
-  - **Task S2.2: Frontend Error Wiring**
-    - Connect "Report Issue" button in UI to the API.
-    - **Manual Test Step:** Click "Report" in UI. Submit. Check DB.
-    - **User Test Prompt:** "Submit an error report through the app UI and confirm it appears in the database."
+  - **Task S3.2: Asset Generation & Meta Tags**
+    - Add required icons (192x192, 512x512) to `public/`.
+    - Add viewport meta tag to `index.html` (user-scalable=no).
+    - **Manual Test Step:** Inspect `index.html` head.
+    - **User Test Prompt:** "Verify the viewport meta tag is correct in index.html."
+
+  - **Task S3.3: Offline Capability & Installability**
+    - Register service worker in `main.tsx` (using `vite-plugin-pwa/client`).
+    - **Manual Test Step:** Serve app locally (`npm run preview`). Open Chrome DevTools > Application. Check "Service Workers" (Status: Activated) and "Manifest" (No errors).
+    - **User Test Prompt:** "Run the app in preview mode. Open DevTools > Application. Confirm the Service Worker is active and the Manifest has no errors."
 
 - **Definition of Done:**
-  - User feedback loop is functional.
+  - App passes Lighthouse "PWA" audit.
+  - "Add to Home Screen" appears on mobile.
+
+---
+
+### 🔮 S4 – Future Legality & UX Polish
+
+- **Objectives:**
+  - Enable checking parking for future dates.
+  - Polish the "Future" time selector UI.
+
+- **Tasks:**
+  - **Task S4.1: Future Time Logic**
+    - Ensure `ruleEngine.ts` correctly handles arbitrary Date objects (not just `new Date()`).
+    - **Manual Test Step:** Select a time 24 hours from now where street sweeping occurs. Verify status changes to "Illegal".
+    - **User Test Prompt:** "Set the time to a known street sweeping slot tomorrow. Verify the map indicates parking is illegal."
+
+- **Definition of Done:**
+  - Users can plan parking for tomorrow.
