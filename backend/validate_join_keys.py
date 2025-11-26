@@ -5,13 +5,21 @@ import json
 APP_TOKEN = "ApbiUQbkvnyKHOVCHUw1Dh4ic"
 
 # API Endpoints
-BLOCKFACE_GEOMETRY_URL = "https://data.sfgov.org/resource/pep9-66vw.json" # Potential geometry source
+# --- CORE MASTER DATASETS ---
+ACTIVE_STREETS_URL = "https://data.sfgov.org/resource/3psu-pn9h.json"    # Master geometry
+BLOCKFACE_GEOMETRY_URL = "https://data.sfgov.org/resource/pep9-66vw.json" # Secondary/Supplemental geometry
+
+# --- SUBSET DATASETS ---
 PARKING_REGULATIONS_URL = "https://data.sfgov.org/resource/hi6h-neyh.json" # Regulations
 METER_SCHEDULES_URL = "https://data.sfgov.org/resource/6cqg-dxku.json"     # Schedules
-
-# New candidates from ingest logic
 PARKING_METERS_URL = "https://data.sfgov.org/resource/8vzz-qzz9.json"       # Meters (link table)
 METERED_BLOCKFACES_URL = "https://data.sfgov.org/resource/mk27-a5x2.json"   # Blockfaces with meters
+STREET_CLEANING_URL = "https://data.sfgov.org/resource/yhqp-riqs.json"      # Street Cleaning Schedules
+
+# --- ADDITIONAL DATASETS (Nodes, Intersections) ---
+STREET_NODES_URL = "https://data.sfgov.org/resource/vd6w-dq8r.json"
+INTERSECTIONS_URL = "https://data.sfgov.org/resource/sw2d-qfup.json"
+INTERSECTION_PERMUTATIONS_URL = "https://data.sfgov.org/resource/jfxm-zeee.json"
 
 # Number of sample records to fetch
 SAMPLE_SIZE = 5
@@ -58,24 +66,49 @@ def analyze_sample(data, dataset_name):
 if __name__ == "__main__":
     print("Starting data source validation...\n")
 
-    # 1. Parking Meters (Likely the join table)
+    # 1. Active Streets (Master Geometry)
+    streets_data = fetch_data_sample(ACTIVE_STREETS_URL, APP_TOKEN, SAMPLE_SIZE)
+    if streets_data:
+        analyze_sample(streets_data, "Active Streets (3psu-pn9h)")
+
+    # 2. Blockface Geometries (Master/Supplemental Geometry)
+    geo_data = fetch_data_sample(BLOCKFACE_GEOMETRY_URL, APP_TOKEN, SAMPLE_SIZE)
+    if geo_data:
+        analyze_sample(geo_data, "Blockface Geometries (pep9-66vw)")
+
+    # 3. Parking Meters
     meters_data = fetch_data_sample(PARKING_METERS_URL, APP_TOKEN, SAMPLE_SIZE)
     if meters_data:
         analyze_sample(meters_data, "Parking Meters (8vzz-qzz9)")
 
-    # 2. Meter Schedules
+    # 4. Meter Schedules
     meter_sched_data = fetch_data_sample(METER_SCHEDULES_URL, APP_TOKEN, SAMPLE_SIZE)
     if meter_sched_data:
         analyze_sample(meter_sched_data, "Meter Schedules (6cqg-dxku)")
 
-    # 3. Metered Blockfaces
+    # 5. Metered Blockfaces (Subset)
     metered_bf_data = fetch_data_sample(METERED_BLOCKFACES_URL, APP_TOKEN, SAMPLE_SIZE)
     if metered_bf_data:
         analyze_sample(metered_bf_data, "Metered Blockfaces (mk27-a5x2)")
 
-    # 4. Blockface Geometries (Original candidate)
-    geo_data = fetch_data_sample(BLOCKFACE_GEOMETRY_URL, APP_TOKEN, SAMPLE_SIZE)
-    if geo_data:
-        analyze_sample(geo_data, "Blockface Geometries (pep9-66vw)")
+    # 6. Street Cleaning Schedules (Subset)
+    cleaning_data = fetch_data_sample(STREET_CLEANING_URL, APP_TOKEN, SAMPLE_SIZE)
+    if cleaning_data:
+        analyze_sample(cleaning_data, "Street Cleaning Schedules (yhqp-riqs)")
+
+    # 7. Street Nodes
+    nodes_data = fetch_data_sample(STREET_NODES_URL, APP_TOKEN, SAMPLE_SIZE)
+    if nodes_data:
+        analyze_sample(nodes_data, "Street Nodes (vd6w-dq8r)")
+
+    # 8. Intersections
+    intersections_data = fetch_data_sample(INTERSECTIONS_URL, APP_TOKEN, SAMPLE_SIZE)
+    if intersections_data:
+        analyze_sample(intersections_data, "Intersections (sw2d-qfup)")
+
+    # 9. Intersection Permutations
+    perms_data = fetch_data_sample(INTERSECTION_PERMUTATIONS_URL, APP_TOKEN, SAMPLE_SIZE)
+    if perms_data:
+        analyze_sample(perms_data, "Intersection Permutations (jfxm-zeee)")
 
     print("Validation script finished.")

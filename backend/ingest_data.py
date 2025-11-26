@@ -8,14 +8,19 @@ from typing import List, Dict, Any, Optional
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
-BLOCKFACES_DATASET_ID = "mk27-a5x2"      # Primary source: Blockfaces with Meters
+# Order of ingestion based on user instruction:
+# 3psu-pn9h, vd6w-dq8r, sw2d-qfup, jfxm-zeee, pep9-66vw, yhqp-riqs, hi6h-neyh, mk27-a5x2, 8vzz-qzz9, 6cqg-dxku
+
+STREETS_DATASET_ID = "3psu-pn9h"       # Streets - Active and Retired (Primary Source)
+STREET_NODES_ID = "vd6w-dq8r"          # Street Nodes
+INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # List of Intersections
+INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # Intersections by Each Cross Street Permutation
+BLOCKFACE_GEOMETRY_ID = "pep9-66vw"    # Blockface Geometries (if distinct)
+STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # Street Cleaning Schedules
+PARKING_REGULATIONS_ID = "hi6h-neyh" # Non-Metered Parking Regulations
+BLOCKFACES_DATASET_ID = "mk27-a5x2"      # Blockfaces with Meters
 METERS_DATASET_ID = "8vzz-qzz9"          # Parking Meters (links schedules to blockfaces)
 METER_SCHEDULES_DATASET_ID = "6cqg-dxku"  # Meter operating schedules
-INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # List of Intersections
-STREETS_DATASET_ID = "3psu-pn9h"       # Streets - Active and Retired
-STREET_NODES_ID = "vd6w-dq8r"          # Street Nodes
-INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # Intersections by Each Cross Street Permutation
-STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # Street Cleaning Schedules
 
 # --- Data Models ---
 Blockface = Dict[str, Any]
@@ -182,6 +187,19 @@ def process_street_cleaning(df: pd.DataFrame) -> List[Dict[str, Any]]:
     records = df.to_dict('records')
     print(f"Processed {len(records)} street cleaning schedule records.")
     return records
+
+def process_regulations(df: pd.DataFrame) -> List[Dict[str, Any]]:
+    """Processes the raw non-metered parking regulations dataframe."""
+    if df.empty:
+        print("Regulations dataframe is empty. Cannot process.")
+        return []
+    
+    print("Processing parking regulations data...")
+    print("Regulation columns available:", df.columns.tolist())
+    
+    records = df.to_dict('records')
+    print(f"Processed {len(records)} regulation records.")
+    return records
  
 async def main():
     """Main function to orchestrate the data ingestion process."""
@@ -202,7 +220,98 @@ async def main():
     except Exception:
         db = client["curby"]
 
-    # --- Ingest Metered Parking (Blockfaces) ---
+    # --- 1. Ingest Active Streets (3psu-pn9h) ---
+    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
+    streets = process_streets(streets_df)
+    if streets:
+        print(f"\nProceeding to insert {len(streets)} streets into MongoDB...")
+        streets_collection = db["streets"]
+        await streets_collection.delete_many({})
+        print("Cleared existing 'streets' collection.")
+        await streets_collection.insert_many(streets)
+        print(f"Successfully inserted {len(streets)} documents.")
+    else:
+        print("\nNo streets were processed. Ingestion did not write to database.")
+
+    # --- 2. Ingest Street Nodes (vd6w-dq8r) ---
+    street_nodes_df = fetch_data_as_dataframe(STREET_NODES_ID, app_token)
+    street_nodes = process_street_nodes(street_nodes_df)
+    if street_nodes:
+        print(f"\nProceeding to insert {len(street_nodes)} street nodes into MongoDB...")
+        street_nodes_collection = db["street_nodes"]
+        await street_nodes_collection.delete_many({})
+        print("Cleared existing 'street_nodes' collection.")
+        await street_nodes_collection.insert_many(street_nodes)
+        print(f"Successfully inserted {len(street_nodes)} documents.")
+    else:
+        print("\nNo street nodes were processed. Ingestion did not write to database.")
+
+    # --- 3. Ingest List of Intersections (sw2d-qfup) ---
+    intersections_df = fetch_data_as_dataframe(INTERSECTIONS_DATASET_ID, app_token)
+    intersections = process_intersections(intersections_df)
+    if intersections:
+        print(f"\nProceeding to insert {len(intersections)} intersections into MongoDB...")
+        intersections_collection = db["intersections"]
+        await intersections_collection.delete_many({})
+        print("Cleared existing 'intersections' collection.")
+        await intersections_collection.insert_many(intersections)
+        print(f"Successfully inserted {len(intersections)} documents.")
+    else:
+        print("\nNo intersections were processed. Ingestion did not write to database.")
+
+    # --- 4. Ingest Intersection Permutations (jfxm-zeee) ---
+    intersection_permutations_df = fetch_data_as_dataframe(INTERSECTION_PERMUTATIONS_ID, app_token)
+    intersection_permutations = process_intersection_permutations(intersection_permutations_df)
+    if intersection_permutations:
+        print(f"\nProceeding to insert {len(intersection_permutations)} intersection permutations into MongoDB...")
+        intersection_permutations_collection = db["intersection_permutations"]
+        await intersection_permutations_collection.delete_many({})
+        print("Cleared existing 'intersection_permutations' collection.")
+        await intersection_permutations_collection.insert_many(intersection_permutations)
+        print(f"Successfully inserted {len(intersection_permutations)} documents.")
+    else:
+        print("\nNo intersection permutations were processed. Ingestion did not write to database.")
+
+    # --- 4. Ingest Blockface Geometries (pep9-66vw) - Placeholder for logic if distinct from streets/blockfaces ---
+    # Currently treated as supplementary or potentially integrated with blockfaces/streets
+    # Add specific ingestion if this dataset has unique value not found in others.
+    
+    # --- 5. Ingest Street Cleaning Schedules (yhqp-riqs) ---
+    street_cleaning_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
+    street_cleaning_schedules = process_street_cleaning(street_cleaning_df)
+    if street_cleaning_schedules:
+        print(f"\nProceeding to insert {len(street_cleaning_schedules)} street cleaning schedules into MongoDB...")
+        street_cleaning_collection = db["street_cleaning_schedules"]
+        await street_cleaning_collection.delete_many({})
+        print("Cleared existing 'street_cleaning_schedules' collection.")
+        await street_cleaning_collection.insert_many(street_cleaning_schedules)
+        print(f"Successfully inserted {len(street_cleaning_schedules)} documents.")
+    else:
+        print("\nNo street cleaning schedules were processed. Ingestion did not write to database.")
+
+    # --- 7. Ingest Parking Regulations (hi6h-neyh) ---
+    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
+    regulations = process_regulations(regulations_df)
+    if regulations:
+        print(f"\nProceeding to insert {len(regulations)} parking regulations into MongoDB...")
+        regulations_collection = db["parking_regulations"]
+        await regulations_collection.delete_many({})
+        print("Cleared existing 'parking_regulations' collection.")
+        await regulations_collection.insert_many(regulations)
+        
+        # Create 2dsphere index for spatial queries
+        try:
+            await regulations_collection.create_index([("geometry", "2dsphere")])
+            print("Ensured 2dsphere index on parking_regulations collection.")
+        except Exception as e:
+            # Some regulations might not have geometry or be invalid
+            print(f"Note: Could not create 2dsphere index on regulations (might be missing geometry): {e}")
+            
+        print(f"Successfully inserted {len(regulations)} documents.")
+    else:
+        print("\nNo parking regulations were processed. Ingestion did not write to database.")
+
+    # --- 8, 9, 10. Ingest Metered Blockfaces, Meters, and Schedules (mk27-a5x2, 8vzz-qzz9, 6cqg-dxku) ---
     blockfaces_df = fetch_data_as_dataframe(BLOCKFACES_DATASET_ID, app_token)
     meters_df = fetch_data_as_dataframe(METERS_DATASET_ID, app_token)
     meter_schedules_df = fetch_data_as_dataframe(METER_SCHEDULES_DATASET_ID, app_token)
@@ -217,71 +326,6 @@ async def main():
     else:
         print("\nNo blockfaces were processed. Ingestion did not write to database.")
 
-    # --- Ingest Intersections ---
-    intersections_df = fetch_data_as_dataframe(INTERSECTIONS_DATASET_ID, app_token)
-    intersections = process_intersections(intersections_df)
-    if intersections:
-        print(f"\nProceeding to insert {len(intersections)} intersections into MongoDB...")
-        intersections_collection = db["intersections"]
-        await intersections_collection.delete_many({})
-        print("Cleared existing 'intersections' collection.")
-        await intersections_collection.insert_many(intersections)
-        print(f"Successfully inserted {len(intersections)} documents.")
-    else:
-        print("\nNo intersections were processed. Ingestion did not write to database.")
-
-    # --- Ingest Streets ---
-    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
-    streets = process_streets(streets_df)
-    if streets:
-        print(f"\nProceeding to insert {len(streets)} streets into MongoDB...")
-        streets_collection = db["streets"]
-        await streets_collection.delete_many({})
-        print("Cleared existing 'streets' collection.")
-        await streets_collection.insert_many(streets)
-        print(f"Successfully inserted {len(streets)} documents.")
-    else:
-        print("\nNo streets were processed. Ingestion did not write to database.")
-
-    # --- Ingest Street Nodes ---
-    street_nodes_df = fetch_data_as_dataframe(STREET_NODES_ID, app_token)
-    street_nodes = process_street_nodes(street_nodes_df)
-    if street_nodes:
-        print(f"\nProceeding to insert {len(street_nodes)} street nodes into MongoDB...")
-        street_nodes_collection = db["street_nodes"]
-        await street_nodes_collection.delete_many({})
-        print("Cleared existing 'street_nodes' collection.")
-        await street_nodes_collection.insert_many(street_nodes)
-        print(f"Successfully inserted {len(street_nodes)} documents.")
-    else:
-        print("\nNo street nodes were processed. Ingestion did not write to database.")
-
-    # --- Ingest Intersection Permutations ---
-    intersection_permutations_df = fetch_data_as_dataframe(INTERSECTION_PERMUTATIONS_ID, app_token)
-    intersection_permutations = process_intersection_permutations(intersection_permutations_df)
-    if intersection_permutations:
-        print(f"\nProceeding to insert {len(intersection_permutations)} intersection permutations into MongoDB...")
-        intersection_permutations_collection = db["intersection_permutations"]
-        await intersection_permutations_collection.delete_many({})
-        print("Cleared existing 'intersection_permutations' collection.")
-        await intersection_permutations_collection.insert_many(intersection_permutations)
-        print(f"Successfully inserted {len(intersection_permutations)} documents.")
-    else:
-        print("\nNo intersection permutations were processed. Ingestion did not write to database.")
-
-    # --- Ingest Street Cleaning Schedules ---
-    street_cleaning_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
-    street_cleaning_schedules = process_street_cleaning(street_cleaning_df)
-    if street_cleaning_schedules:
-        print(f"\nProceeding to insert {len(street_cleaning_schedules)} street cleaning schedules into MongoDB...")
-        street_cleaning_collection = db["street_cleaning_schedules"]
-        await street_cleaning_collection.delete_many({})
-        print("Cleared existing 'street_cleaning_schedules' collection.")
-        await street_cleaning_collection.insert_many(street_cleaning_schedules)
-        print(f"Successfully inserted {len(street_cleaning_schedules)} documents.")
-    else:
-        print("\nNo street cleaning schedules were processed. Ingestion did not write to database.")
- 
     client.close()
     print("\nData ingestion process finished.")
  

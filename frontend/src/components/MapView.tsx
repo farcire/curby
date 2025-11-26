@@ -181,9 +181,26 @@ export function MapView({
       // Each blockface shows only its own status color
       const color = isInRadius ? getStatusColor(result.status) : '#d1d5db'; // gray-300 for out of radius
 
-      // Convert coordinates to Leaflet format [lat, lng]
+      // Offset coordinates based on side to prevent overlapping lines
+      // Roughly 0.0001 degrees is ~11 meters
+      const OFFSET_AMOUNT = 0.00012;
+      
       const latlngs: [number, number][] = blockface.geometry.coordinates.map(
-        ([lng, lat]) => [lat, lng]
+        ([lng, lat]) => {
+          let latOffset = 0;
+          let lngOffset = 0;
+          
+          // Apply simple cardinal offset
+          // This separates the lines visually so both sides are visible
+          switch (blockface.side.toLowerCase()) {
+            case 'north': latOffset = OFFSET_AMOUNT; break;
+            case 'south': latOffset = -OFFSET_AMOUNT; break;
+            case 'east': lngOffset = OFFSET_AMOUNT; break;
+            case 'west': lngOffset = -OFFSET_AMOUNT; break;
+          }
+          
+          return [lat + latOffset, lng + lngOffset];
+        }
       );
 
       const polyline = L.polyline(latlngs, {
