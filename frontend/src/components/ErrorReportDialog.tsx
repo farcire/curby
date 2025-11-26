@@ -3,8 +3,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Blockface, ErrorReport } from '@/types/parking';
-import { showSuccess } from '@/utils/toast';
+import { Blockface } from '@/types/parking';
+import { showSuccess, showError } from '@/utils/toast';
+import { submitErrorReport } from '@/utils/sfmtaDataFetcher';
 import { Heart, Send } from 'lucide-react';
 
 interface ErrorReportDialogProps {
@@ -17,31 +18,23 @@ export function ErrorReportDialog({ open, onOpenChange, blockface }: ErrorReport
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!blockface || !description.trim()) return;
 
     setIsSubmitting(true);
 
-    const report: ErrorReport = {
-      id: `report-${Date.now()}`,
-      blockfaceId: blockface.id,
-      location: {
-        lat: blockface.geometry.coordinates[0][1],
-        lng: blockface.geometry.coordinates[0][0],
-      },
-      description: description.trim(),
-      timestamp: new Date().toISOString(),
-    };
-
-    const existingReports = JSON.parse(localStorage.getItem('curby-error-reports') || '[]');
-    existingReports.push(report);
-    localStorage.setItem('curby-error-reports', JSON.stringify(existingReports));
-
-    showSuccess('🎉 Thanks for helping make Curby better!');
-    
-    setDescription('');
-    setIsSubmitting(false);
-    onOpenChange(false);
+    try {
+      await submitErrorReport(blockface.id, description.trim());
+      showSuccess('🎉 Thanks for helping make Curby better!');
+      
+      setDescription('');
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Failed to submit report:', error);
+      showError('Failed to submit report. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
