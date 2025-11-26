@@ -8,199 +8,35 @@ from typing import List, Dict, Any, Optional
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
-# Order of ingestion based on user instruction:
-# 3psu-pn9h, vd6w-dq8r, sw2d-qfup, jfxm-zeee, pep9-66vw, yhqp-riqs, hi6h-neyh, mk27-a5x2, 8vzz-qzz9, 6cqg-dxku
 
-STREETS_DATASET_ID = "3psu-pn9h"       # Streets - Active and Retired (Primary Source)
-STREET_NODES_ID = "vd6w-dq8r"          # Street Nodes
-INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # List of Intersections
-INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # Intersections by Each Cross Street Permutation
-BLOCKFACE_GEOMETRY_ID = "pep9-66vw"    # Blockface Geometries (if distinct)
-STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # Street Cleaning Schedules
-PARKING_REGULATIONS_ID = "hi6h-neyh" # Non-Metered Parking Regulations
-BLOCKFACES_DATASET_ID = "mk27-a5x2"      # Blockfaces with Meters
-METERS_DATASET_ID = "8vzz-qzz9"          # Parking Meters (links schedules to blockfaces)
-METER_SCHEDULES_DATASET_ID = "6cqg-dxku"  # Meter operating schedules
+# Dataset IDs (Ordered per instructions)
+STREETS_DATASET_ID = "3psu-pn9h"       # 1. Active Streets (Primary Backbone)
+STREET_NODES_ID = "vd6w-dq8r"          # 2. Street Nodes
+INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # 3. List of Intersections
+INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # 4. Intersection Permutations
+BLOCKFACE_GEOMETRY_ID = "pep9-66vw"    # 5. Blockface Geometries (Link cnn -> blockface_id)
+STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # 6. Street Cleaning Schedules
+PARKING_REGULATIONS_ID = "hi6h-neyh"   # 7. Parking Regulations
+METERED_BLOCKFACES_ID = "mk27-a5x2"    # 8. Metered Blockfaces (Metadata)
+METERS_DATASET_ID = "8vzz-qzz9"        # 9. Parking Meters (Link meters to streets)
+METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
 
 # --- Data Models ---
 Blockface = Dict[str, Any]
-Intersection = Dict[str, Any]
-Street = Dict[str, Any]
-StreetNode = Dict[str, Any]
-IntersectionPermutation = Dict[str, Any]
 
-def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str]) -> pd.DataFrame:
+def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: int = 200000) -> pd.DataFrame:
     """Fetches a dataset and returns it as a pandas DataFrame."""
     print(f"Fetching dataset {dataset_id}...")
     try:
         client = Socrata(SFMTA_DOMAIN, app_token)
-        results = client.get(dataset_id, limit=200000)
+        results = client.get(dataset_id, limit=limit)
         df = pd.DataFrame.from_records(results)
-        print(f"Raw record count for {dataset_id}: {len(results)}")
         print(f"Successfully fetched {len(df)} records from {dataset_id}.")
         return df
     except Exception as e:
         print(f"Error fetching dataset {dataset_id}: {e}")
         return pd.DataFrame()
 
-def process_blockfaces(blockfaces_df: pd.DataFrame, meters_df: pd.DataFrame, meter_schedules_df: pd.DataFrame) -> List[Blockface]:
-    """Processes raw dataframes to create a list of Blockface documents."""
-    print("Processing and combining blockface, meter, and schedule data...")
-    if blockfaces_df.empty:
-        print("Blockfaces dataframe is empty. Cannot create blockfaces.")
-        return []
-
-    # 1. Create a mapping of meter schedules by post_id
-    schedules_by_post_id = {}
-    if not meter_schedules_df.empty:
-        print(f"Processing {len(meter_schedules_df)} meter schedule records...")
-        for _, sched_row in meter_schedules_df.iterrows():
-            post_id = sched_row.get("post_id")
-            if post_id:
-                schedule = {
-                    "beginTime": sched_row.get("beg_time_dt"),
-                    "endTime": sched_row.get("end_time_dt"),
-                    "rate": sched_row.get("rate"),
-                    "rateQualifier": sched_row.get("rate_qualifier"),
-                    "rateUnit": sched_row.get("rate_unit"),
-                }
-                schedule = {k: v for k, v in schedule.items() if v is not None}
-                if post_id not in schedules_by_post_id:
-                    schedules_by_post_id[post_id] = []
-                schedules_by_post_id[post_id].append(schedule)
-        print(f"Created schedule mapping for {len(schedules_by_post_id)} post_ids.")
-
-    # 2. Create a mapping of blockface_id to a list of post_ids
-    posts_by_blockface_id = {}
-    if not meters_df.empty:
-        print(f"Processing {len(meters_df)} meter records...")
-        for _, meter_row in meters_df.iterrows():
-            blockface_id = meter_row.get("blockface_id")
-            post_id = meter_row.get("post_id")
-            if blockface_id and post_id:
-                if blockface_id not in posts_by_blockface_id:
-                    posts_by_blockface_id[blockface_id] = []
-                posts_by_blockface_id[blockface_id].append(post_id)
-        print(f"Created post_id mapping for {len(posts_by_blockface_id)} blockface_ids.")
-
-    # 3. Create blockface documents and attach schedules
-    blockfaces = []
-    for _, row in blockfaces_df.iterrows():
-        blockface_id = row.get("blockface_id")
-        geometry = row.get("shape")
-        
-        # Skip if geometry is missing or invalid (e.g. NaN)
-        if not isinstance(geometry, dict) or "coordinates" not in geometry:
-            continue
-
-        blockface = {
-            "id": blockface_id,
-            "streetName": row.get("street_name"),
-            "fromStreet": row.get("fm_addr_no"), # Using address numbers as a proxy
-            "toStreet": row.get("to_addr_no"),
-            "side": row.get("blockface_orientation"),
-            "geometry": geometry,
-            "rules": [],  # Regulations are unlinked for now
-            "schedules": []
-        }
-
-        # Attach schedules if available for this blockface_id
-        if blockface_id in posts_by_blockface_id:
-            post_ids = posts_by_blockface_id[blockface_id]
-            for post_id in post_ids:
-                if post_id in schedules_by_post_id:
-                    blockface["schedules"].extend(schedules_by_post_id[post_id])
-        
-        blockface = {k: v for k, v in blockface.items() if v is not None}
-        blockfaces.append(blockface)
-
-    print(f"Successfully created {len(blockfaces)} blockface documents.")
-    return blockfaces
-
-def process_intersections(df: pd.DataFrame) -> List[Intersection]:
-    """Processes the raw intersections dataframe."""
-    if df.empty:
-        print("Intersections dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing intersections data...")
-    print("Intersection columns available:", df.columns.tolist())
-    
-    # Basic processing: convert to list of dicts
-    records = df.to_dict('records')
-    print(f"Processed {len(records)} intersection records.")
-    return records
-
-def process_streets(df: pd.DataFrame) -> List[Street]:
-    """Processes the raw streets dataframe."""
-    if df.empty:
-        print("Streets dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing streets data...")
-    print("Street columns available:", df.columns.tolist())
-    
-    # Filter for active streets only
-    active_streets_df = df[df['active'] == True]
-    print(f"Filtered down to {len(active_streets_df)} active street records.")
-
-    # Basic processing: convert to list of dicts
-    records = active_streets_df.to_dict('records')
-    print(f"Processed {len(records)} active street records.")
-    return records
-
-def process_street_nodes(df: pd.DataFrame) -> List[StreetNode]:
-    """Processes the raw street nodes dataframe."""
-    if df.empty:
-        print("Street nodes dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing street nodes data...")
-    print("Street node columns available:", df.columns.tolist())
-    
-    records = df.to_dict('records')
-    print(f"Processed {len(records)} street node records.")
-    return records
-
-def process_intersection_permutations(df: pd.DataFrame) -> List[IntersectionPermutation]:
-    """Processes the raw intersection permutations dataframe."""
-    if df.empty:
-        print("Intersection permutations dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing intersection permutations data...")
-    print("Intersection permutation columns available:", df.columns.tolist())
-    
-    records = df.to_dict('records')
-    print(f"Processed {len(records)} intersection permutation records.")
-    return records
-
-def process_street_cleaning(df: pd.DataFrame) -> List[Dict[str, Any]]:
-    """Processes the raw street cleaning schedules dataframe."""
-    if df.empty:
-        print("Street cleaning schedules dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing street cleaning schedules data...")
-    print("Street cleaning columns available:", df.columns.tolist())
-    
-    records = df.to_dict('records')
-    print(f"Processed {len(records)} street cleaning schedule records.")
-    return records
-
-def process_regulations(df: pd.DataFrame) -> List[Dict[str, Any]]:
-    """Processes the raw non-metered parking regulations dataframe."""
-    if df.empty:
-        print("Regulations dataframe is empty. Cannot process.")
-        return []
-    
-    print("Processing parking regulations data...")
-    print("Regulation columns available:", df.columns.tolist())
-    
-    records = df.to_dict('records')
-    print(f"Processed {len(records)} regulation records.")
-    return records
- 
 async def main():
     """Main function to orchestrate the data ingestion process."""
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
@@ -208,126 +44,232 @@ async def main():
     app_token = os.getenv("SFMTA_APP_TOKEN")
     mongodb_uri = os.getenv("MONGODB_URI")
 
-    if not app_token:
-        print("Warning: SFMTA_APP_TOKEN not found. Proceeding with unauthenticated request.")
     if not mongodb_uri:
         raise ValueError("MONGODB_URI not found in .env file.")
 
-    # --- Connect to MongoDB ---
     client = motor.motor_asyncio.AsyncIOMotorClient(mongodb_uri)
     try:
         db = client.get_default_database()
     except Exception:
         db = client["curby"]
 
-    # --- 1. Ingest Active Streets (3psu-pn9h) ---
+    # Dictionary to hold all blockfaces, keyed by CNN (Universal ID)
+    # Structure: { cnn_id: { id: cnn, geometry: ..., rules: [], ... } }
+    blockfaces_map = {}
+
+    # ==========================================
+    # 1. Ingest Active Streets (The Backbone) - 3psu-pn9h
+    # ==========================================
+    print("\n--- 1. Processing Active Streets (The Backbone) ---")
     streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
-    streets = process_streets(streets_df)
-    if streets:
-        print(f"\nProceeding to insert {len(streets)} streets into MongoDB...")
-        streets_collection = db["streets"]
-        await streets_collection.delete_many({})
-        print("Cleared existing 'streets' collection.")
-        await streets_collection.insert_many(streets)
-        print(f"Successfully inserted {len(streets)} documents.")
-    else:
-        print("\nNo streets were processed. Ingestion did not write to database.")
-
-    # --- 2. Ingest Street Nodes (vd6w-dq8r) ---
-    street_nodes_df = fetch_data_as_dataframe(STREET_NODES_ID, app_token)
-    street_nodes = process_street_nodes(street_nodes_df)
-    if street_nodes:
-        print(f"\nProceeding to insert {len(street_nodes)} street nodes into MongoDB...")
-        street_nodes_collection = db["street_nodes"]
-        await street_nodes_collection.delete_many({})
-        print("Cleared existing 'street_nodes' collection.")
-        await street_nodes_collection.insert_many(street_nodes)
-        print(f"Successfully inserted {len(street_nodes)} documents.")
-    else:
-        print("\nNo street nodes were processed. Ingestion did not write to database.")
-
-    # --- 3. Ingest List of Intersections (sw2d-qfup) ---
-    intersections_df = fetch_data_as_dataframe(INTERSECTIONS_DATASET_ID, app_token)
-    intersections = process_intersections(intersections_df)
-    if intersections:
-        print(f"\nProceeding to insert {len(intersections)} intersections into MongoDB...")
-        intersections_collection = db["intersections"]
-        await intersections_collection.delete_many({})
-        print("Cleared existing 'intersections' collection.")
-        await intersections_collection.insert_many(intersections)
-        print(f"Successfully inserted {len(intersections)} documents.")
-    else:
-        print("\nNo intersections were processed. Ingestion did not write to database.")
-
-    # --- 4. Ingest Intersection Permutations (jfxm-zeee) ---
-    intersection_permutations_df = fetch_data_as_dataframe(INTERSECTION_PERMUTATIONS_ID, app_token)
-    intersection_permutations = process_intersection_permutations(intersection_permutations_df)
-    if intersection_permutations:
-        print(f"\nProceeding to insert {len(intersection_permutations)} intersection permutations into MongoDB...")
-        intersection_permutations_collection = db["intersection_permutations"]
-        await intersection_permutations_collection.delete_many({})
-        print("Cleared existing 'intersection_permutations' collection.")
-        await intersection_permutations_collection.insert_many(intersection_permutations)
-        print(f"Successfully inserted {len(intersection_permutations)} documents.")
-    else:
-        print("\nNo intersection permutations were processed. Ingestion did not write to database.")
-
-    # --- 4. Ingest Blockface Geometries (pep9-66vw) - Placeholder for logic if distinct from streets/blockfaces ---
-    # Currently treated as supplementary or potentially integrated with blockfaces/streets
-    # Add specific ingestion if this dataset has unique value not found in others.
     
-    # --- 5. Ingest Street Cleaning Schedules (yhqp-riqs) ---
-    street_cleaning_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
-    street_cleaning_schedules = process_street_cleaning(street_cleaning_df)
-    if street_cleaning_schedules:
-        print(f"\nProceeding to insert {len(street_cleaning_schedules)} street cleaning schedules into MongoDB...")
-        street_cleaning_collection = db["street_cleaning_schedules"]
-        await street_cleaning_collection.delete_many({})
-        print("Cleared existing 'street_cleaning_schedules' collection.")
-        await street_cleaning_collection.insert_many(street_cleaning_schedules)
-        print(f"Successfully inserted {len(street_cleaning_schedules)} documents.")
-    else:
-        print("\nNo street cleaning schedules were processed. Ingestion did not write to database.")
+    if not streets_df.empty:
+        # Save raw collection
+        await db.streets.delete_many({})
+        await db.streets.insert_many(streets_df.to_dict('records'))
+        print("Saved raw 'streets' collection.")
 
-    # --- 7. Ingest Parking Regulations (hi6h-neyh) ---
-    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
-    regulations = process_regulations(regulations_df)
-    if regulations:
-        print(f"\nProceeding to insert {len(regulations)} parking regulations into MongoDB...")
-        regulations_collection = db["parking_regulations"]
-        await regulations_collection.delete_many({})
-        print("Cleared existing 'parking_regulations' collection.")
-        await regulations_collection.insert_many(regulations)
-        
-        # Create 2dsphere index for spatial queries
-        try:
-            await regulations_collection.create_index([("geometry", "2dsphere")])
-            print("Ensured 2dsphere index on parking_regulations collection.")
-        except Exception as e:
-            # Some regulations might not have geometry or be invalid
-            print(f"Note: Could not create 2dsphere index on regulations (might be missing geometry): {e}")
+        # Initialize blockfaces_map
+        for _, row in streets_df.iterrows():
+            cnn = row.get("cnn")
+            if not cnn: continue
             
-        print(f"Successfully inserted {len(regulations)} documents.")
-    else:
-        print("\nNo parking regulations were processed. Ingestion did not write to database.")
+            # Shape comes as 'line' in this dataset
+            geometry = row.get("line")
+            
+            blockfaces_map[cnn] = {
+                "id": cnn,  # CNN is our internal primary key
+                "cnn": cnn,
+                "streetName": row.get("streetname"),
+                "geometry": geometry,
+                "blockfaceId": None, # To be filled by pep9 or mk27
+                "rules": [],
+                "schedules": []
+            }
+        print(f"Initialized {len(blockfaces_map)} blockfaces from Active Streets.")
 
-    # --- 8, 9, 10. Ingest Metered Blockfaces, Meters, and Schedules (mk27-a5x2, 8vzz-qzz9, 6cqg-dxku) ---
-    blockfaces_df = fetch_data_as_dataframe(BLOCKFACES_DATASET_ID, app_token)
+    # ==========================================
+    # 2. Ingest Street Nodes - vd6w-dq8r
+    # ==========================================
+    print("\n--- 2. Processing Street Nodes ---")
+    nodes_df = fetch_data_as_dataframe(STREET_NODES_ID, app_token)
+    if not nodes_df.empty:
+        await db.street_nodes.delete_many({})
+        await db.street_nodes.insert_many(nodes_df.to_dict('records'))
+        print("Saved 'street_nodes'.")
+
+    # ==========================================
+    # 3. Ingest Intersections - sw2d-qfup
+    # ==========================================
+    print("\n--- 3. Processing Intersections ---")
+    intersections_df = fetch_data_as_dataframe(INTERSECTIONS_DATASET_ID, app_token)
+    if not intersections_df.empty:
+        await db.intersections.delete_many({})
+        await db.intersections.insert_many(intersections_df.to_dict('records'))
+        print("Saved 'intersections'.")
+
+    # ==========================================
+    # 4. Ingest Intersection Permutations - jfxm-zeee
+    # ==========================================
+    print("\n--- 4. Processing Intersection Permutations ---")
+    perms_df = fetch_data_as_dataframe(INTERSECTION_PERMUTATIONS_ID, app_token)
+    if not perms_df.empty:
+        await db.intersection_permutations.delete_many({})
+        await db.intersection_permutations.insert_many(perms_df.to_dict('records'))
+        print("Saved 'intersection_permutations'.")
+
+    # ==========================================
+    # 5. Enrich with Blockface Geometries - pep9-66vw
+    # ==========================================
+    print("\n--- 5. Linking Blockface IDs (pep9-66vw) ---")
+    geo_df = fetch_data_as_dataframe(BLOCKFACE_GEOMETRY_ID, app_token)
+    if not geo_df.empty:
+        count = 0
+        for _, row in geo_df.iterrows():
+            cnn = row.get("cnn_id")
+            # 'blockface_' seems to be the ID column based on typical Socrata shapefiles, 
+            # but let's be safe and check 'globalid' or others if needed.
+            # Based on standard mappings, cnn is the join key.
+            
+            if cnn in blockfaces_map:
+                # If pep9 has a geometry ('shape'), we might prefer it or keep 'line' from streets.
+                # Usually 'line' from Active Streets is the "centerline". 
+                # 'shape' from pep9 might be the specific blockface line.
+                # Let's keep Active Streets geometry for now as the "Graph" backbone, 
+                # but we could store this as 'blockface_geometry'.
+                pass
+                # blockfaces_map[cnn]["blockfaceGeometry"] = row.get("shape")
+                count += 1
+        print(f"Matched {count} records from pep9-66vw to Active Streets.")
+
+    # ==========================================
+    # 6. Enrich with Street Cleaning - yhqp-riqs
+    # ==========================================
+    print("\n--- 6. Enriching with Street Cleaning ---")
+    sweeping_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
+    if not sweeping_df.empty:
+        await db.street_cleaning_schedules.delete_many({})
+        await db.street_cleaning_schedules.insert_many(sweeping_df.to_dict('records'))
+        print("Saved 'street_cleaning_schedules' collection.")
+
+        count = 0
+        for _, row in sweeping_df.iterrows():
+            cnn = row.get("cnn")
+            if cnn in blockfaces_map:
+                rule = {
+                    "type": "street-sweeping",
+                    "day": row.get("weekday"),
+                    "startTime": row.get("fromhour"),
+                    "endTime": row.get("tohour"),
+                    "side": row.get("cnnrightleft"), # R or L
+                    "description": f"Street Cleaning {row.get('weekday')} {row.get('fromhour')}-{row.get('tohour')}"
+                }
+                blockfaces_map[cnn]["rules"].append(rule)
+                count += 1
+        print(f"Added {count} sweeping rules to blockfaces.")
+
+    # ==========================================
+    # 7. Ingest Parking Regulations - hi6h-neyh
+    # ==========================================
+    print("\n--- 7. Processing Parking Regulations ---")
+    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
+    if not regulations_df.empty:
+        await db.parking_regulations.delete_many({})
+        # Convert to dicts
+        reg_records = regulations_df.to_dict('records')
+        
+        # Insert raw
+        await db.parking_regulations.insert_many(reg_records)
+        
+        # Create geospatial index for querying
+        try:
+            await db.parking_regulations.create_index([("geometry", "2dsphere")])
+            print("Ensured 2dsphere index on 'parking_regulations'.")
+        except Exception as e:
+            print(f"Warning: Could not create index on regulations: {e}")
+            
+        print(f"Saved {len(reg_records)} parking regulations (to be spatially joined at runtime).")
+
+    # ==========================================
+    # 8. Metered Blockfaces (Metadata) - mk27-a5x2
+    # ==========================================
+    print("\n--- 8. Processing Metered Blockfaces (Metadata) ---")
+    metered_bf_df = fetch_data_as_dataframe(METERED_BLOCKFACES_ID, app_token)
+    # We mostly use this for linking if needed, or supplementary data.
+    # Currently relying on Meters dataset for the actual meter info.
+
+    # ==========================================
+    # 9 & 10. Meters & Schedules
+    # ==========================================
+    print("\n--- 9-10. Enriching with Meters & Schedules ---")
+    
+    # 10. Meter Schedules (Lookup by post_id)
+    schedules_df = fetch_data_as_dataframe(METER_SCHEDULES_DATASET_ID, app_token)
+    schedules_by_post = {}
+    if not schedules_df.empty:
+        for _, row in schedules_df.iterrows():
+            post_id = row.get("post_id")
+            if post_id:
+                if post_id not in schedules_by_post:
+                    schedules_by_post[post_id] = []
+                schedules_by_post[post_id].append({
+                    "type": "meter-schedule",
+                    "start": row.get("beg_time_dt"),
+                    "end": row.get("end_time_dt"),
+                    "rate": row.get("rate"),
+                    "days": row.get("days_applied") # if available
+                })
+
+    # 9. Meters (Link post_id -> cnn)
     meters_df = fetch_data_as_dataframe(METERS_DATASET_ID, app_token)
-    meter_schedules_df = fetch_data_as_dataframe(METER_SCHEDULES_DATASET_ID, app_token)
-    blockfaces = process_blockfaces(blockfaces_df, meters_df, meter_schedules_df)
-    if blockfaces:
-        print(f"\nProceeding to insert {len(blockfaces)} blockfaces into MongoDB...")
-        blockface_collection = db["blockfaces"]
-        await blockface_collection.delete_many({})
-        print("Cleared existing 'blockfaces' collection.")
-        await blockface_collection.insert_many(blockfaces)
-        print(f"Successfully inserted {len(blockfaces)} documents.")
+    if not meters_df.empty:
+        count = 0
+        for _, row in meters_df.iterrows():
+            cnn = row.get("street_seg_ctrln_id") # This is CNN
+            post_id = row.get("post_id")
+            
+            if cnn in blockfaces_map and post_id:
+                # Add meter info
+                meter_info = {
+                    "type": "meter",
+                    "postId": post_id,
+                    "active": row.get("active_meter_flag"),
+                    "schedules": schedules_by_post.get(post_id, [])
+                }
+                blockfaces_map[cnn]["schedules"].append(meter_info)
+                count += 1
+        print(f"Linked {count} meters to blockfaces.")
+
+    # ==========================================
+    # Final Save
+    # ==========================================
+    print("\n--- Saving Unified Blockfaces to MongoDB ---")
+    final_blockfaces = list(blockfaces_map.values())
+    
+    # Filter out invalid geometries just in case
+    # (Active Streets usually has good geometries, but safe to check)
+    final_blockfaces = [b for b in final_blockfaces if b.get("geometry")]
+
+    if final_blockfaces:
+        await db.blockfaces.delete_many({})
+        
+        # Batch insert
+        chunk_size = 1000
+        total = len(final_blockfaces)
+        for i in range(0, total, chunk_size):
+            chunk = final_blockfaces[i:i + chunk_size]
+            await db.blockfaces.insert_many(chunk)
+            print(f"Inserted batch {i} to {min(i+chunk_size, total)}")
+        
+        # Create Geospatial Index
+        print("Creating geospatial index...")
+        await db.blockfaces.create_index([("geometry", "2dsphere")])
+        print(f"Successfully saved {total} unified blockfaces.")
     else:
-        print("\nNo blockfaces were processed. Ingestion did not write to database.")
+        print("No blockfaces to save!")
 
     client.close()
-    print("\nData ingestion process finished.")
- 
+    print("\nIngestion Complete.")
+
 if __name__ == "__main__":
     asyncio.run(main())
