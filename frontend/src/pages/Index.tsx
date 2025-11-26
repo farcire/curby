@@ -18,8 +18,8 @@ const CENTER_POINT: [number, number] = [37.76272, -122.40920]; // 20th & Bryant 
 
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(60);
-  // Default radius to 3 blocks as per PRD
-  const [radiusBlocks, setRadiusBlocks] = useState(3);
+  // Default radius to 2 blocks as per refined PRD
+  const [radiusBlocks, setRadiusBlocks] = useState(2);
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
@@ -29,14 +29,24 @@ const Index = () => {
   const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
   const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
 
+  // Load data on mount and when radius changes
   useEffect(() => {
-    loadSFMTAData();
-  }, []);
+    const timer = setTimeout(() => {
+      loadSFMTAData();
+    }, 500); // Debounce for 500ms
+
+    return () => clearTimeout(timer);
+  }, [radiusBlocks]);
 
   const loadSFMTAData = async () => {
     setIsLoadingData(true);
     try {
-      const sfmtaData = await fetchSFMTABlockfaces();
+      // Convert blocks to meters (approx 110m per block)
+      const radiusMeters = radiusBlocks * 110;
+      // Add a buffer to ensure coverage
+      const fetchRadius = Math.max(radiusMeters * 1.5, 300);
+
+      const sfmtaData = await fetchSFMTABlockfaces(CENTER_POINT[0], CENTER_POINT[1], fetchRadius);
       
       if (sfmtaData.length > 0) {
         setBlockfaces(sfmtaData);
@@ -44,7 +54,9 @@ const Index = () => {
       } else {
         setBlockfaces(mockBlockfaces);
         setDataSource('mock');
-        showError('Using demo data - real data coming soon!');
+        if (dataSource === 'sfmta') { // Only show error if we were previously connected
+             showError('Using demo data - real data coming soon!');
+        }
       }
     } catch (error) {
       console.error('Error loading SFMTA data:', error);
@@ -202,7 +214,7 @@ const Index = () => {
             <div className="relative mb-4">
               <Logo size="lg" animated={true} />
             </div>
-            <p className="text-lg font-semibold text-gray-900 mb-2">Finding spots...</p>
+            <p className="text-lg font-semibold text-gray-900 mb-2">Decoding street regulations...</p>
             <p className="text-sm text-gray-600">✨ Just a sec ✨</p>
           </div>
         </div>

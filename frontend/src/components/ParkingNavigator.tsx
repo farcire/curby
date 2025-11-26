@@ -202,8 +202,8 @@ export function ParkingNavigator({ blockfaces, durationMinutes, onShowMap }: Par
       <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-purple-600 mx-auto mb-4" />
-          <p className="text-lg font-semibold text-gray-900 mb-2">Finding your location...</p>
-          <p className="text-sm text-gray-600">📍 Just a moment</p>
+          <p className="text-lg font-semibold text-gray-900 mb-2">Locating & Decoding Regulations...</p>
+          <p className="text-sm text-gray-600">📍 Analyzing street rules nearby</p>
         </div>
       </div>
     );
