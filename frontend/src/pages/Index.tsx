@@ -18,6 +18,7 @@ const CENTER_POINT: [number, number] = [37.76272, -122.40920]; // 20th & Bryant 
 
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(60);
+  // Default radius to 3 blocks as per PRD
   const [radiusBlocks, setRadiusBlocks] = useState(3);
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
@@ -40,7 +41,6 @@ const Index = () => {
       if (sfmtaData.length > 0) {
         setBlockfaces(sfmtaData);
         setDataSource('sfmta');
-        showSuccess(`Found ${sfmtaData.length} parking spots!`);
       } else {
         setBlockfaces(mockBlockfaces);
         setDataSource('mock');
