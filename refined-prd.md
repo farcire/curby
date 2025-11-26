@@ -2,7 +2,7 @@
 title: Product Requirements Document - REFINED
 app: elegant-lynx-play
 created: 2025-11-25T07:06:20.848Z
-version: 4
+version: 6
 source: BA-PRD Agent Refinement
 ---
 
@@ -15,21 +15,27 @@ source: BA-PRD Agent Refinement
 **Core Purpose:** Solve the parking legality problem by providing high-accuracy, plain-language answers to "Can I park here?". For the demo, it provides a simulation tool to select any location within the covered area, define a radius, and check parking legality for a specified duration.
 
 **Target Users:** 
-- SF residents who rely on street parking
-- Gig workers (DoorDash, Uber, Instacart)
-- Demo Audience & Stakeholders
+1. **SF residents who rely on street parking** (Primary)
+2. **Daily Commuters**
+3. **Gig workers** (DoorDash, Uber, Instacart)
+4. **Demo Audience & Stakeholders**
 
 **Key Features:**
+- **Progressive Web App (PWA)** (Platform: Mobile-First Web)
 - **Demo Location & Radius Selector** (System: Simulation Tool)
-- Interactive map showing real-time parking legality (System Data: blockface data)
-- Automated Parking Data Monitoring ("Listener Mode") (System Data: rule updates)
-- User-driven error reporting system (User-Generated Content: error reports)
+- **Interactive map showing real-time parking legality** (System Data: blockface data)
+- **Automated Parking Data Monitoring ("Listener Mode")** (System Data: rule updates)
+- **User-driven error reporting system** (User-Generated Content: error reports)
 
 **Complexity Assessment:** Moderate
 - **State Management:** Local (single-user queries, no distributed state)
-- **External Integrations:** 2 (Mapbox, SFMTA real-time data source)
+- **External Integrations:** 2 (Leaflet/OpenStreetMap, SFMTA real-time data source)
 - **Business Logic:** Moderate (rule precedence, time-based evaluation, dynamic data ingestion)
 - **Data Synchronization:** Basic (periodic polling/listening for updates from the SFMTA data source)
+
+**Technical & Cost Constraints:**
+- **Platform:** Must be built as a Progressive Web App (PWA) to ensure native-like mobile experience without app store overhead.
+- **Cost Efficiency:** Architecture must prioritize free, open-domain, or low-cost APIs and services. High-cost proprietary solutions (like Google Maps API) should be avoided in favor of cost-effective alternatives (e.g., Leaflet with OpenStreetMap tiles).
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
@@ -40,10 +46,10 @@ source: BA-PRD Agent Refinement
 ## 1. USERS & PERSONAS
 
 **Primary Persona:**
-- **Name:** Maria (Gig Worker)
-- **Context:** DoorDash driver needing to quickly find legal parking in Mission and SOMA.
+- **Name:** Stephanie (Active SF Resident)
+- **Context:** An active SF resident who spends her time running errands and visiting friends. She needs an easy and intuitive way to understand where she can look for street parking when she plans to visit a neighborhood she doesn't live in.
 - **Goals:** Avoid parking tickets, minimize time spent searching for parking.
-- **Needs:** Fast, accurate, and up-to-the-minute legality information for a specific area.
+- **Needs:** Fast, accurate, easy-to-understand street parking eligibility for a specific area, date/day/time, and duration.
 
 ## 2. FUNCTIONAL REQUIREMENTS
 
@@ -103,6 +109,14 @@ source: BA-PRD Agent Refinement
   - [ ] Users can adjust the search radius between 1 and 8 blocks.
   - [ ] The map updates to show parking legality for all blockfaces within the current radius and duration settings.
 
+**FR-010: Progressive Web App (PWA) Capabilities**
+- **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.
+- **Acceptance Criteria:**
+  - [ ] Valid Web App Manifest provided (name, icons, theme color).
+  - [ ] Service Worker registered for caching static assets (app shell).
+  - [ ] "Add to Home Screen" prompt triggerable on supported devices.
+  - [ ] Viewport configuration prevents accidental zooming/scaling on mobile.
+
 ## 3. USER WORKFLOWS
 
 ### 3.1 Use Case 1: "I'm Here Now" (GPS Default)
@@ -141,7 +155,7 @@ source: BA-PRD Agent Refinement
 ## 6. MVP SCOPE & DEFERRED FEATURES
 
 ### 6.1 In Scope for MVP
-- All features listed in Section 2.1 (FR-001 through FR-009).
+- All features listed in Section 2.1 (FR-001 through FR-010).
 - Geographic focus is the **Mission and SOMA neighborhoods**.
 
 ### 6.2 Deferred Features (Post-MVP Roadmap)
@@ -154,3 +168,18 @@ source: BA-PRD Agent Refinement
 - **DF-004: Long-Term Trip Planning:**
   - **Description:** Allow users to plan a trip for a future date beyond 48 hours (e.g., "Next Tuesday").
   - **Reason for Deferral:** Adds complexity to the simulation tool and rule engine; MVP focuses on immediate or near-term parking needs.
+- **DF-005: Special Event Parking Intelligence:**
+  - **Description:** Ingest and display temporary parking restrictions related to special events (parades, festivals, sports games).
+  - **Reason for Deferral:** Requires integrating additional, often unstructured data sources; MVP focuses on standard recurring rules.
+- **DF-006: Voice Command Interface:**
+  - **Description:** Hands-free voice control to query parking status ("Can I park here?") and receive spoken responses.
+  - **Reason for Deferral:** High technical complexity (Speech-to-Text, Text-to-Speech); safety critical feature best built after core data validation.
+- **DF-007: Calendar & Navigation Integration:**
+  - **Description:** Connect to user calendars to automatically check parking for upcoming appointments and suggest eligible blocks near the destination.
+  - **Reason for Deferral:** Requires user authentication and calendar API integrations (Google/Apple); adds significant scope beyond the core "check here now" loop.
+- **DF-008: Smart Parking Navigation Routing:**
+  - **Description:** Turn-by-turn navigation that actively routes users through streets with *currently legal* parking, avoiding swept or restricted zones.
+  - **Reason for Deferral:** Extremely complex custom routing logic; requires building a custom navigation engine on top of map data.
+- **DF-009: External Signal Integration:**
+  - **Description:** Incorporate data from external services such as traffic volume, travel time, ride share costs, and a calculated "ease of finding parking" score.
+  - **Reason for Deferral:** Advanced analytics requiring historical data accumulation and integration with multiple third-party APIs (e.g., Uber/Lyft, Google Traffic).
