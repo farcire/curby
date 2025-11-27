@@ -72,8 +72,9 @@ function ruleAppliesDuringPeriod(
         }
       }
       
-      // Move to next day
-      currentCheck = addMinutes(currentCheck, 60);
+      // Move forward in smaller increments to catch short overlaps
+      // 5 minutes resolution should be sufficient for parking rules
+      currentCheck = addMinutes(currentCheck, 5);
     }
   }
   
