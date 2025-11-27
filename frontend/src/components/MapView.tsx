@@ -9,51 +9,59 @@ interface MapViewProps {
   durationMinutes: number;
   onBlockfaceClick: (blockface: Blockface, result: LegalityResult) => void;
   blockfaces: Blockface[];
-  radiusBlocks: number;
   centerPoint: [number, number]; // [lat, lng]
+  onMapMove?: (bounds: L.LatLngBounds) => void;
 }
 
 interface BlockfaceWithResult {
   blockface: Blockface;
   result: LegalityResult;
-  distance: number;
 }
 
-export function MapView({ 
-  checkTime, 
-  durationMinutes, 
-  onBlockfaceClick, 
+// Mission District Approximate Bounds
+const MISSION_BOUNDS = L.latLngBounds(
+  [37.747, -122.427], // SW (Cesar Chavez & Guerreroish)
+  [37.773, -122.403]  // NE (13th/Duboce & Potreroish)
+);
+
+export function MapView({
+  checkTime,
+  durationMinutes,
+  onBlockfaceClick,
   blockfaces,
-  radiusBlocks,
   centerPoint,
+  onMapMove,
 }: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
-  const radiusCircleRef = useRef<L.Circle | null>(null);
-
-  // Calculate appropriate zoom level based on radius
-  const getZoomForRadius = (blocks: number): number => {
-    // Zoom levels to show the radius circle comfortably
-    if (blocks <= 1) return 18;
-    if (blocks <= 2) return 17;
-    if (blocks <= 3) return 17;
-    if (blocks <= 5) return 16;
-    return 15; // 8 blocks
-  };
 
   // Initialize map
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const initialZoom = getZoomForRadius(radiusBlocks);
+    // Initial zoom ~17 is roughly 3 blocks radius view
+    const initialZoom = 17;
 
     const map = L.map(mapContainerRef.current, {
       center: centerPoint,
       zoom: initialZoom,
       zoomControl: true,
-      minZoom: 15,
+      minZoom: 14,
       maxZoom: 18,
+      maxBounds: MISSION_BOUNDS, // Restrict to Mission District
+      maxBoundsViscosity: 0.8,
+    });
+
+    // Notify parent of initial bounds
+    if (onMapMove) {
+      onMapMove(map.getBounds());
+    }
+
+    map.on('moveend', () => {
+      if (onMapMove) {
+        onMapMove(map.getBounds());
+      }
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -84,47 +92,7 @@ export function MapView({
         mapRef.current = null;
       }
     };
-  }, [centerPoint]);
-
-  // Update zoom when radius changes
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    const targetZoom = getZoomForRadius(radiusBlocks);
-    const currentZoom = mapRef.current.getZoom();
-
-    // Only animate zoom if it's different
-    if (currentZoom !== targetZoom) {
-      mapRef.current.setView(centerPoint, targetZoom, {
-        animate: true,
-        duration: 0.5, // Smooth 0.5 second animation
-      });
-    }
-  }, [radiusBlocks, centerPoint]);
-
-  // Update radius circle
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    // Remove old circle
-    if (radiusCircleRef.current) {
-      mapRef.current.removeLayer(radiusCircleRef.current);
-    }
-
-    // Add new circle
-    const radiusMeters = radiusBlocks * 110;
-    const circle = L.circle(centerPoint, {
-      radius: radiusMeters,
-      color: '#8b5cf6',
-      fillColor: '#8b5cf6',
-      fillOpacity: 0.05,
-      weight: 2,
-      opacity: 0.3,
-      dashArray: '5, 10',
-    }).addTo(mapRef.current);
-
-    radiusCircleRef.current = circle;
-  }, [radiusBlocks, centerPoint]);
+  }, [centerPoint]); // Re-initialize if center point deeply changes (usually it won't)
 
   // Calculate distance between two points (Haversine formula)
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -160,26 +128,17 @@ export function MapView({
     });
     layersRef.current = [];
 
-    const radiusMeters = radiusBlocks * 110;
-
-    // Evaluate all blockfaces with distance
+    // Evaluate all blockfaces
     const blockfacesWithResults: BlockfaceWithResult[] = blockfaces.map(blockface => {
-      const [centerLat, centerLng] = getBlockfaceCenter(blockface);
-      const distance = calculateDistance(centerPoint[0], centerPoint[1], centerLat, centerLng);
-      
       return {
         blockface,
         result: evaluateLegality(blockface, checkTime, durationMinutes),
-        distance,
       };
     });
 
     // Add blockfaces as polylines
-    blockfacesWithResults.forEach(({ blockface, result, distance }) => {
-      const isInRadius = distance <= radiusMeters;
-      
-      // Each blockface shows only its own status color
-      const color = isInRadius ? getStatusColor(result.status) : '#d1d5db'; // gray-300 for out of radius
+    blockfacesWithResults.forEach(({ blockface, result }) => {
+      const color = getStatusColor(result.status);
 
       // Offset coordinates based on side to prevent overlapping lines
       // Roughly 0.0001 degrees is ~11 meters
@@ -205,15 +164,14 @@ export function MapView({
 
       const polyline = L.polyline(latlngs, {
         color: color,
-        weight: 10,
-        opacity: isInRadius ? 0.9 : 0.3,
+        weight: 8, // Slightly thinner
+        opacity: 0.6, // More transparent as requested (was 0.9)
+        className: 'hover:opacity-100 transition-opacity duration-200',
       });
 
       // Add tooltip
       let statusEmoji = '';
-      if (!isInRadius) {
-        statusEmoji = '🚫 '; // Out of radius
-      } else if (result.status === 'legal') {
+      if (result.status === 'legal') {
         statusEmoji = '✅ ';
       } else if (result.status === 'illegal') {
         statusEmoji = '🚫 ';
@@ -222,35 +180,36 @@ export function MapView({
       }
 
       polyline.bindTooltip(
-        isInRadius 
-          ? statusEmoji + blockface.streetName 
-          : `🚫 ${blockface.streetName} (outside radius)`,
+        statusEmoji + blockface.streetName,
         {
           permanent: false,
           direction: 'top',
         }
       );
 
-      // Add click handler only for blocks in radius
-      if (isInRadius) {
-        polyline.on('click', () => {
-          onBlockfaceClick(blockface, result);
-        });
+      polyline.on('click', () => {
+        onBlockfaceClick(blockface, result);
+      });
 
-        // Add hover effects
-        polyline.on('mouseover', () => {
-          polyline.setStyle({ weight: 14 });
+      // Add hover effects
+      polyline.on('mouseover', () => {
+        polyline.setStyle({
+            weight: 12,
+            opacity: 1.0
         });
+      });
 
-        polyline.on('mouseout', () => {
-          polyline.setStyle({ weight: 10 });
+      polyline.on('mouseout', () => {
+        polyline.setStyle({
+            weight: 8,
+            opacity: 0.6
         });
-      }
+      });
 
       polyline.addTo(mapRef.current!);
       layersRef.current.push(polyline);
     });
-  }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick, radiusBlocks, centerPoint]);
+  }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
 
   return (
     <div 

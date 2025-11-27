@@ -1,25 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Logo } from '@/components/Logo';
 import { SimpleDurationPicker } from '@/components/SimpleDurationPicker';
 import { ParkingNavigator } from '@/components/ParkingNavigator';
 import { MapView } from '@/components/MapView';
 import { BlockfaceDetail } from '@/components/BlockfaceDetail';
 import { ErrorReportDialog } from '@/components/ErrorReportDialog';
-import { RadiusControl } from '@/components/RadiusControl';
 import { Blockface, LegalityResult } from '@/types/parking';
-import { Sparkles, RefreshCw, Map as MapIcon, Navigation } from 'lucide-react';
-import { fetchSFMTABlockfaces, clearSFMTACache } from '@/utils/sfmtaDataFetcher';
+import { Sparkles, Map as MapIcon, Navigation } from 'lucide-react';
+import { fetchSFMTABlockfaces } from '@/utils/sfmtaDataFetcher';
 import { mockBlockfaces } from '@/data/mockBlockfaces';
 import { Button } from '@/components/ui/button';
-import { showSuccess, showError } from '@/utils/toast';
-import { evaluateLegality } from '@/utils/ruleEngine';
+import { showError } from '@/utils/toast';
+import L from 'leaflet';
 
 const CENTER_POINT: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - adjusted north
 
 const Index = () => {
-  const [durationMinutes, setDurationMinutes] = useState(60);
-  // Default radius to 2 blocks as per refined PRD
-  const [radiusBlocks, setRadiusBlocks] = useState(2);
+  const [durationMinutes, setDurationMinutes] = useState(180); // Default to 3 hours
   const [selectedTime, setSelectedTime] = useState(new Date());
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
@@ -28,25 +25,13 @@ const Index = () => {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
   const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
+  
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load data on mount and when radius changes
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      loadSFMTAData();
-    }, 500); // Debounce for 500ms
-
-    return () => clearTimeout(timer);
-  }, [radiusBlocks]);
-
-  const loadSFMTAData = async () => {
+  const loadSFMTAData = async (lat: number, lng: number, radius: number) => {
     setIsLoadingData(true);
     try {
-      // Convert blocks to meters (approx 110m per block)
-      const radiusMeters = radiusBlocks * 110;
-      // Add a buffer to ensure coverage
-      const fetchRadius = Math.max(radiusMeters * 1.5, 300);
-
-      const sfmtaData = await fetchSFMTABlockfaces(CENTER_POINT[0], CENTER_POINT[1], fetchRadius);
+      const sfmtaData = await fetchSFMTABlockfaces(lat, lng, radius);
       
       if (sfmtaData.length > 0) {
         setBlockfaces(sfmtaData);
@@ -68,9 +53,19 @@ const Index = () => {
     }
   };
 
-  const handleRefreshData = async () => {
-    clearSFMTACache();
-    await loadSFMTAData();
+  const handleMapMove = (bounds: L.LatLngBounds) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      const center = bounds.getCenter();
+      const northEast = bounds.getNorthEast();
+      // Calculate radius from center to corner to cover the view
+      const radiusMeters = center.distanceTo(northEast);
+      
+      loadSFMTAData(center.lat, center.lng, radiusMeters);
+    }, 500);
   };
 
   const handleBlockfaceClick = (blockface: Blockface, result: LegalityResult) => {
@@ -111,30 +106,6 @@ const Index = () => {
     return [centerLat, centerLng];
   };
 
-  // Calculate radius stats
-  const radiusMeters = radiusBlocks * 110;
-  
-  const blockfacesWithDistance = blockfaces.map(blockface => {
-    const [centerLat, centerLng] = getBlockfaceCenter(blockface);
-    const distance = calculateDistance(CENTER_POINT[0], CENTER_POINT[1], centerLat, centerLng);
-    const result = evaluateLegality(blockface, selectedTime, durationMinutes);
-    
-    return {
-      blockface,
-      distance,
-      result,
-    };
-  });
-
-  const blocksInRadius = blockfacesWithDistance.filter(b => b.distance <= radiusMeters);
-  const legalBlocksInRadius = blocksInRadius.filter(b => b.result.status === 'legal').length;
-  
-  // Find nearest legal parking outside radius
-  const blocksOutsideRadius = blockfacesWithDistance
-    .filter(b => b.distance > radiusMeters && b.result.status === 'legal')
-    .sort((a, b) => a.distance - b.distance);
-  
-  const nearestLegal = blocksOutsideRadius[0];
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
@@ -177,19 +148,11 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Duration Picker */}
-      <div className="flex-shrink-0">
-        <SimpleDurationPicker
-          durationMinutes={durationMinutes}
-          onDurationChange={setDurationMinutes}
-        />
-      </div>
-
       {/* Loading */}
       {isLoadingData && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="relative mb-4">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
+          <div className="flex flex-col items-center justify-center text-center">
+            <div className="mb-4">
               <Logo size="lg" animated={true} />
             </div>
             <p className="text-lg font-semibold text-gray-900 mb-1">Street parking eligibility made easy...</p>
@@ -198,7 +161,7 @@ const Index = () => {
       )}
 
       {/* Main Content */}
-      <div className="flex-1 relative overflow-hidden pb-20">
+      <div className="flex-1 relative overflow-hidden">
         {viewMode === 'navigator' ? (
           <ParkingNavigator
             blockfaces={blockfaces}
@@ -211,24 +174,16 @@ const Index = () => {
             durationMinutes={durationMinutes}
             onBlockfaceClick={handleBlockfaceClick}
             blockfaces={blockfaces}
-            radiusBlocks={radiusBlocks}
             centerPoint={CENTER_POINT}
+            onMapMove={handleMapMove}
           />
         )}
       </div>
 
-      {/* Radius Control - Only show when detail panel is NOT open */}
+      {/* Floating Duration Picker - Replaces RadiusControl position */}
       {viewMode === 'map' && !selectedBlockface && (
-        <RadiusControl
-          radiusBlocks={radiusBlocks}
-          onRadiusChange={setRadiusBlocks}
-          legalBlocksInRadius={legalBlocksInRadius}
-          totalBlocksInRadius={blocksInRadius.length}
-          nearestLegalDistance={nearestLegal?.distance}
-          nearestLegalStreet={nearestLegal?.blockface.streetName}
-          selectedTime={selectedTime}
+        <SimpleDurationPicker
           durationMinutes={durationMinutes}
-          onTimeChange={setSelectedTime}
           onDurationChange={setDurationMinutes}
         />
       )}
