@@ -28,24 +28,31 @@ export function SimpleDurationPicker({ durationMinutes, onDurationChange }: Simp
         </h2>
       </div>
       
-      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
-        {QUICK_DURATIONS.map((duration) => (
-          <Button
-            key={duration.value}
-            variant={durationMinutes === duration.value ? 'default' : 'outline'}
-            onClick={() => onDurationChange(duration.value)}
-            className={`
-              h-8 px-3 flex-shrink-0 flex items-center gap-1.5 rounded-full border transition-all text-xs
-              ${durationMinutes === duration.value
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 border-transparent text-white shadow-sm'
-                : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 text-gray-700'
-              }
-            `}
-          >
-            <span className="text-sm">{duration.emoji}</span>
-            <span className="font-medium">{duration.label}</span>
-          </Button>
-        ))}
+      <div className="relative group">
+        {/* Scroll Indicators - Fade Effect */}
+        <div className="absolute right-0 top-0 bottom-1 w-8 bg-gradient-to-l from-white to-transparent pointer-events-none z-10" />
+        
+        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1 snap-x">
+          {QUICK_DURATIONS.map((duration) => (
+            <Button
+              key={duration.value}
+              variant={durationMinutes === duration.value ? 'default' : 'outline'}
+              onClick={() => onDurationChange(duration.value)}
+              className={`
+                h-8 px-3 flex-shrink-0 flex items-center gap-1.5 rounded-full border transition-all text-xs snap-start
+                ${durationMinutes === duration.value
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 border-transparent text-white shadow-sm'
+                  : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 text-gray-700'
+                }
+              `}
+            >
+              <span className="text-sm">{duration.emoji}</span>
+              <span className="font-medium">{duration.label}</span>
+            </Button>
+          ))}
+          {/* Spacer to allow scrolling past the fade */}
+          <div className="w-4 flex-shrink-0" />
+        </div>
       </div>
     </div>
   );
