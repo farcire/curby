@@ -180,11 +180,22 @@
 - **Time Formats:** Time data comes in multiple formats (e.g., "900", "1800", "0", "6"). A robust parser was implemented to handle these cases.
 - **Rule Types:** Explicit mapping was required to categorize "Time limited", "Tow Away", and "Residential Permit" into internal types (`time-limit`, `tow-away`, `rpp-zone`).
 
+#### Side-of-Street Determination Strategy
+- **Dataset:** "Map of Parking Regulations" (`hi6h-neyh`).
+- **Finding:** This dataset does not typically contain explicit side codes (e.g., "Even", "Odd", "North"). Instead, it uses **offset geometries**. The lines representing regulations are drawn spatially to the left or right of the street centerline.
+- **Solution:** Implemented a Geometric Side Analysis:
+  1. Fetch street centerline (Active Streets).
+  2. Fetch nearby regulations.
+  3. Calculate the **Cross Product** of the regulation geometry's midpoint relative to the street centerline vector.
+  4. **Result:**
+     - Cross Product > 0: Regulation is on the **Left** side.
+     - Cross Product < 0: Regulation is on the **Right** side.
+  5. Assign the regulation to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`) rather than the generic street.
+
 #### Runtime Spatial Join Strategy
-- **Problem:** Parking regulations (`parking_regulations` collection) were not spatially joined to blockfaces (`blockfaces` collection) during ingestion.
+- **Problem:** Parking regulations (`parking_regulations` collection) are massive and complex to pre-join perfectly during ingestion without a robust spatial database (PostGIS).
 - **Solution:** Implemented a "Runtime Spatial Merge" in `get_blockfaces`:
   1. Fetch blockfaces within radius.
   2. Fetch regulations within the same radius (using `$geoWithin`).
-  3. For each regulation, find the nearest blockface centroid using Haversine distance.
-  4. If within 30 meters, append the regulation to the blockface's `rules` array.
+  3. Perform the **Geometric Side Analysis** (described above) in real-time or via a caching layer to link regulations to the correct blockface side.
 - **Trade-off:** This is an O(N*M) operation in Python, but given the small number of items in a typical viewport (N, M < 100), the performance impact is negligible (<10ms). It avoids a complex and potentially fragile full database spatial join.
