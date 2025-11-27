@@ -20,30 +20,30 @@ export function SimpleDurationPicker({ durationMinutes, onDurationChange }: Simp
   const hourText = durationHours === 1 ? 'hour' : 'hours';
 
   return (
-    <div className="bg-white border-b-2 border-purple-100 p-4 space-y-3 shadow-sm">
+    <div className="bg-white border-b border-purple-100 px-3 py-2 shadow-sm z-10 relative">
       <div className="flex items-center gap-2 mb-2">
-        <Clock className="h-5 w-5 text-purple-600" />
-        <h2 className="text-base font-bold text-gray-900">
-          Where can I street park nearby for the next {durationHours} {hourText}?
+        <Clock className="h-3 w-3 text-purple-600" />
+        <h2 className="text-xs font-bold text-gray-900">
+          Duration: <span className="text-purple-700">{durationHours} {hourText}</span>
         </h2>
       </div>
       
-      <div className="grid grid-cols-3 gap-2">
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
         {QUICK_DURATIONS.map((duration) => (
           <Button
             key={duration.value}
             variant={durationMinutes === duration.value ? 'default' : 'outline'}
             onClick={() => onDurationChange(duration.value)}
             className={`
-              h-auto py-3 px-2 flex flex-col items-center gap-1 rounded-xl border-2 transition-all
-              ${durationMinutes === duration.value 
-                ? 'bg-gradient-to-br from-purple-600 to-pink-600 border-purple-600 text-white shadow-lg scale-105' 
-                : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50'
+              h-8 px-3 flex-shrink-0 flex items-center gap-1.5 rounded-full border transition-all text-xs
+              ${durationMinutes === duration.value
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 border-transparent text-white shadow-sm'
+                : 'border-gray-200 hover:border-purple-300 hover:bg-purple-50 text-gray-700'
               }
             `}
           >
-            <span className="text-2xl">{duration.emoji}</span>
-            <span className="text-xs font-semibold">{duration.label}</span>
+            <span className="text-sm">{duration.emoji}</span>
+            <span className="font-medium">{duration.label}</span>
           </Button>
         ))}
       </div>

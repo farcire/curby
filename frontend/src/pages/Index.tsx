@@ -139,20 +139,19 @@ const Index = () => {
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-4 shadow-lg flex-shrink-0 relative overflow-hidden">
+      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-2 shadow-md flex-shrink-0 relative overflow-hidden z-20">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
         </div>
         <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Logo size="md" />
+          <div className="flex items-center gap-2">
+            <Logo size="sm" />
             <div>
-              <h1 className="text-2xl font-bold flex items-center gap-2">
+              <h1 className="text-lg font-bold flex items-center gap-1.5 leading-none">
                 Curby
-                <Sparkles className="h-5 w-5 animate-pulse" />
+                <Sparkles className="h-3 w-3 animate-pulse" />
               </h1>
-              <p className="text-sm text-white/90">street parking eligibility made easy</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -188,17 +187,16 @@ const Index = () => {
 
       {/* Data Source Banner */}
       {dataSource === 'mock' && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-4 py-2 flex-shrink-0">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-3 py-1 flex-shrink-0 z-10">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs text-amber-900">
-              <Logo size="sm" />
-              <span>Demo mode - 3 blocks around 20th & Bryant</span>
+            <div className="flex items-center gap-2 text-[10px] text-amber-900">
+              <span>⚠️ Demo mode - 20th & Bryant</span>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={handleRefreshData}
-              className="text-amber-900 hover:text-amber-950 hover:bg-amber-100 rounded-full h-7 text-xs"
+              className="text-amber-900 hover:text-amber-950 hover:bg-amber-100 rounded-full h-5 text-[10px] px-2"
             >
               <RefreshCw className="h-3 w-3 mr-1" />
               Retry
