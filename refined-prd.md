@@ -36,7 +36,7 @@ source: BA-PRD Agent Refinement
 **Technical & Cost Constraints:**
 - **Platform:** Must be built as a Progressive Web App (PWA) to ensure native-like mobile experience without app store overhead.
 - **Cost Efficiency:** Architecture must prioritize free, open-domain, or low-cost APIs and services. High-cost proprietary solutions (like Google Maps API) should be avoided in favor of cost-effective alternatives (e.g., Leaflet with OpenStreetMap tiles).
-- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph") and join other datasets (meters, sweeping, regulations) to it using CNN (Centerline Network Number).
+- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph"). Metered data is joined via CNN. Non-metered regulations (RPP, Time Limits) are sourced from dataset `hi6h-neyh`. These records use spatially offset geometries (lines drawn on the side of the street) rather than explicit side codes. The system uses geometric analysis (cross-product calculation relative to the street centerline) to accurately assign these regulations to the correct left or right blockface.
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
@@ -87,7 +87,8 @@ source: BA-PRD Agent Refinement
 - **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA.
 - **Acceptance Criteria:**
   - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone.
-  - [ ] Other datasets (meters, regulations) are joined or overlaid onto this backbone.
+  - [ ] Metered data is joined via CNN key.
+  - [ ] Non-metered regulations (`hi6h-neyh`) are spatially joined and geometrically analyzed (using offset vectors) to map specific regulations to the correct left/right blockface.
 
 **FR-006: Error Reporting System**
 - **Description:** Allow users to report incorrect parking rules they encounter.

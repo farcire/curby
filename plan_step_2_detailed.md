@@ -35,16 +35,19 @@ We will modify the ingestion process for the Active Streets dataset (`3psu-pn9h`
 
 We will ingest the **Non-Metered Parking Regulations** dataset (`hi6h-neyh`) and link it to our new Blockfaces.
 
+**Key Finding:** The `hi6h-neyh` dataset uses **spatially offset geometries** (lines drawn to the side of the centerline) to indicate side-of-street applicability.
+
 1.  **Fetch Data:** Download the full dataset (geoJSON/JSON).
 2.  **Spatial Indexing:** Create an in-memory R-Tree (using `rtree` or simplified bounding box check if deps are restricted) of all Active Street CNNs.
 3.  **Join Logic:**
     *   For each Regulation Record:
-        *   Extract its Geometry (`line` or `shape`).
+        *   Extract its Geometry (`shape`).
         *   Find the **nearest Active Street CNN** geometry.
-        *   **Determine Side:**
-            *   Calculate the relative position of the Regulation geometry to the Street Centerline.
-            *   *Heuristic:* Use the "Side of Line" algorithm (Cross Product) to see if the regulation falls to the Left or Right of the street vector.
-        *   **Link:** Add the regulation rule to the corresponding Blockface (`{cnn}_L` or `{cnn}_R`).
+        *   **Determine Side (Confirmed Approach):**
+            *   Calculate the **Cross Product** of the vector from the Street Centerline start to the Regulation Midpoint, relative to the Street Direction vector.
+            *   If result > 0: Assign to **Left** Blockface (`{cnn}_L`).
+            *   If result < 0: Assign to **Right** Blockface (`{cnn}_R`).
+        *   **Link:** Add the regulation rule to the corresponding Blockface.
 
 ### C. Frontend Updates
 **File:** `frontend/src/components/MapView.tsx`
