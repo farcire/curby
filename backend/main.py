@@ -1,4 +1,5 @@
 import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -10,19 +11,6 @@ from models import Blockface, ErrorReport
 
 load_dotenv()
 
-app = FastAPI()
-
-# CORS Configuration
-origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 # MongoDB Connection
 MONGODB_URI = os.getenv("MONGODB_URI")
 if not MONGODB_URI:
@@ -31,12 +19,9 @@ if not MONGODB_URI:
 client = AsyncIOMotorClient(MONGODB_URI)
 db = client.curby  # Specify the database name
 
-class HealthCheckResponse(BaseModel):
-    status: str
-    db_connection: str
-
-@app.on_event("startup")
-async def startup_db_client():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
     try:
         # The ismaster command is cheap and does not require auth.
         await client.admin.command('ismaster')
@@ -51,12 +36,28 @@ async def startup_db_client():
             
     except Exception as e:
         print(f"Failed to connect to MongoDB: {e}")
-        # Depending on the desired behavior, you might want to exit the app
-        # raise e
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
+    yield
+    
+    # Shutdown
     client.close()
+
+app = FastAPI(lifespan=lifespan)
+
+# CORS Configuration
+origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class HealthCheckResponse(BaseModel):
+    status: str
+    db_connection: str
 
 @app.get("/healthz", response_model=HealthCheckResponse)
 async def health_check():

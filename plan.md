@@ -26,13 +26,13 @@ Transform the application into an installable, app-like experience using standar
 - **Geometry Data:** SFMTA `Streets` Dataset (Public Domain) - *To be integrated*.
 
 ### Tasks
-- [ ] **Verify `streets` Geometry**
+- [x] **Verify `streets` Geometry**
     - Inspect the `streets` collection in MongoDB to confirm it contains detailed `LineString` coordinates (actual curves of the street).
-- [ ] **Update Backend Ingestion (`ingest_data.py`)**
+- [x] **Update Backend Ingestion (`ingest_data.py`)**
     - Modify the ingestion script to perform a "join" between the `blockfaces` dataset (parking rules) and the `streets` dataset (physical geometry).
     - Use the `cnn` (Centerline Network Number) or Street Name + Block Number as the join key.
     - **Result:** Each blockface record in the database will now contain the high-fidelity geometry from the `streets` dataset instead of the simplified start/end points.
-- [ ] **Backend API Verification**
+- [x] **Backend API Verification**
     - Verify `/api/v1/blockfaces` returns the new detailed geometry.
-- [ ] **Frontend Update**
+- [x] **Frontend Update**
     - No major changes needed in `MapView.tsx`. Leaflet will automatically render the detailed `LineString` provided by the API, resulting in curved lines that match the street map.
