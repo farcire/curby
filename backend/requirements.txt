@@ -6,3 +6,5 @@ python-dotenv
 aiohttp
 pandas
 sodapy
+shapely
+rtree

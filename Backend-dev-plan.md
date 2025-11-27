@@ -1,7 +1,7 @@
 # Backend Development Plan: Curby Parking App
 
 ### 1️⃣ Executive Summary
-- **Current Status:** Core backend API and data ingestion (S0-S2) are complete. PRD has been refined to explicitly require PWA capabilities.
+- **Current Status:** Core backend API and data ingestion (S0-S2) are complete. Map geometry refactoring (Step 2) is complete, with Active Streets providing high-fidelity curved lines.
 - **Next Phase:** Focus shifts to **S3 (PWA Implementation)** to ensure mobile-installability and offline resilience.
 - **Constraints:** FastAPI (Python 3.13), MongoDB Atlas (Motor), No Docker, Single Branch (`main`), Manual Testing.
 - **New Requirement:** Architecture must support PWA (Service Workers, Manifest) and prioritize cost-efficiency (Leaflet/OSM).
@@ -42,19 +42,19 @@
 ---
 
 ### 4️⃣ Data Model (MongoDB Atlas)
-- **Collection: `blockfaces`** (Populated by existing `ingest_data.py`)
-  - **Index:** **Must ensure `2dsphere` index exists on `geometry` field.**
-  - **Schema:**
-    ```json
-    {
-      "id": "string",
-      "streetName": "string",
-      "side": "string",
-      "geometry": { "type": "LineString", "coordinates": [...] },
-      "rules": [],
-      "schedules": []
-    }
-    ```
+- **Collection: `blockfaces`** (Populated by `ingest_data.py` using Active Streets geometry)
+- **Index:** **`2dsphere` index exists on `geometry` field.**
+- **Schema:**
+  ```json
+  {
+    "id": "string", // CNN
+    "streetName": "string",
+    "side": "string",
+    "geometry": { "type": "LineString", "coordinates": [...] }, // Sourced from Active Streets
+    "rules": [],
+    "schedules": []
+  }
+  ```
 
 - **Collection: `error_reports`**
   - **Schema:**

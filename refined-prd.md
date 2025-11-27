@@ -2,7 +2,7 @@
 title: Product Requirements Document - REFINED
 app: elegant-lynx-play
 created: 2025-11-25T07:06:20.848Z
-version: 6
+version: 7
 source: BA-PRD Agent Refinement
 ---
 
@@ -36,6 +36,7 @@ source: BA-PRD Agent Refinement
 **Technical & Cost Constraints:**
 - **Platform:** Must be built as a Progressive Web App (PWA) to ensure native-like mobile experience without app store overhead.
 - **Cost Efficiency:** Architecture must prioritize free, open-domain, or low-cost APIs and services. High-cost proprietary solutions (like Google Maps API) should be avoided in favor of cost-effective alternatives (e.g., Leaflet with OpenStreetMap tiles).
+- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph") and join other datasets (meters, sweeping, regulations) to it using CNN (Centerline Network Number).
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
@@ -59,6 +60,7 @@ source: BA-PRD Agent Refinement
 - **Description:** Visual map interface showing parking legality for all blockfaces within the **Mission and SOMA neighborhoods**.
 - **Acceptance Criteria:**
   - [ ] Map loads showing all blockfaces within Mission & SOMA with correct color coding.
+  - [ ] Map lines follow the actual curvature of the streets (high-fidelity geometry).
 
 **FR-002: Short-Term Future Legality Checking**
 - **Description:** Allow users to check parking legality for the current time or up to 48 hours in the future (to support 24-hour parking durations).
@@ -84,7 +86,8 @@ source: BA-PRD Agent Refinement
 **FR-005: Data Ingestion ("Trust, then Verify")**
 - **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA.
 - **Acceptance Criteria:**
-  - [ ] The system starts with the assumption that the ingested data is accurate.
+  - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone.
+  - [ ] Other datasets (meters, regulations) are joined or overlaid onto this backbone.
 
 **FR-006: Error Reporting System**
 - **Description:** Allow users to report incorrect parking rules they encounter.
@@ -140,6 +143,7 @@ source: BA-PRD Agent Refinement
 ## 4. BUSINESS RULES
 
 - **Data Source:** The SFMTA database is the single source of truth.
+- **Geometry Source:** Active Streets (3psu-pn9h) provides the authoritative geometry (curved lines).
 - **Street Closures:** Street closure data is transient. The system must ingest this data daily and invalidate any closure records with an end date in the past. Only "current" and "future" closures (status = permitted) are valid.
 - **Rule Precedence:** Street Sweeping and Street Closures take precedence over both Non-Metered Parking Regulation Time Limits and Meter Operating Schedules/Time Limits. (If a street is closed or being swept, you cannot park there regardless of the meter or time limit status).
 - **Permit Assumption:** The system assumes all users **do NOT** hold residential parking permits. Parking eligibility in non-metered areas is calculated based on regulations for non-permit holders (e.g., time limits apply).
@@ -151,6 +155,7 @@ source: BA-PRD Agent Refinement
 
 **Core Entities:**
 - **Blockface:** (geo_id, geometry, associated_rules)
+  - `geometry` is a GeoJSON `LineString` from Active Streets.
 - **Parking Rule:** (rule_id, type, time_windows, restrictions)
 - **Error Report:** (report_id, geo_id, timestamp, user_description, status)
 

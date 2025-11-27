@@ -1,5 +1,6 @@
 import requests
 import json
+import sys
 
 # --- Configuration ---
 APP_TOKEN = "ApbiUQbkvnyKHOVCHUw1Dh4ic"
@@ -70,6 +71,7 @@ if __name__ == "__main__":
     streets_data = fetch_data_sample(ACTIVE_STREETS_URL, APP_TOKEN, SAMPLE_SIZE)
     if streets_data:
         analyze_sample(streets_data, "Active Streets (3psu-pn9h)")
+    sys.exit() # EXIT EARLY TO INSPECT JUST THIS
 
     # 2. Blockface Geometries (Master/Supplemental Geometry)
     geo_data = fetch_data_sample(BLOCKFACE_GEOMETRY_URL, APP_TOKEN, SAMPLE_SIZE)
