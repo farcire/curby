@@ -192,8 +192,7 @@ const Index = () => {
             <div className="relative mb-4">
               <Logo size="lg" animated={true} />
             </div>
-            <p className="text-lg font-semibold text-gray-900 mb-1">Decoding street parking eligibility...</p>
-            <p className="text-sm text-gray-600 font-medium">street parking eligibility made easy</p>
+            <p className="text-lg font-semibold text-gray-900 mb-1">Street parking eligibility made easy...</p>
           </div>
         </div>
       )}
