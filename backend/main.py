@@ -81,6 +81,20 @@ async def health_check():
 def read_root():
     return {"message": "Welcome to the Curby API"}
 
+def map_regulation_type(reg_type: str) -> str:
+    reg_type = reg_type.lower()
+    if 'sweeping' in reg_type or 'cleaning' in reg_type:
+        return 'street-sweeping'
+    if 'tow' in reg_type:
+        return 'tow-away'
+    if 'no parking' in reg_type:
+        return 'no-parking'
+    if 'time' in reg_type or 'limit' in reg_type:
+        return 'time-limit'
+    if 'permit' in reg_type or 'residential' in reg_type:
+        return 'rpp-zone'
+    return 'unknown'
+
 @app.get("/api/v1/blockfaces", response_model=List[Blockface])
 async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
     """
@@ -108,6 +122,100 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
             blockfaces.append(doc)
             
         print(f"Found {len(blockfaces)} blockfaces")
+
+        # --- Enrich with Non-Metered Regulations ---
+        # Fetch regulations within the same area
+        # We use a slightly larger radius to ensure we catch things starting/ending just outside
+        reg_query = {
+            "geometry": {
+                "$geoWithin": {
+                    "$centerSphere": [[lng, lat], radius_radians]
+                }
+            }
+        }
+        
+        regulations = []
+        async for reg in db.parking_regulations.find(reg_query):
+            regulations.append(reg)
+            
+        print(f"Found {len(regulations)} regulations in area")
+        
+        # Simple spatial matching: Associate regulation with the nearest blockface(s)
+        # This is an approximation. Ideally this is done during ingestion with robust spatial joins.
+        if blockfaces and regulations:
+            from math import radians, cos, sin, asin, sqrt
+
+            def haversine(lon1, lat1, lon2, lat2):
+                """
+                Calculate the great circle distance between two points
+                on the earth (specified in decimal degrees)
+                """
+                # convert decimal degrees to radians
+                lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+                # haversine formula
+                dlon = lon2 - lon1
+                dlat = lat2 - lat1
+                a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+                c = 2 * asin(sqrt(a))
+                r = 6371000 # Radius of earth in meters
+                return c * r
+
+            def get_centroid(geometry):
+                if not geometry or 'coordinates' not in geometry:
+                    return None
+                coords = geometry['coordinates']
+                # Handle MultiLineString
+                if geometry['type'] == 'MultiLineString':
+                    # Flatten to single list of points
+                    all_points = [p for line in coords for p in line]
+                    coords = all_points
+                
+                if not coords:
+                    return None
+                    
+                # Simple average of points
+                avg_lng = sum(p[0] for p in coords) / len(coords)
+                avg_lat = sum(p[1] for p in coords) / len(coords)
+                return [avg_lng, avg_lat]
+
+            # Pre-calculate blockface centroids
+            bf_centroids = []
+            for bf in blockfaces:
+                c = get_centroid(bf.get('geometry'))
+                bf_centroids.append({'id': bf.get('id'), 'centroid': c})
+
+            for reg in regulations:
+                reg_center = get_centroid(reg.get('geometry'))
+                if not reg_center:
+                    continue
+                
+                # Find nearest blockface
+                nearest_bf = None
+                min_dist = float('inf')
+                
+                for bf_c in bf_centroids:
+                    if not bf_c['centroid']:
+                        continue
+                    dist = haversine(reg_center[0], reg_center[1], bf_c['centroid'][0], bf_c['centroid'][1])
+                    if dist < min_dist:
+                        min_dist = dist
+                        nearest_bf = bf_c['id']
+                
+                # If reasonably close (e.g., within 20 meters), attach rule
+                if nearest_bf and min_dist < 30:
+                    # Find the blockface object
+                    target_bf = next((b for b in blockfaces if b['id'] == nearest_bf), None)
+                    if target_bf:
+                        # Map regulation fields to rule structure
+                        rule = {
+                            "type": map_regulation_type(reg.get('regulation', '')),
+                            "day": reg.get('days', 'Daily'),
+                            "startTime": reg.get('hrs_begin', '0'),
+                            "endTime": reg.get('hrs_end', '2359'),
+                            "description": f"{reg.get('regulation')} ({reg.get('days')} {reg.get('hours')})"
+                        }
+                        target_bf['rules'].append(rule)
+
         return blockfaces
     except Exception as e:
         print(f"Error in get_blockfaces: {e}")

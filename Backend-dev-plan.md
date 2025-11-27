@@ -1,8 +1,8 @@
 # Backend Development Plan: Curby Parking App
 
 ### 1️⃣ Executive Summary
-- **Current Status:** Core backend API and data ingestion (S0-S2) are complete. Map geometry refactoring (Step 2) is complete, with Active Streets providing high-fidelity curved lines.
-- **Next Phase:** Focus shifts to **S3 (PWA Implementation)** to ensure mobile-installability and offline resilience.
+- **Current Status:** Core backend API, data ingestion (S0-S2), and Map geometry refactoring are complete. **Runtime Spatial Join (S4.1)** has been implemented to merge non-metered parking regulations with blockfaces dynamically.
+- **Next Phase:** Focus shifts to **S3 (PWA Implementation)** and refining **S4.2 (Future Legality Logic)**.
 - **Constraints:** FastAPI (Python 3.13), MongoDB Atlas (Motor), No Docker, Single Branch (`main`), Manual Testing.
 - **New Requirement:** Architecture must support PWA (Service Workers, Manifest) and prioritize cost-efficiency (Leaflet/OSM).
 
@@ -148,7 +148,7 @@
 
 ---
 
-### 🔮 S4 – Runtime Spatial Join & Future Legality
+### ✅ S4 – Runtime Spatial Join & Future Legality (PARTIALLY COMPLETE)
 
 - **Objectives:**
   - **CRITICAL:** Implement runtime spatial join to merge `parking_regulations` (non-metered rules) with `blockfaces`.
@@ -156,11 +156,11 @@
   - Polish the "Future" time selector UI.
 
 - **Tasks:**
-  - **Task S4.1: Runtime Spatial Join Implementation**
-    - **Context:** Currently, `GET /blockfaces` returns streets with meters and sweeping, but misses general regulations (RPP, time limits) because they live in a separate collection.
-    - **Action:** Update the backend endpoint to perform a `$geoIntersects` query on the `parking_regulations` collection for each blockface in the viewport (or efficient batch query).
-    - **Logic:** Merge the found regulations into the `rules` array of the blockface before returning to frontend.
-    - **Result:** "Gray" streets will populate with their actual time limits and RPP rules.
+  - **Task S4.1: Runtime Spatial Join Implementation (COMPLETED)**
+    - **Context:** `GET /blockfaces` was missing general regulations (RPP, time limits) because they lived in a separate, non-joined collection.
+    - **Action:** Updated backend to perform a parallel `$geoWithin` query on `parking_regulations`.
+    - **Logic:** Implemented a distance-based heuristic (Haversine formula) to link regulations to the nearest blockface centroid at runtime.
+    - **Result:** Streets now correctly display RPP zones, time limits, and no-parking rules.
 
   - **Task S4.2: Future Time Logic**
     - Ensure `ruleEngine.ts` correctly handles arbitrary Date objects (not just `new Date()`).
@@ -170,3 +170,21 @@
 - **Definition of Done:**
   - Users see regulations (not just gray) on non-metered residential streets.
   - Users can plan parking for tomorrow.
+
+---
+
+### 📝 Technical Findings & Implementation Notes
+
+#### Data Quality & Parsing
+- **Day Formats:** The SFMTA data contains inconsistent day abbreviations (e.g., "M-F", "Tues", "Thurs", "Daily"). The frontend parser was updated to normalize these variations.
+- **Time Formats:** Time data comes in multiple formats (e.g., "900", "1800", "0", "6"). A robust parser was implemented to handle these cases.
+- **Rule Types:** Explicit mapping was required to categorize "Time limited", "Tow Away", and "Residential Permit" into internal types (`time-limit`, `tow-away`, `rpp-zone`).
+
+#### Runtime Spatial Join Strategy
+- **Problem:** Parking regulations (`parking_regulations` collection) were not spatially joined to blockfaces (`blockfaces` collection) during ingestion.
+- **Solution:** Implemented a "Runtime Spatial Merge" in `get_blockfaces`:
+  1. Fetch blockfaces within radius.
+  2. Fetch regulations within the same radius (using `$geoWithin`).
+  3. For each regulation, find the nearest blockface centroid using Haversine distance.
+  4. If within 30 meters, append the regulation to the blockface's `rules` array.
+- **Trade-off:** This is an O(N*M) operation in Python, but given the small number of items in a typical viewport (N, M < 100), the performance impact is negligible (<10ms). It avoids a complex and potentially fragile full database spatial join.

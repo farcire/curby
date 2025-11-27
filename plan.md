@@ -36,3 +36,14 @@ Transform the application into an installable, app-like experience using standar
     - Verify `/api/v1/blockfaces` returns the new detailed geometry.
 - [x] **Frontend Update**
     - No major changes needed in `MapView.tsx`. Leaflet will automatically render the detailed `LineString` provided by the API, resulting in curved lines that match the street map.
+
+## 3. Data Accuracy & Rules Integration
+**Goal:** Ensure all parking rules (meters, RPP, sweeping, time limits) are correctly displayed and interpreted.
+
+### Tasks
+- [x] **Implement Runtime Spatial Join**
+    - Modify `GET /blockfaces` to fetch and merge `parking_regulations` dynamically.
+- [x] **Improve Data Parsing**
+    - Update frontend parser to handle various day/time formats ("M-F", "900", etc.).
+- [x] **Enhance Rule Engine**
+    - Increase time check resolution to 5 minutes to catch short duration restrictions.
