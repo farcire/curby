@@ -19,7 +19,7 @@ export default defineConfig(() => ({
         name: "Curby - SF Parking",
         short_name: "Curby",
         description: "San Francisco Parking Regulations and Sweeping Schedules",
-        theme_color: "#ffffff",
+        theme_color: "#9333ea",
         icons: [
           {
             src: "pwa-192x192.png",
