@@ -185,26 +185,6 @@ const Index = () => {
         />
       </div>
 
-      {/* Data Source Banner */}
-      {dataSource === 'mock' && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-200 px-3 py-1 flex-shrink-0 z-10">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-[10px] text-amber-900">
-              <span>⚠️ Demo mode - 20th & Bryant</span>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleRefreshData}
-              className="text-amber-900 hover:text-amber-950 hover:bg-amber-100 rounded-full h-5 text-[10px] px-2"
-            >
-              <RefreshCw className="h-3 w-3 mr-1" />
-              Retry
-            </Button>
-          </div>
-        </div>
-      )}
-
       {/* Loading */}
       {isLoadingData && (
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -212,8 +192,8 @@ const Index = () => {
             <div className="relative mb-4">
               <Logo size="lg" animated={true} />
             </div>
-            <p className="text-lg font-semibold text-gray-900 mb-2">Decoding street regulations...</p>
-            <p className="text-sm text-gray-600">✨ Just a sec ✨</p>
+            <p className="text-lg font-semibold text-gray-900 mb-1">Decoding street parking eligibility...</p>
+            <p className="text-sm text-gray-600 font-medium">street parking eligibility made easy</p>
           </div>
         </div>
       )}
