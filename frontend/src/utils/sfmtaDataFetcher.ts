@@ -20,7 +20,7 @@ export async function fetchSFMTABlockfaces(
     const params = new URLSearchParams({
       lat: lat.toString(),
       lng: lng.toString(),
-      radius_meters: radius.toString(),
+      radius_meters: Math.round(radius).toString(),
     });
 
     console.log(`Fetching from ${BACKEND_API}?${params}`);

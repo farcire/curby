@@ -24,12 +24,12 @@ METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
 # --- Data Models ---
 Blockface = Dict[str, Any]
 
-def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: int = 200000) -> pd.DataFrame:
+def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: int = 200000, **kwargs) -> pd.DataFrame:
     """Fetches a dataset and returns it as a pandas DataFrame."""
     print(f"Fetching dataset {dataset_id}...")
     try:
         client = Socrata(SFMTA_DOMAIN, app_token)
-        results = client.get(dataset_id, limit=limit)
+        results = client.get(dataset_id, limit=limit, **kwargs)
         df = pd.DataFrame.from_records(results)
         print(f"Successfully fetched {len(df)} records from {dataset_id}.")
         return df
@@ -61,7 +61,8 @@ async def main():
     # 1. Ingest Active Streets (The Backbone) - 3psu-pn9h
     # ==========================================
     print("\n--- 1. Processing Active Streets (The Backbone) ---")
-    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
+    # Filter for Zip Code 94110 (Mission)
+    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token, where="zip_code='94110'")
     
     if not streets_df.empty:
         # Save raw collection
@@ -172,7 +173,8 @@ async def main():
     # 7. Ingest Parking Regulations - hi6h-neyh
     # ==========================================
     print("\n--- 7. Processing Parking Regulations ---")
-    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
+    # Filter for Mission neighborhood to match the streets
+    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token, where="analysis_neighborhood='Mission'")
     if not regulations_df.empty:
         await db.parking_regulations.delete_many({})
         # Convert to dicts

@@ -113,38 +113,22 @@
 
 ---
 
-### 📱 S3 – Progressive Web App (PWA) Implementation
+### ✅ S3 – Progressive Web App (PWA) & UI Overhaul (COMPLETED)
 
-**Context:** To support the "Mobile-First" requirement without an app store, we must make the web app installable.
+**Context:** To support the "Mobile-First" requirement without an app store, we must make the web app installable. Additionally, a major UI overhaul was requested to simplify the user experience.
 
 - **Objectives:**
   - Configure PWA manifest and assets.
   - Implement Service Worker for offline app shell loading.
   - Ensure mobile viewport settings prevent accidental scaling.
+  - **New:** Remove Radius Slider, implement Dynamic Map View, and add Duration Slider.
 
-- **Tasks:**
-
-  - **Task S3.1: Install & Configure PWA Plugin**
-    - Install `vite-plugin-pwa`.
-    - Configure `vite.config.ts` with `VitePWA` plugin.
-    - Define manifest (name: "Curby", short_name: "Curby", theme_color: "#ffffff").
-    - **Manual Test Step:** Run `npm run build`. Verify `dist/manifest.webmanifest` exists.
-    - **User Test Prompt:** "Build the frontend and check if the manifest file is generated in the dist folder."
-
-  - **Task S3.2: Asset Generation & Meta Tags**
-    - Add required icons (192x192, 512x512) to `public/`.
-    - Add viewport meta tag to `index.html` (user-scalable=no).
-    - **Manual Test Step:** Inspect `index.html` head.
-    - **User Test Prompt:** "Verify the viewport meta tag is correct in index.html."
-
-  - **Task S3.3: Offline Capability & Installability**
-    - Register service worker in `main.tsx` (using `vite-plugin-pwa/client`).
-    - **Manual Test Step:** Serve app locally (`npm run preview`). Open Chrome DevTools > Application. Check "Service Workers" (Status: Activated) and "Manifest" (No errors).
-    - **User Test Prompt:** "Run the app in preview mode. Open DevTools > Application. Confirm the Service Worker is active and the Manifest has no errors."
-
-- **Definition of Done:**
-  - App passes Lighthouse "PWA" audit.
-  - "Add to Home Screen" appears on mobile.
+- **Tasks (Completed):**
+  - Configured `vite-plugin-pwa` with manifest and icons.
+  - Implemented dynamic data fetching based on map viewport (`onMapMove`).
+  - Restricted map bounds to Mission District.
+  - Created custom Duration Slider with non-linear scale (1-24h).
+  - Refined map visuals (transparent overlays) and loading screen.
 
 ---
 
@@ -199,3 +183,8 @@
   2. Fetch regulations within the same radius (using `$geoWithin`).
   3. Perform the **Geometric Side Analysis** (described above) in real-time or via a caching layer to link regulations to the correct blockface side.
 - **Trade-off:** This is an O(N*M) operation in Python, but given the small number of items in a typical viewport (N, M < 100), the performance impact is negligible (<10ms). It avoids a complex and potentially fragile full database spatial join.
+
+#### Dynamic Radius Calculation
+- **Context:** The frontend no longer sends a fixed radius from a slider.
+- **Solution:** The frontend calculates the distance from the map center to the map corner (NE) to determine the visible radius.
+- **API Adjustment:** The `radius_meters` parameter in `GET /blockfaces` is now rounded to an integer by the frontend to prevent 422 validation errors in FastAPI.

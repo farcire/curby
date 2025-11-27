@@ -47,7 +47,10 @@ def verify_spatial_overlap():
     print("--- Verifying Spatial Join Feasibility (Regulations <-> Streets) ---\n")
 
     # 1. Fetch a Regulation Sample (limit to one with a shape)
-    regulations = fetch_socrata_data(PARKING_REGULATIONS_ID, limit=1, filters={"$where": "shape IS NOT NULL"})
+    # Search for something that looks like an RPP or has interesting data
+    regulations = fetch_socrata_data(PARKING_REGULATIONS_ID, limit=1, filters={
+        "$where": "shape IS NOT NULL AND regulation like '%Permit%'"
+    })
     
     if not regulations:
         print("No regulations found with geometry.")
@@ -56,8 +59,10 @@ def verify_spatial_overlap():
     reg = regulations[0]
     reg_desc = reg.get('regulation', 'Unknown Regulation')
     reg_shape = reg.get('shape')
+    rpp_area = reg.get('rpparea1')
     
     print(f"Target Regulation: {reg_desc}")
+    print(f"RPP Area: {rpp_area}")
     
     # Extract a query point from the regulation geometry
     coords = get_coordinates(reg_shape)

@@ -105,15 +105,14 @@ source: BA-PRD Agent Refinement
 - **Acceptance Criteria:**
   - [ ] The system automatically polls the SFMTA data source on a regular schedule.
 
-**FR-009: Location & Dynamic Radius Selector (MVP Use Cases)**
-- **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to radius changes.
+**FR-009: Location & Dynamic Map View (MVP Use Cases)**
+- **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to viewport changes.
 - **Acceptance Criteria:**
-  - [ ] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within MVP area) and defaults to a 2-block search radius.
-  - [ ] **Use Case 2 (Manual):** Users can tap anywhere on the map or select an address to set a search center.
-  - [ ] Users can adjust the search radius between 1 and 8 blocks using a slider.
-  - [ ] **Dynamic Resizing:** As the radius slider moves, the map view automatically zooms/pans to fit the new radius.
-  - [ ] **Dynamic Data:** The parking eligibility data (blockfaces) automatically updates to reflect the new covered area.
-  - [ ] **Loading State:** The loading message must explicitly state "Decoding street regulations..." or similar, avoiding "finding parking spots" terminology.
+  - [ ] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within Mission/SOMA) and zooms to a close-up street view.
+  - [ ] **Use Case 2 (Manual):** Users can pan the map freely within the Mission District bounds.
+  - [ ] **Dynamic Data:** Parking eligibility data automatically populates the entire visible map area as the user pans or zooms. No manual "Radius" slider or "Search" button is required.
+  - [ ] **Restricted Bounds:** The map view is strictly limited to the Mission District for the MVP.
+  - [ ] **Loading State:** The loading message must state "Street parking eligibility made easy..." with centered branding.
 
 **FR-010: Progressive Web App (PWA) Capabilities**
 - **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.
@@ -122,6 +121,15 @@ source: BA-PRD Agent Refinement
   - [ ] Service Worker registered for caching static assets (app shell).
   - [ ] "Add to Home Screen" prompt triggerable on supported devices.
   - [ ] Viewport configuration prevents accidental zooming/scaling on mobile.
+
+**FR-011: Enhanced User Controls (Duration & Visuals)**
+- **Description:** Provide intuitive controls for parking duration and refined map visuals.
+- **Acceptance Criteria:**
+  - [ ] **Duration Slider:** Replaces fixed buttons with a 0-24 hour slider.
+    - [ ] Non-linear scale prioritizing 1-6 hours (hourly steps) and "squeezing" longer durations (8, 10, 12, 16, 20, 24 hours).
+    - [ ] Visual labels for key milestones (1h, 3h, 6h, 12h, 24h).
+    - [ ] Dynamic emoji feedback based on duration (e.g., ☕ for short, 🌙 for overnight).
+  - [ ] **Map Visuals:** Parking eligibility lines must use semi-transparent colors (opacity ~0.6) to blend with the map, avoiding a "harsh" overlay look.
 
 ## 3. USER WORKFLOWS
 

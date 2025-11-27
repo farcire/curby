@@ -20,6 +20,6 @@ def fetch_raw_json(api_url):
         print(response.text)
 
 if __name__ == "__main__":
-    # Using the correct metadata endpoint, not the query endpoint
-    parking_reg_url = "https://data.sfgov.org/api/views/hi6h-neyh.json"
-    fetch_raw_json(parking_reg_url)
+    # Fetch metadata for the visualization view qbyz-te2i
+    view_url = "https://data.sfgov.org/api/views/qbyz-te2i.json"
+    fetch_raw_json(view_url)
