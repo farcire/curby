@@ -1,0 +1,26 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+SEARCHING FOR BALMY STREET IN PARKING REGULATIONS
+================================================================================
+
+1. Searching Non-Metered Parking Regulations for 'BALMY'...
+--------------------------------------------------------------------------------
+Error: 404
+Response: {
+  "code" : "dataset.missing",
+  "error" : true,
+  "message" : "Not found",
+  "data" : {
+    "id" : "cqh6-v9mp"
+  }
+}
+
+
+2. Searching Street Cleaning Schedules for 'BALMY'...
+--------------------------------------------------------------------------------
+Error: 400
+
+================================================================================
+SEARCH COMPLETE
+================================================================================

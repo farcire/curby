@@ -1,0 +1,152 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Searching for parking regulations near Balmy Street (lat: 37.7526, lng: -122.4107)
+================================================================================
+
+Found 24 blockface segments near Balmy Street
+
+
+First segment structure:
+{
+  "id": "69290b8b2032522dc690ff57",
+  "cnn": "2117000",
+  "streetName": "ALABAMA ST",
+  "side": "L",
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [
+        -122.41107036482916,
+        37.75429166235959
+      ],
+      [
+        -122.41091290182916,
+        37.75268977935959
+      ]
+    ]
+  },
+  "rules": [
+    {
+      "type": "street-sweeping",
+      "day": "Thu",
+      "startTime": "9",
+      "endTime": "11",
+      "side": "L",
+      "description": "Street Cleaning Thu 9-11",
+      "limits": "23rd St  -  24th St"
+    }
+  ],
+  "schedules": [
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    },
+    {
+      "beginTime": null,
+      "endTime": null,
+      "rate": null,
+      "rateQualifier": null,
+      "rateUnit": "per hour"
+    }
+  ],
+  "fromStreet": "23rd St",
+  "toStreet": "24th St"
+}
+
+================================================================================
+
+No segments found specifically on Balmy Street.
+
+Showing all nearby segments:
+  - None (L side)
+  - None (R side)
+  - None (L side)
+  - None (R side)
+  - None (L side)
