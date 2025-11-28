@@ -213,3 +213,13 @@
 - **Context:** The frontend no longer sends a fixed radius from a slider.
 - **Solution:** The frontend calculates the distance from the map center to the map corner (NE) to determine the visible radius.
 - **API Adjustment:** The `radius_meters` parameter in `GET /blockfaces` is now rounded to an integer by the frontend to prevent 422 validation errors in FastAPI.
+
+#### Location Marker Centering Fix (2025-11-28)
+- **Problem:** Location marker was appearing at the bottom of the map view instead of centered at app initialization.
+- **Root Causes:**
+  1. **ParkingNavigator.tsx** was using hardcoded demo location (20th & Bryant St) instead of actual device geolocation.
+  2. **MapView.tsx** map initialization was completing before user location was obtained from the device, causing the marker to appear off-center.
+- **Solution:**
+  1. Replaced hardcoded demo location in `ParkingNavigator.tsx` with proper `navigator.geolocation.getCurrentPosition()` API calls.
+  2. Added a separate `useEffect` in `MapView.tsx` that centers the map on the user's location once it becomes available (with distance threshold check to avoid unnecessary re-centering).
+- **Result:** Location marker now correctly appears at the center of the map view at app start, using actual device location.

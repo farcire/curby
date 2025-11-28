@@ -117,6 +117,7 @@ source: BA-PRD Agent Refinement
   - [x] **Return to Location:** A button styled to match map controls allows users to quickly return to their actual device location.
   - [x] **Restricted Bounds:** The map view is strictly limited to the Mission District for the MVP.
   - [x] **Loading State:** The loading message must state "Street parking eligibility made easy..." with centered branding.
+  - [x] **Location Marker Centering:** The user location marker appears at the center of the map view at app initialization, using actual device geolocation (no mock data).
 
 **FR-010: Progressive Web App (PWA) Capabilities**
 - **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.

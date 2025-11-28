@@ -9,6 +9,7 @@ Curby is a mobile-first Progressive Web App (PWA) designed to simplify street pa
 - **Duration Slider:** Intuitive "pill" slider to check parking legality for specific durations (1h - 24h).
 - **Resident Focused:** Designed for SF residents running errands or visiting friends.
 - **PWA Support:** Installable on mobile devices with offline capabilities.
+- **Geolocation:** Uses actual device location for map centering and user position marker.
 
 ## Tech Stack
 
@@ -34,3 +35,13 @@ Curby is a mobile-first Progressive Web App (PWA) designed to simplify street pa
 3.  Build for production:
     ```bash
     npm run build
+    ```
+
+## Recent Updates
+
+### Location Marker Centering Fix (2025-11-28)
+- Fixed issue where location marker appeared at bottom of map instead of centered
+- Removed hardcoded demo location from ParkingNavigator component
+- Implemented proper device geolocation in both Map and Navigator views
+- Added dynamic map centering when user location becomes available
+- Location marker now correctly appears at center of map view at app initialization
