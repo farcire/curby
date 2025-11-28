@@ -8,7 +8,6 @@ import { ErrorReportDialog } from '@/components/ErrorReportDialog';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { Sparkles, Map as MapIcon, Navigation } from 'lucide-react';
 import { fetchSFMTABlockfaces } from '@/utils/sfmtaDataFetcher';
-import { mockBlockfaces } from '@/data/mockBlockfaces';
 import { Button } from '@/components/ui/button';
 import { showError } from '@/utils/toast';
 import L from 'leaflet';
@@ -21,9 +20,8 @@ const Index = () => {
   const [selectedBlockface, setSelectedBlockface] = useState<Blockface | null>(null);
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [blockfaces, setBlockfaces] = useState<Blockface[]>(mockBlockfaces);
+  const [blockfaces, setBlockfaces] = useState<Blockface[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [dataSource, setDataSource] = useState<'mock' | 'sfmta'>('mock');
   const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
   
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -32,22 +30,15 @@ const Index = () => {
     setIsLoadingData(true);
     try {
       const sfmtaData = await fetchSFMTABlockfaces(lat, lng, radius);
+      setBlockfaces(sfmtaData);
       
-      if (sfmtaData.length > 0) {
-        setBlockfaces(sfmtaData);
-        setDataSource('sfmta');
-      } else {
-        setBlockfaces(mockBlockfaces);
-        setDataSource('mock');
-        if (dataSource === 'sfmta') { // Only show error if we were previously connected
-             showError('Using demo data - real data coming soon!');
-        }
+      if (sfmtaData.length === 0) {
+        console.log('No data found in this area');
       }
     } catch (error) {
       console.error('Error loading SFMTA data:', error);
-      setBlockfaces(mockBlockfaces);
-      setDataSource('mock');
-      showError('Using demo data - real data coming soon!');
+      setBlockfaces([]);
+      showError('Failed to load parking data');
     } finally {
       setIsLoadingData(false);
     }

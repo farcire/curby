@@ -1,0 +1,20 @@
+{
+  "timestamp": "20251127_161321",
+  "mongodb_uri_host": "cluster0.myw6nls.mongodb.net/?appName=Cluster0",
+  "total_collections": 8,
+  "total_documents": 90286,
+  "collections": {
+    "streets": 2007,
+    "intersection_permutations": 21046,
+    "blockfaces": 218,
+    "intersections": 18756,
+    "street_cleaning_schedules": 37878,
+    "street_nodes": 9719,
+    "parking_regulations": 660,
+    "error_reports": 2
+  },
+  "purpose": "Pre CNN-segment migration",
+  "current_system": "Blockface-based (7.4% coverage)",
+  "next_step": "Migrate to CNN-segment architecture",
+  "backup_format": "JSON per collection"
+}

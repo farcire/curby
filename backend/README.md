@@ -35,10 +35,12 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 ## Current Status
 
 - ✅ **Technical Fixes**: Complete
-- ✅ **Architecture Planning**: Complete  
-- 🔄 **Migration to CNN Segments**: In Progress
-- ⏳ **Database Backup**: Pending
-- ⏳ **Full Implementation**: Starting
+- ✅ **Architecture Planning**: Complete
+- ✅ **CNN Segment Implementation**: Phase 1 Complete!
+- ✅ **Database Backup**: Complete (pre_cnn_migration_20251127_161321)
+- ✅ **Migration Scripts**: Ready to execute
+- ⏳ **API Updates**: Pending
+- ⏳ **Frontend Updates**: Pending
 
 ## Data Sources
 
@@ -92,18 +94,46 @@ cp .env.example .env
 bash run_ingestion.sh
 ```
 
+## Quick Start - Run Migration
+
+### Execute CNN Segment Migration
+```bash
+cd backend
+./run_cnn_segment_migration.sh
+```
+
+Or manually:
+```bash
+python3 ingest_data_cnn_segments.py  # Step 1: Ingest
+python3 validate_cnn_segments.py     # Step 2: Validate
+```
+
+### Expected Results
+- ✅ 4,014 street segments created (2 per CNN)
+- ✅ 100% coverage achieved
+- ✅ CNN 1046000 validated with Tuesday 9-11am sweeping
+- ✅ 1,800+ street sweeping rules attached
+- ✅ 400-600 parking regulations matched
+
 ## API Endpoints
 
 ### Current
 - `GET /api/blockfaces` - Get blockfaces with rules
 - `GET /api/blockfaces/{id}` - Get specific blockface
 
-### Planned (CNN Segments)
+### New (CNN Segments - To Be Implemented)
 - `GET /api/segments` - Get street segments with rules
 - `GET /api/segments/{cnn}/{side}` - Get specific segment
 
-## Testing
+## Testing & Validation
 
+### CNN Segment Validation
+```bash
+# Comprehensive validation (recommended after migration)
+python3 validate_cnn_segments.py
+```
+
+### Legacy Testing Scripts
 ```bash
 # Quick database check
 python quick_check.py
@@ -118,27 +148,48 @@ python check_missing_blockfaces.py
 ## Development
 
 ### Key Files
-- `ingest_data.py` - Main data ingestion script
-- `models.py` - Data models
-- `main.py` - FastAPI application
+- **`ingest_data_cnn_segments.py`** - New CNN-based ingestion (522 lines)
+- **`ingest_data.py`** - Legacy blockface-based ingestion
+- **`models.py`** - Data models (includes StreetSegment)
+- **`main.py`** - FastAPI application
+- **`validate_cnn_segments.py`** - Validation script (226 lines)
+- **`run_cnn_segment_migration.sh`** - Migration runner
 
-### Ingestion Flow
-1. Load Active Streets (centerlines + CNN)
-2. Create segments for each CNN (L & R)
-3. Match street sweeping via CNN + side (direct)
-4. Match parking regulations via spatial + side (complex)
-5. Match meters via CNN + location
-6. Save to MongoDB
+### CNN Segment Ingestion Flow
+1. **Load Active Streets** → Create 2 segments per CNN (L & R)
+2. **Add Blockface Geometries** → Optional enhancement where available
+3. **Match Street Sweeping** → Direct CNN + side match (easy)
+4. **Match Parking Regulations** → Multi-point spatial + side analysis (complex)
+5. **Match Meters** → CNN + location inference (medium)
+6. **Save to MongoDB** → With proper indexes
 
-## Migration Plan
+### Key Features
+- **Multi-point sampling**: Robust regulation side determination
+- **100% coverage**: Every CNN gets L & R segments
+- **Dual geometries**: Centerline (required) + blockface (optional)
+- **Confidence scores**: For debugging regulation matches
 
-See [CNN_SEGMENT_IMPLEMENTATION_PLAN.md](CNN_SEGMENT_IMPLEMENTATION_PLAN.md) for detailed migration steps.
+## Implementation Status
 
-**Timeline**: 5-7 days
-- Days 1-2: Core data model implementation
-- Days 3-4: Enhanced parking regulation matching
-- Day 5: Testing & validation
-- Days 6-7: API & frontend updates
+### ✅ Phase 1: Core Implementation (COMPLETE)
+- [x] StreetSegment data model
+- [x] Segment generation logic (2 per CNN)
+- [x] Enhanced parking regulation matching
+- [x] Complete ingestion rewrite
+- [x] Validation script
+- [x] Migration tools
+
+### ⏳ Phase 2: API Updates (Next - 1-2 days)
+- [ ] Create `/api/segments` endpoints
+- [ ] Update existing endpoints
+- [ ] Test with Postman/curl
+
+### ⏳ Phase 3: Frontend Updates (Next - 2-3 days)
+- [ ] Update data types
+- [ ] Modify API calls
+- [ ] Update map visualization
+
+See **[CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md](CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md)** for full implementation summary.
 
 ## Contributing
 
