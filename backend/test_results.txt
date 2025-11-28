@@ -1,0 +1,23 @@
+=== DATABASE CHECK ===
+
+Total blockfaces: 218
+
+Mariposa Street blockfaces: 0
+
+No Mariposa Street found.
+
+Sample streets in database:
+  - 17TH ST
+  - 19TH ST
+  - 29TH ST
+  - 03RD ST
+  - ALAMEDA ST
+  - ALAMEDA ST
+  - BRANNAN ST
+  - BRYANT ST
+  - MISSION ST
+  - MISSION ST
+
+=== RULE TYPES ===
+street-sweeping: 914
+parking-regulation: 136

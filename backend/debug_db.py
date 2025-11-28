@@ -36,26 +36,20 @@ async def main():
     else:
         print("No documents found in 'blockfaces'.")
 
-    # Test the query
-    print("\nTesting geospatial query ($geoWithin)...")
+    # Search for Mariposa
+    print("\nSearching for 'Mariposa' in blockfaces...")
     try:
-        # Radius in radians = radius_meters / earth_radius_meters
-        radius_radians = 500 / 6378100
-        
-        query = {
-            "geometry": {
-                "$geoWithin": {
-                    "$centerSphere": [[-122.41, 37.76], radius_radians]
-                }
-            }
-        }
+        query = {"streetName": {"$regex": "Mariposa", "$options": "i"}}
         count = await db.blockfaces.count_documents(query)
-        print(f"Found {count} documents within 500m of -122.41, 37.76")
+        print(f"Found {count} documents matching 'Mariposa'")
         
-        print("\nFetching sample documents...")
-        async for doc in db.blockfaces.find(query).limit(2):
+        async for doc in db.blockfaces.find(query).limit(5):
             if "_id" in doc: del doc["_id"]
-            print(f"Found blockface: {doc.get('streetName', 'Unknown')}")
+            print("\n----------------")
+            print(f"CNN: {doc.get('cnn')}")
+            print(f"Street: {doc.get('streetName')}")
+            print(f"Side: {doc.get('side')}") # Check if we have side info
+            print(f"Geometry Type: {doc.get('geometry', {}).get('type')}")
             
     except Exception as e:
         print(f"Query Error: {e}")
