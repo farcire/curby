@@ -166,46 +166,40 @@
 
 #### Side-of-Street Determination Strategy
 
-**PRIMARY METHOD: Address-Based Matching (RPP Zones)**
-- **Datasets:** Active Streets (3psu-pn9h) + RPP Eligibility Parcels (i886-hxz9)
-- **Key Insight:** Active Streets contains address ranges for each side of every street segment!
-- **Fields Used:**
-  - `lf_fadd`, `lf_toadd`: Left side address range (e.g., 3200-3298)
-  - `rt_fadd`, `rt_toadd`: Right side address range (e.g., 3201-3299)
-  - RPP Parcels: `from_st` (address), `street` (name), `rppeligib` (RPP code)
+**PRIMARY METHOD: Spatial Join with Distance Analysis (Parking Regulations)**
+- **Dataset:** Parking Regulations (hi6h-neyh)
+- **Key Insight:** Regulations contain geometry but NO CNN identifiers
+- **RPP Zones:** Come directly from regulation records (`rpparea1` field), not from separate address matching
 - **Implementation Status:** ✅ **COMPLETE** (Nov 2024)
-  - Address ranges now stored in StreetSegment model (`fromAddress`, `toAddress` fields)
+  - Address ranges stored in StreetSegment model (`fromAddress`, `toAddress` fields)
   - Populated during ingestion from Active Streets dataset
   - Available for all CNN segments (L and R sides)
-- **Solution:** Direct Address Range Matching:
-  1. Fetch Active Streets with address ranges
-  2. Store address ranges in each StreetSegment (L side gets lf_fadd/lf_toadd, R side gets rt_fadd/rt_toadd)
-  3. Fetch RPP parcels with building addresses and RPP codes
-  4. Match parcel address to street address range using simple numeric comparison
-  5. **Result:**
-     - If `lf_fadd <= parcel_address <= lf_toadd`: Assign to **Left** side
-     - If `rt_fadd <= parcel_address <= rt_toadd`: Assign to **Right** side
-  6. Assign RPP code to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
+  - Used for address-based queries and boundary conflict resolution
+- **Solution:** Distance-Based CNN L/R Assignment:
+  1. Fetch Active Streets centerline geometries (create CNN L and CNN R segments)
+  2. Fetch parking regulations with geometries
+  3. Calculate distance from regulation geometry to each CNN L/R centerline
+  4. **Assignment Logic:**
+     - Distance < 10m to LEFT centerline: Assign to CNN L
+     - Distance < 10m to RIGHT centerline: Assign to CNN R
+     - Distance < 10m to BOTH: Assign to BOTH CNN L and CNN R
+     - Distance 10-50m (boundary): Use Parcel Overlay for conflict resolution
+  5. Extract RPP code from regulation's `rpparea1` field
+  6. Store regulation (with RPP code) in assigned segment(s)
 
 **Advantages:**
-- ✅ Deterministic (address either falls in range or doesn't)
-- ✅ No geometric calculations needed
-- ✅ Fast (simple integer comparison)
-- ✅ Accurate (based on official address assignments)
-- ✅ Works even with imperfect geometries
-- ✅ **Now stored in database** for direct queries and validation
+- ✅ Handles regulations that span full street width (assigned to BOTH sides)
+- ✅ Handles narrow regulations (assigned to ONE side)
+- ✅ RPP zones come from authoritative regulation source
+- ✅ Address ranges enable conflict resolution and address-based queries
+- ✅ Works with actual regulation geometries
 
-**FALLBACK METHOD: Geometric Side Analysis (Non-Metered Regulations)**
-- **Dataset:** "Map of Parking Regulations" (`hi6h-neyh`)
-- **Finding:** This dataset uses **offset geometries** (lines drawn on the side of the street)
-- **Solution:** Geometric Side Analysis (used when address data unavailable):
-  1. Fetch street centerline (Active Streets)
-  2. Fetch nearby regulations
-  3. Calculate the **Cross Product** of the regulation geometry's midpoint relative to the street centerline vector
-  4. **Result:**
-     - Cross Product > 0: Regulation is on the **Left** side
-     - Cross Product < 0: Regulation is on the **Right** side
-  5. Assign the regulation to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
+**CONFLICT RESOLUTION: Parcel Overlay (Boundary Cases)**
+- **Dataset:** Parcel Overlay (9grn-xjpx)
+- **Purpose:** Resolve ambiguous cases when regulation is 10-50m from centerline
+- **Method:** Match regulation's `analysis_neighborhood` + `supervisor_district` to parcel's fields
+- **Result:** Deterministic assignment to correct side based on administrative boundaries
+- **Usage:** Only for boundary cases, not for primary RPP zone determination
 
 #### Runtime Spatial Join Strategy
 - **Problem:** Parking regulations (`parking_regulations` collection) are massive and complex to pre-join perfectly during ingestion without a robust spatial database (PostGIS).

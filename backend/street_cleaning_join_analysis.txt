@@ -1,0 +1,168 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+STREET CLEANING DATASET (yhqp-riqs) - COMPREHENSIVE JOIN ANALYSIS
+================================================================================
+
+Fetched 100 street cleaning records
+
+================================================================================
+1. AVAILABLE FIELDS
+================================================================================
+
+Fields in dataset:
+  blockside: SouthEast
+  blocksweepid: 1640782
+  cnn: 8753101
+  cnnrightleft: L
+  corridor: Market St
+  fromhour: 5
+  fullname: Tuesday
+  holidays: 0
+  limits: Larkin St  -  Polk St
+  line: {'type': 'LineString', 'coordinates': [[-122.41629
+  tohour: 6
+  week1: 1
+  week2: 1
+  week3: 1
+  week4: 1
+  week5: 1
+  weekday: Tues
+
+================================================================================
+2. KEY FIELD ANALYSIS
+================================================================================
+
+CNN-related fields: ['cnn', 'cnnrightleft']
+Side-related fields (L/R): ['cnnrightleft', 'blockside']
+BlockSweep ID fields: ['blocksweepid']
+Geometry/LineString fields: ['line']
+Blockside (cardinal direction) fields: ['blockside']
+
+================================================================================
+3. CNN COVERAGE ANALYSIS
+================================================================================
+
+Records with CNN: 100/100 (100.0%)
+Records with Side: 100/100 (100.0%)
+
+Side value distribution:
+  L: 56 records
+  R: 44 records
+
+================================================================================
+4. CNN + SIDE UNIQUENESS
+================================================================================
+
+Found 1 CNN+Side combinations with multiple records:
+  CNN 9835101 Side L: 2 records
+
+================================================================================
+5. SAMPLE RECORDS WITH JOIN KEYS
+================================================================================
+
+Record 1:
+  CNN: 8753101
+  Side (L/R): L
+  BlockSweep ID: 1640782
+  Blockside (Cardinal): SouthEast
+  Week: None
+  Day: Tues
+  From Hour: 5
+  To Hour: 6
+  Holidays: 0
+
+Record 2:
+  CNN: 8508000
+  Side (L/R): R
+  BlockSweep ID: 1645051
+  Blockside (Cardinal): West
+  Week: None
+  Day: Tues
+  From Hour: 13
+  To Hour: 15
+  Holidays: 0
+
+Record 3:
+  CNN: 397000
+  Side (L/R): L
+  BlockSweep ID: 1636409
+  Blockside (Cardinal): East
+  Week: None
+  Day: Wed
+  From Hour: 8
+  To Hour: 10
+  Holidays: 0
+
+Record 4:
+  CNN: 2184101
+  Side (L/R): L
+  BlockSweep ID: 1628158
+  Blockside (Cardinal): SouthEast
+  Week: None
+  Day: Thu
+  From Hour: 13
+  To Hour: 15
+  Holidays: 0
+
+Record 5:
+  CNN: 7985000
+  Side (L/R): R
+  BlockSweep ID: 1624216
+  Blockside (Cardinal): East
+  Week: None
+  Day: Thu
+  From Hour: 9
+  To Hour: 11
+  Holidays: 0
+
+================================================================================
+6. DATASET SIZE
+================================================================================
+
+Total records in dataset: 37878
+
+================================================================================
+7. BLOCKSWEEP ID AND CARDINAL DIRECTION ANALYSIS
+================================================================================
+
+Records with BlockSweep ID: 100/100 (100.0%)
+Records with Blockside (cardinal direction): 98/100 (98.0%)
+
+Blockside (Cardinal Direction) distribution:
+  East: 16 records
+  North: 15 records
+  NorthEast: 7 records
+  NorthWest: 5 records
+  South: 15 records
+  SouthEast: 9 records
+  SouthWest: 7 records
+  West: 24 records
+
+================================================================================
+8. COMPREHENSIVE JOIN CAPABILITY ASSESSMENT
+================================================================================
+
+✓ JOIN TO ACTIVE STREETS BY CNN + SIDE:
+  - Has CNN field: ✓
+  - Has Side field (L/R): ✓
+  - CNN coverage: 100.0%
+  - Side coverage: 100.0%
+
+✓ ADDITIONAL RELATIONSHIPS TO PRESERVE:
+  - BlockSweep ID: ✓ (100.0% coverage)
+  - Geometry/LineString: ✓
+  - Blockside (Cardinal): ✓ (98.0% coverage)
+
+✓✓✓ CONFIRMED: Can join ALL street cleaning data to Active Streets
+
+Join Strategy:
+  1. Primary Join: street_cleaning.cnn = segment.cnn AND street_cleaning.side = segment.side
+  2. Store BlockSweep ID: For future reference and joins
+  3. Store Geometry: LineString for spatial operations
+  4. Store Blockside: Cardinal direction (N/S/E/W) for each CNN L/R
+
+Data to Preserve in StreetSegment:
+  - sweeping_blocksweep_id: For future joins
+  - sweeping_geometry: LineString geometry
+  - cardinal_direction: From Blockside field (N/S/E/W)

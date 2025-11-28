@@ -1,0 +1,175 @@
+====================================================================================================
+MISSION NEIGHBORHOOD DATA ANALYSIS - COMPREHENSIVE REPORT
+====================================================================================================
+
+### PART 1: DATABASE COLLECTIONS ###
+
+Total Collections: 9
+
+  blockfaces..............................        218 documents
+  error_reports...........................          2 documents
+  intersection_permutations...............     21,046 documents
+  intersections...........................     18,756 documents
+  parking_regulations.....................        660 documents
+  street_cleaning_schedules...............     37,878 documents
+  street_nodes............................      9,719 documents
+  street_segments.........................      4,014 documents
+  streets.................................      2,007 documents
+
+
+### PART 2: STREET SEGMENTS ANALYSIS ###
+
+Total Street Segments: 4,014
+
+Segments by Zip Code:
+  94103: 1,464 segments
+  94110: 2,550 segments
+
+Segments by Side:
+  Left (L):  2,007
+  Right (R): 2,007
+  Balance:   0 difference
+
+Geometry Coverage:
+  Centerline: 4,014 (100.0%)
+  Blockface:  4,014 (100.0%)
+
+Address Range Coverage:
+  From Address: 4,014 (100.0%)
+  To Address:   4,014 (100.0%)
+  Both:         4,014 (100.0%)
+
+
+### PART 3: RULES AND REGULATIONS ###
+
+Rule Coverage:
+  With Any Rules:         2,850 (71.0%)
+  With Street Sweeping:   2,793 (69.6%)
+  With Parking Regs:      595 (14.8%)
+  With Meter Schedules:   714 (17.8%)
+  With No Rules:          1,164 (29.0%)
+
+Total Rules: 7,002
+Average Rules per Segment: 1.74
+
+
+### PART 4: TOP 20 STREETS BY SEGMENT COUNT ###
+
+  MISSION ST........................................ 132 segments
+  DOLORES ST........................................ 124 segments
+  FOLSOM ST......................................... 106 segments
+  GUERRERO ST.......................................  98 segments
+  HARRISON ST.......................................  88 segments
+  BRYANT ST.........................................  66 segments
+  16TH ST...........................................  62 segments
+  25TH ST...........................................  60 segments
+  24TH ST...........................................  60 segments
+  VALENCIA ST.......................................  58 segments
+  CESAR CHAVEZ ST...................................  54 segments
+  15TH ST...........................................  52 segments
+  SOUTH VAN NESS AVE................................  52 segments
+  POTRERO AVE.......................................  52 segments
+  26TH ST...........................................  50 segments
+  MARKET ST.........................................  50 segments
+  CORTLAND AVE......................................  50 segments
+  23RD ST...........................................  48 segments
+  17TH ST...........................................  48 segments
+  SAN JOSE AVE......................................  48 segments
+
+
+### PART 5: SAMPLE SEGMENT DETAILS ###
+
+
+VALENCIA ST:
+--------------------------------------------------------------------------------
+  CNN: 13059000 | Side: L
+  Address: 455 - 499
+  From/To: Sparrow St to 16th St
+  Rules (3):
+    • Sweeping: Thu 6-8
+    • Sweeping: Sun 6-8
+    ... and 1 more
+
+  CNN: 13059000 | Side: R
+  Address: 450 - 498
+  From/To: Sparrow St to 16th St
+  Rules (4):
+    • Sweeping: Sat 6-8
+    • Sweeping: Fri 6-8
+    ... and 2 more
+
+
+MISSION ST:
+--------------------------------------------------------------------------------
+  CNN: 9095101 | Side: L
+  Address: 701 - 799
+  From/To: 03rd St to 04th St
+  Rules (8):
+    • Sweeping: Holiday 2-6
+    • Sweeping: Sat 2-6
+    ... and 6 more
+
+  CNN: 9095101 | Side: R
+  Address: 0 - 0
+  From/To: None to None
+  Rules: None
+
+
+24TH ST:
+--------------------------------------------------------------------------------
+  CNN: 1341000 | Side: L
+  Address: 3151 - 3199
+  From/To: Shotwell St to South Van Ness Ave
+  Rules (3):
+    • Sweeping: Mon 6-8
+    • Sweeping: Fri 6-7
+    ... and 1 more
+
+  CNN: 1341000 | Side: R
+  Address: 3150 - 3198
+  From/To: Shotwell St to South Van Ness Ave
+  Rules (2):
+    • Sweeping: Thu 6-8
+    • Sweeping: Tues 6-8
+
+
+BALMY ST:
+--------------------------------------------------------------------------------
+  CNN: 2699000 | Side: L
+  Address: 1 - 99
+  From/To: None to None
+  Rules: None
+
+  CNN: 2699000 | Side: R
+  Address: 2 - 98
+  From/To: None to None
+  Rules: None
+
+
+### PART 6: DATA QUALITY SUMMARY ###
+
+✅ STRENGTHS:
+  ✓ Excellent centerline coverage (100.0%)
+  ✓ Strong address range coverage (100.0%)
+  ✓ Well-balanced L/R distribution
+
+⚠️  AREAS FOR IMPROVEMENT:
+  ! Parking regulations coverage (14.8%)
+
+
+====================================================================================================
+ANALYSIS COMPLETE
+====================================================================================================
+
+📊 Key Metrics:
+  • Total Segments: 4,014
+  • Coverage: 100.0% geometry, 100.0% addresses
+  • Rules: 7,002 total (1.74 avg per segment)
+
+🔗 Data Integration:
+  • Active Streets → Segments: ✅ Complete
+  • Street Sweeping: ✅ 69.6%
+  • Parking Regulations: ✅ 14.8%
+  • Meters: ✅ 17.8%
+
+====================================================================================================

@@ -46,10 +46,10 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 
 - **Active Streets** (3psu-pn9h): Street centerlines with CNN identifiers **+ Address Ranges** (lf_fadd, lf_toadd, rt_fadd, rt_toadd)
   - ✅ **Address ranges now stored in StreetSegment model** (fromAddress, toAddress fields)
-  - Enables direct address-based queries and RPP matching
-- **RPP Eligibility Parcels** (i886-hxz9): Building addresses with RPP codes - **PRIMARY for address-based RPP matching**
-- **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side
-- **Parking Regulations** (hi6h-neyh): Regulations with geometry only - **FALLBACK for geometric matching**
+  - Enables direct address-based queries and conflict resolution
+- **Parking Regulations** (hi6h-neyh): Regulations with geometry and RPP codes (`rpparea1` field) - **PRIMARY source for RPP zones**
+- **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side + cardinal directions
+- **Parcel Overlay** (9grn-xjpx): Administrative boundaries for conflict resolution (boundary cases only)
 - **Blockface Geometries** (pep9-66vw): Side-specific geometries (7.4% coverage)
 - **Meters** (8vzz-qzz9, 6cqg-dxku): Parking meter locations and schedules
 
@@ -166,13 +166,14 @@ python check_missing_blockfaces.py
 
 ### CNN Segment Ingestion Flow
 1. **Load Active Streets** → Create 2 segments per CNN (L & R) + **Store address ranges** (fromAddress, toAddress)
-2. **Load RPP Parcels** → Build address-to-RPP mapping for address-based matching
-3. **Add Blockface Geometries** → Optional enhancement where available
-4. **Match Street Sweeping** → Direct CNN + side match (easy)
-5. **Match RPP Zones** → **Address-based matching (PRIMARY)** using stored address ranges
-6. **Match Parking Regulations** → Multi-point spatial + side analysis (FALLBACK)
-7. **Match Meters** → CNN + location inference (medium)
-8. **Save to MongoDB** → With proper indexes
+2. **Add Blockface Geometries** → Optional enhancement where available
+3. **Match Street Sweeping** → Direct CNN + side match + capture cardinal directions
+4. **Match Parking Regulations** → Spatial join with distance analysis (<10m = clear, 10-50m = boundary)
+   - Extract RPP zones from regulation's `rpparea1` field
+   - Assign to CNN L and/or CNN R based on distance
+   - Use Parcel Overlay for boundary conflict resolution
+5. **Match Meters** → CNN + location inference
+6. **Save to MongoDB** → With proper indexes
 
 **Address Range Storage (Implemented Nov 2024):**
 - Left segments: `fromAddress` = `lf_fadd`, `toAddress` = `lf_toadd`
@@ -180,12 +181,13 @@ python check_missing_blockfaces.py
 - Example: CNN 799000 Left side stores "3401" to "3449"
 
 ### Key Features
-- **Address-based RPP matching**: Primary method using street address ranges (most reliable)
-- **Multi-point sampling**: Robust regulation side determination (fallback)
+- **Spatial join for regulations**: Distance-based CNN L/R assignment with boundary resolution
+- **RPP from regulations**: RPP zones come directly from regulation records (`rpparea1`)
+- **Address ranges for queries**: Enable address-based lookups and conflict resolution
+- **Direct street cleaning join**: 100% coverage via CNN + Side fields
+- **Cardinal directions**: User-friendly display (N, S, E, W, etc.)
 - **100% coverage**: Every CNN gets L & R segments
 - **Dual geometries**: Centerline (required) + blockface (optional)
-- **Confidence scores**: For debugging regulation matches
-- **Four-method validation**: Address, geometric, overlay, spatial matching
 
 ## Implementation Status
 

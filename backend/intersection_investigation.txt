@@ -1,0 +1,145 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/inspect_street_intersections.py", line 147, in main
+    results = fetch_intersections_by_cnn("10048000")
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/inspect_street_intersections.py", line 48, in fetch_intersections_by_cnn
+    response.raise_for_status()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://data.sfgov.org/resource/pu5n-qu5c.json?%24where=cnn%3D%2710048000%27+OR+cnnfrom%3D%2710048000%27+OR+cnnto%3D%2710048000%27&%24limit=100
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/inspect_street_intersections.py", line 176, in main
+    results = fetch_intersection_by_streets("20TH", "BRYANT")
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/inspect_street_intersections.py", line 61, in fetch_intersection_by_streets
+    response.raise_for_status()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 400 Client Error: Bad Request for url: https://data.sfgov.org/resource/pu5n-qu5c.json?%24where=street_name+LIKE+%27%2520TH%25%27+AND+street_name+LIKE+%27%25BRYANT%25%27&%24limit=10
+================================================================================
+STREET INTERSECTIONS DATASET INVESTIGATION
+================================================================================
+
+1. Fetching sample intersections...
+   ✓ Fetched 20 sample records
+
+================================================================================
+INTERSECTION DATASET STRUCTURE
+================================================================================
+
+Total unique fields: 5
+
+Fields found:
+  - cnn                            (str)
+  - from_st                        (str)
+  - limits                         (str)
+  - streetname                     (str)
+  - theorder                       (str)
+
+================================================================================
+SAMPLE INTERSECTION RECORDS
+================================================================================
+
+
+Intersection 1:
+--------------------------------------------------------------------------------
+CNN (main):        54435000
+CNN From:          N/A
+CNN To:            N/A
+Street Name:       N/A
+Left Side Number:  N/A
+Right Side Number: N/A
+
+Other fields:
+  from_st: MEYER LN
+  limits: MEYER LN intersection
+  streetname: LOQUAT LN
+  theorder: 21497
+
+Intersection 2:
+--------------------------------------------------------------------------------
+CNN (main):        54435000
+CNN From:          N/A
+CNN To:            N/A
+Street Name:       N/A
+Left Side Number:  N/A
+Right Side Number: N/A
+
+Other fields:
+  from_st: LOQUAT LN
+  limits: LOQUAT LN intersection
+  streetname: MEYER LN
+  theorder: 23071
+
+Intersection 3:
+--------------------------------------------------------------------------------
+CNN (main):        54434000
+CNN From:          N/A
+CNN To:            N/A
+Street Name:       N/A
+Left Side Number:  N/A
+Right Side Number: N/A
+
+Other fields:
+  from_st: LOQUAT LN
+  limits: LOQUAT LN intersection
+  streetname: WISTERIA LN
+  theorder: 34891
+
+Intersection 4:
+--------------------------------------------------------------------------------
+CNN (main):        54434000
+CNN From:          N/A
+CNN To:            N/A
+Street Name:       N/A
+Left Side Number:  N/A
+Right Side Number: N/A
+
+Other fields:
+  from_st: WISTERIA LN
+  limits: WISTERIA LN intersection
+  streetname: LOQUAT LN
+  theorder: 21495
+
+Intersection 5:
+--------------------------------------------------------------------------------
+CNN (main):        54433000
+CNN From:          N/A
+CNN To:            N/A
+Street Name:       N/A
+Left Side Number:  N/A
+Right Side Number: N/A
+
+Other fields:
+  from_st: DIEGO LN
+  limits: DIEGO LN intersection
+  streetname: MAYOR EDWIN M. LEE AVE
+  theorder: 22740
+
+================================================================================
+2. Searching intersections for CNN: 10048000 (20th St segment)
+================================================================================
+   ✗ Error searching by CNN: 400 Client Error: Bad Request for url: https://data.sfgov.org/resource/pu5n-qu5c.json?%24where=cnn%3D%2710048000%27+OR+cnnfrom%3D%2710048000%27+OR+cnnto%3D%2710048000%27&%24limit=100
+
+================================================================================
+3. Searching for intersection: 20TH ST & BRYANT ST
+================================================================================
+   ✗ Error searching intersection: 400 Client Error: Bad Request for url: https://data.sfgov.org/resource/pu5n-qu5c.json?%24where=street_name+LIKE+%27%2520TH%25%27+AND+street_name+LIKE+%27%25BRYANT%25%27&%24limit=10
+
+================================================================================
+4. Analyzing dataset statistics
+================================================================================
+   ✓ Total intersection records: 35167
+   ✓ Unique CNNs: 26249
+
+================================================================================
+INVESTIGATION COMPLETE
+================================================================================
+
+
+KEY FINDINGS:
+- This dataset provides CNN connectivity information (cnnfrom, cnnto)
+- It includes precise address numbers at intersections (lf_st_num, rt_st_num)
+- It has geospatial coordinates for each intersection point
+- This can help resolve user queries like '20th & Bryant' to specific CNNs
+- The address numbers help us understand blockface boundaries more precisely
