@@ -1,0 +1,25 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+BALMY STREET PARKING REGULATIONS - CORRECT API
+================================================================================
+
+Querying Non-Metered Parking Regulations (hi6h-neyh)...
+--------------------------------------------------------------------------------
+Request URL: https://data.sfgov.org/resource/hi6h-neyh.json?cnn=2699000
+Status Code: 400
+
+Error: 400
+Response: {
+  "error" : true,
+  "message" : "Unrecognized arguments [cnn]"
+}
+
+
+Searching by street name 'BALMY'...
+--------------------------------------------------------------------------------
+Error: 400
+
+================================================================================
+SEARCH COMPLETE
+================================================================================

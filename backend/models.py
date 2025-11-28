@@ -37,6 +37,11 @@ class StreetSegment(BaseModel):
     fromStreet: Optional[str] = None            # From street sweeping limits
     toStreet: Optional[str] = None              # From street sweeping limits
     
+    # Address ranges from Active Streets dataset
+    # These correspond to the side (L or R) of this segment
+    fromAddress: Optional[str] = None           # Starting address (lf_fadd for L, rt_fadd for R)
+    toAddress: Optional[str] = None             # Ending address (lf_toadd for L, rt_toadd for R)
+    
     # Geometries
     centerlineGeometry: Dict                    # GeoJSON from Active Streets (REQUIRED)
     blockfaceGeometry: Optional[Dict] = None    # GeoJSON from pep9 (OPTIONAL)

@@ -45,6 +45,8 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 ## Data Sources
 
 - **Active Streets** (3psu-pn9h): Street centerlines with CNN identifiers **+ Address Ranges** (lf_fadd, lf_toadd, rt_fadd, rt_toadd)
+  - ✅ **Address ranges now stored in StreetSegment model** (fromAddress, toAddress fields)
+  - Enables direct address-based queries and RPP matching
 - **RPP Eligibility Parcels** (i886-hxz9): Building addresses with RPP codes - **PRIMARY for address-based RPP matching**
 - **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side
 - **Parking Regulations** (hi6h-neyh): Regulations with geometry only - **FALLBACK for geometric matching**
@@ -73,13 +75,18 @@ StreetSegment {
     streetName: String
     fromStreet: String    // Block boundaries
     toStreet: String
+    fromAddress: String   // Starting address (e.g., "3401")
+    toAddress: String     // Ending address (e.g., "3449")
     centerlineGeometry: LineString  // Always available
     blockfaceGeometry: LineString | null  // Optional
     rules: [...]
 }
 ```
 
-**Benefit**: 100% coverage (4,014 segments = 2,007 CNNs × 2 sides)
+**Benefits**:
+- 100% coverage (4,014 segments = 2,007 CNNs × 2 sides)
+- Address ranges stored for each side
+- Enables address-based RPP matching and queries
 
 ## Installation
 
@@ -158,14 +165,19 @@ python check_missing_blockfaces.py
 - **`RPP_IMPLEMENTATION_PLAN.md`** - Four-method RPP validation strategy
 
 ### CNN Segment Ingestion Flow
-1. **Load Active Streets** → Create 2 segments per CNN (L & R) + Extract address ranges
+1. **Load Active Streets** → Create 2 segments per CNN (L & R) + **Store address ranges** (fromAddress, toAddress)
 2. **Load RPP Parcels** → Build address-to-RPP mapping for address-based matching
 3. **Add Blockface Geometries** → Optional enhancement where available
 4. **Match Street Sweeping** → Direct CNN + side match (easy)
-5. **Match RPP Zones** → **Address-based matching (PRIMARY)** using address ranges
+5. **Match RPP Zones** → **Address-based matching (PRIMARY)** using stored address ranges
 6. **Match Parking Regulations** → Multi-point spatial + side analysis (FALLBACK)
 7. **Match Meters** → CNN + location inference (medium)
 8. **Save to MongoDB** → With proper indexes
+
+**Address Range Storage (Implemented Nov 2024):**
+- Left segments: `fromAddress` = `lf_fadd`, `toAddress` = `lf_toadd`
+- Right segments: `fromAddress` = `rt_fadd`, `toAddress` = `rt_toadd`
+- Example: CNN 799000 Left side stores "3401" to "3449"
 
 ### Key Features
 - **Address-based RPP matching**: Primary method using street address ranges (most reliable)

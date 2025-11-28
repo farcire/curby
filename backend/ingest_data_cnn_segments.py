@@ -350,7 +350,9 @@ async def main():
                 "zip_code": row.get("zip_code"),
                 "layer": row.get("layer"),
                 "fromStreet": None,
-                "toStreet": None
+                "toStreet": None,
+                "fromAddress": row.get("lf_fadd"),  # Left side from address
+                "toAddress": row.get("lf_toadd")    # Left side to address
             }
             all_segments.append(left_segment)
             
@@ -366,7 +368,9 @@ async def main():
                 "zip_code": row.get("zip_code"),
                 "layer": row.get("layer"),
                 "fromStreet": None,
-                "toStreet": None
+                "toStreet": None,
+                "fromAddress": row.get("rt_fadd"),  # Right side from address
+                "toAddress": row.get("rt_toadd")    # Right side to address
             }
             all_segments.append(right_segment)
         

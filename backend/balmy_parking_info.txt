@@ -1,0 +1,28 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+BALMY STREET PARKING REGULATIONS
+================================================================================
+
+Street: BALMY ST
+CNN: 2699000
+Segment: From 24TH ST to 25TH ST
+Address Range: 1-99 (odd, left side), 2-98 (even, right side)
+
+================================================================================
+
+Querying Non-Metered Parking Regulations...
+--------------------------------------------------------------------------------
+Error querying regulations: 404
+
+Querying Street Cleaning Schedule...
+--------------------------------------------------------------------------------
+
+No street cleaning schedules found.
+
+================================================================================
+SUMMARY
+================================================================================
+
+Balmy Street (between 24th and 25th Streets) parking information
+has been retrieved from SF Open Data sources.

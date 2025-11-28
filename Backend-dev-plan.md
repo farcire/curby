@@ -173,14 +173,19 @@
   - `lf_fadd`, `lf_toadd`: Left side address range (e.g., 3200-3298)
   - `rt_fadd`, `rt_toadd`: Right side address range (e.g., 3201-3299)
   - RPP Parcels: `from_st` (address), `street` (name), `rppeligib` (RPP code)
+- **Implementation Status:** ✅ **COMPLETE** (Nov 2024)
+  - Address ranges now stored in StreetSegment model (`fromAddress`, `toAddress` fields)
+  - Populated during ingestion from Active Streets dataset
+  - Available for all CNN segments (L and R sides)
 - **Solution:** Direct Address Range Matching:
   1. Fetch Active Streets with address ranges
-  2. Fetch RPP parcels with building addresses and RPP codes
-  3. Match parcel address to street address range using simple numeric comparison
-  4. **Result:**
+  2. Store address ranges in each StreetSegment (L side gets lf_fadd/lf_toadd, R side gets rt_fadd/rt_toadd)
+  3. Fetch RPP parcels with building addresses and RPP codes
+  4. Match parcel address to street address range using simple numeric comparison
+  5. **Result:**
      - If `lf_fadd <= parcel_address <= lf_toadd`: Assign to **Left** side
      - If `rt_fadd <= parcel_address <= rt_toadd`: Assign to **Right** side
-  5. Assign RPP code to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
+  6. Assign RPP code to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
 
 **Advantages:**
 - ✅ Deterministic (address either falls in range or doesn't)
@@ -188,6 +193,7 @@
 - ✅ Fast (simple integer comparison)
 - ✅ Accurate (based on official address assignments)
 - ✅ Works even with imperfect geometries
+- ✅ **Now stored in database** for direct queries and validation
 
 **FALLBACK METHOD: Geometric Side Analysis (Non-Metered Regulations)**
 - **Dataset:** "Map of Parking Regulations" (`hi6h-neyh`)

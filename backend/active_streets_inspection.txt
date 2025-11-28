@@ -1,0 +1,9 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+Fetching first 1 records from Active Streets (3psu-pn9h)...
+
+--- Columns in Active Streets Dataset ---
+['cnn', 'lf_fadd', 'lf_toadd', 'rt_fadd', 'rt_toadd', 'street', 'st_type', 'f_st', 't_st', 'f_node_cnn', 't_node_cnn', 'accepted', 'active', 'classcode', 'date_added', 'jurisdiction', 'layer', 'nhood', 'oneway', 'street_gc', 'streetname', 'streetname_gc', 'zip_code', 'analysis_neighborhood', 'supervisor_district', 'line', 'data_as_of', 'data_loaded_at']
+
+--- Sample Record ---
+{'cnn': '799000', 'lf_fadd': '3401', 'lf_toadd': '3449', 'rt_fadd': '3400', 'rt_toadd': '3440', 'street': '17TH', 'st_type': 'ST', 'f_st': 'VALENCIA ST', 't_st': 'ALBION ST', 'f_node_cnn': '24174000', 't_node_cnn': '25692000', 'accepted': True, 'active': True, 'classcode': '4', 'date_added': '1998-07-01T00:00:00.000', 'jurisdiction': 'DPW', 'layer': 'STREETS', 'nhood': 'Mission Dolores', 'oneway': 'B', 'street_gc': '17TH', 'streetname': '17TH ST', 'streetname_gc': '17TH ST', 'zip_code': '94110', 'analysis_neighborhood': 'Mission', 'supervisor_district': '9', 'line': {'type': 'LineString', 'coordinates': [[-122.421731522, 37.763299768], [-122.422698659, 37.763243323]]}, 'data_as_of': '2025-11-27T03:55:00.000', 'data_loaded_at': '2025-11-27T10:14:13.314'}
