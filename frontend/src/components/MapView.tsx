@@ -43,7 +43,7 @@ export function MapView({
   const layersRef = useRef<L.Polyline[]>([]);
   const userMarkerRef = useRef<L.Marker | null>(null);
 
-  // Initialize map (only once) - starts centered on user location
+  // Initialize map (only once)
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
@@ -86,7 +86,25 @@ export function MapView({
         mapRef.current = null;
       }
     };
-  }, []); // Only initialize once - no re-centering after initial load
+  }, []); // Only initialize once
+
+  // Center map on user location when it becomes available
+  useEffect(() => {
+    if (mapRef.current && userLocation) {
+      // Only center if this is the actual user location (not the default fallback)
+      // Check if userLocation is different from the current map center
+      const currentCenter = mapRef.current.getCenter();
+      const distance = Math.sqrt(
+        Math.pow(currentCenter.lat - userLocation[0], 2) +
+        Math.pow(currentCenter.lng - userLocation[1], 2)
+      );
+      
+      // If the distance is significant (more than ~0.01 degrees ≈ 1km), recenter
+      if (distance > 0.01) {
+        mapRef.current.setView(userLocation, 17, { animate: false });
+      }
+    }
+  }, [userLocation]);
 
   // Update user location marker (stays at user's actual location)
   useEffect(() => {
