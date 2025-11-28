@@ -1,0 +1,99 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+DETAILED STREET INTERSECTIONS INVESTIGATION
+================================================================================
+
+================================================================================
+ANALYZING INTERSECTIONS FOR CNN: 10048000
+================================================================================
+
+Found 1 intersection records for CNN 10048000
+
+This CNN connects to 1 different streets:
+
+  Intersection with: GOUGH ST \ MCCOPPIN ST
+    - streetname: OTIS ST
+      limits: GOUGH ST \ MCCOPPIN ST to 13TH ST \ DUBOCE AVE \ HWY 101 NORTHBOUND RAMP \ MISSION ST (100 - 199)
+      theorder: 25778
+
+
+================================================================================
+SEARCHING FOR INTERSECTION: 20TH ST & BRYANT ST
+================================================================================
+
+Found 4 matching records
+
+This intersection involves 3 CNN segments:
+
+CNN: 1047000
+  streetname: 20TH ST
+  from_st: BRYANT ST
+  limits: BRYANT ST to FLORIDA ST (2900 - 2999)
+
+CNN: 24008000
+  streetname: 20TH ST
+  from_st: BRYANT ST
+  limits: BRYANT ST intersection
+  streetname: BRYANT ST
+  from_st: 20TH ST
+  limits: 20TH ST intersection
+
+CNN: 3310001
+  streetname: BRYANT ST
+  from_st: 20TH ST
+  limits: 20TH ST to BRICE TER (2200 - 2256)
+
+
+================================================================================
+SEARCHING FOR INTERSECTION: 20TH ST & FLORIDA ST
+================================================================================
+
+Found 4 matching records
+
+This intersection involves 3 CNN segments:
+
+CNN: 1048000
+  streetname: 20TH ST
+  from_st: FLORIDA ST
+  limits: FLORIDA ST to ALABAMA ST (3000 - 3099)
+
+CNN: 24029000
+  streetname: FLORIDA ST
+  from_st: 20TH ST
+  limits: 20TH ST intersection
+  streetname: 20TH ST
+  from_st: FLORIDA ST
+  limits: FLORIDA ST intersection
+
+CNN: 5625000
+  streetname: FLORIDA ST
+  from_st: 20TH ST
+  limits: 20TH ST to 21ST ST (800 - 899)
+
+
+================================================================================
+DATA MODEL ANALYSIS
+================================================================================
+
+Based on the investigation, the intersection dataset structure is:
+
+Each record represents ONE DIRECTION of an intersection:
+  - cnn: The CNN of the main street segment
+  - streetname: The name of the main street
+  - from_st: The name of the intersecting/cross street
+  - limits: Description (e.g., 'BRYANT ST intersection')
+  - theorder: Some ordering/sequencing field
+
+Key insights:
+  1. Each intersection appears multiple times (once per direction)
+  2. To find all streets at an intersection, query by CNN
+  3. To find a specific intersection, query by both street names
+  4. The 'limits' field describes the intersection boundary
+
+For user queries like '20th & Bryant':
+  1. Search for records where streetname='20TH ST' AND from_st='BRYANT ST'
+  2. Or vice versa: streetname='BRYANT ST' AND from_st='20TH ST'
+  3. Extract the CNN(s) involved
+  4. Use those CNNs to query our street_segments collection
+

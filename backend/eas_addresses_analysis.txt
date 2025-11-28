@@ -1,0 +1,177 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+ENTERPRISE ADDRESSING SYSTEM (EAS) INVESTIGATION (ramy-di5m)
+================================================================================
+
+Dataset: San Francisco Addresses with Units - Enterprise Addressing System
+Documentation: https://dev.socrata.com/foundry/data.sfgov.org/ramy-di5m
+
+🎯 THIS IS THE MASTER ADDRESS DATABASE!
+
+Fetching 10 sample records...
+
+📋 Total Fields: 27
+
+📝 ALL AVAILABLE FIELDS:
+   1. :@computed_region_26cr_cadq
+   2. :@computed_region_6qbp_sg9q
+   3. :@computed_region_ajp5_b2md
+   4. :@computed_region_qgnn_b9vv
+   5. address
+   6. address_number
+   7. cnn
+   8. data_as_of
+   9. data_loaded_at
+  10. data_updated_at
+  11. direct_source
+  12. eas_baseid
+  13. eas_fullid
+  14. eas_subid
+  15. latitude
+  16. longitude
+  17. nhood
+  18. numbertext
+  19. point
+  20. street_full_street_name
+  21. street_name
+  22. street_type
+  23. supdist
+  24. supdistpad
+  25. supervisor
+  26. supname
+  27. zip_code
+
+================================================================================
+🔍 KEY FIELD CATEGORIES
+================================================================================
+
+⭐ CNN Fields (1):
+  - cnn
+
+⭐ Block/Lot Fields (0):
+
+⭐ Address Fields (3):
+  - address_number
+  - address
+  - numbertext
+
+⭐ Street Fields (3):
+  - street_name
+  - street_type
+  - street_full_street_name
+
+⭐ ZIP Code Fields (1):
+  - zip_code
+
+================================================================================
+📊 SAMPLE RECORDS (First 3)
+================================================================================
+
+================================================================================
+Record 1
+================================================================================
+
+  🔗 CNN (Centerline Network) Information:
+    cnn: 6480000
+
+  🏠 Address Information:
+    address_number: 2744
+    address: 2744 GREEN ST
+    numbertext: TWO
+
+  🛣️  Street Information:
+    street_name: GREEN
+    street_type: ST
+    street_full_street_name: GREEN ST
+
+  📮 ZIP Code Information:
+    zip_code: 94123
+
+================================================================================
+Record 2
+================================================================================
+
+  🔗 CNN (Centerline Network) Information:
+    cnn: 12864000
+
+  🏠 Address Information:
+    address_number: 1576
+    address: 1576 UNION ST
+    numbertext: TWO
+
+  🛣️  Street Information:
+    street_name: UNION
+    street_type: ST
+    street_full_street_name: UNION ST
+
+  📮 ZIP Code Information:
+    zip_code: 94123
+
+================================================================================
+Record 3
+================================================================================
+
+  🔗 CNN (Centerline Network) Information:
+    cnn: 3680000
+
+  🏠 Address Information:
+    address_number: 873
+    address: 873 CAPP ST #4
+    numbertext: NINE
+
+  🛣️  Street Information:
+    street_name: CAPP
+    street_type: ST
+    street_full_street_name: CAPP ST
+
+  📮 ZIP Code Information:
+    zip_code: 94110
+
+================================================================================
+📈 COVERAGE STATISTICS (Key Fields)
+================================================================================
+  cnn: 10/10 (100.0%)
+  address_number: 10/10 (100.0%)
+  address: 10/10 (100.0%)
+  numbertext: 10/10 (100.0%)
+  street_name: 10/10 (100.0%)
+  street_type: 10/10 (100.0%)
+  street_full_street_name: 10/10 (100.0%)
+
+================================================================================
+🎯 CRITICAL ANALYSIS
+================================================================================
+
+✅ THIS DATASET PROVIDES:
+  ⭐ CNN (Centerline Network ID) - LINKS TO STREETS!
+  ⭐ Full Address Information - USER INPUT!
+  ⭐ Street Names - SEARCHABLE!
+  ⭐ ZIP Codes - GEOGRAPHIC GROUPING!
+
+🔗 RELATIONSHIP CHAIN:
+  Address → CNN → Street Segment → Blockface → Parking Rules
+  Address → Block/Lot → Parcel → RPP Area
+  Address → ZIP Code → Neighborhood
+
+💡 GAME-CHANGING CAPABILITIES:
+  1. Direct address-to-CNN mapping
+  2. Determine L/R side from address number (odd/even)
+  3. Link addresses to parcels via block/lot
+  4. Complete address validation
+  5. ZIP code-based queries
+
+🚀 USE CASES:
+  • User enters '123 Valencia St' → Find CNN → Get parking rules
+  • Validate address exists in SF
+  • Determine which side of street (odd/even)
+  • Link to parcel for RPP eligibility
+  • Search by ZIP code
+
+⚠️  IMPORTANT CONSIDERATIONS:
+  • Dataset size: Potentially 500K+ addresses
+  • May include units (apartments, suites)
+  • Need to handle address normalization
+  • Critical for address-based queries
+
+✅ Dataset includes geometry - can do spatial queries!

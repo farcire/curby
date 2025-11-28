@@ -1,0 +1,127 @@
+================================================================================
+PEP9-66VW (Blockface Geometries) CNN_ID Investigation
+================================================================================
+
+Total records in dataset: 18,355
+
+Fetching records with cnn_id populated...
+Found 10 sample records WITH cnn_id
+
+Sample records WITH cnn_id:
+--------------------------------------------------------------------------------
+
+Record 1:
+  cnn_id: 100000
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+  All fields in record: ['name', 'shape_leng', 'street_nam', 'blockface_', 'sfpark_id', 'cnn_id', 'globalid', 'shape']
+
+Record 2:
+  cnn_id: 10046000
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 3:
+  cnn_id: 10048000
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 4:
+  cnn_id: 10048000
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 5:
+  cnn_id: 1009000
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Fetching records without cnn_id...
+Found 10 sample records WITHOUT cnn_id
+
+Sample records WITHOUT cnn_id:
+--------------------------------------------------------------------------------
+
+Record 1:
+  cnn_id: N/A
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 2:
+  cnn_id: N/A
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 3:
+  cnn_id: N/A
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 4:
+  cnn_id: N/A
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Record 5:
+  cnn_id: N/A
+  street_name: N/A
+  lf_fadd: N/A
+  lf_toadd: N/A
+  rt_fadd: N/A
+  rt_toadd: N/A
+  geometry type: N/A
+
+Calculating coverage statistics...
+Records WITH cnn_id: 1,910
+Records WITHOUT cnn_id: 16,445
+
+Coverage: 10.41% have cnn_id
+Missing: 89.59% lack cnn_id
+
+Analyzing cnn_id patterns (sample of 100 records)...
+Sample size: 100
+Records with cnn_id in sample: 0
+
+Checking for alternative CNN-related fields...
+CNN-related fields found: []
+
+================================================================================
+Investigation Complete
+================================================================================

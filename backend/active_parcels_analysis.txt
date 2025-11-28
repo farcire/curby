@@ -1,0 +1,165 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+ACTIVE PARCELS DATASET INVESTIGATION (acdm-wktn)
+================================================================================
+
+Dataset: Active Parcels
+Documentation: https://dev.socrata.com/foundry/data.sfgov.org/acdm-wktn
+
+Fetching 10 sample records...
+
+📋 Total Fields: 32
+
+📝 ALL AVAILABLE FIELDS:
+   1. active
+   2. analysis_neighborhood
+   3. blklot
+   4. block_num
+   5. centroid_latitude
+   6. centroid_longitude
+   7. data_as_of
+   8. data_loaded_at
+   9. date_map_add
+  10. date_rec_add
+  11. from_address_num
+  12. in_asr_secured_roll
+  13. lot_num
+  14. mapblklot
+  15. numbertext
+  16. odd_even
+  17. planning_district
+  18. planning_district_number
+  19. police_company
+  20. police_district
+  21. project_id_add
+  22. pw_recorded_map
+  23. shape
+  24. street_name
+  25. street_type
+  26. supdist
+  27. supdistpad
+  28. supervisor_district
+  29. supname
+  30. to_address_num
+  31. zoning_code
+  32. zoning_district
+
+================================================================================
+🔍 KEY FIELD CATEGORIES
+================================================================================
+
+✅ Block/Lot Fields (4):
+  - mapblklot
+  - blklot
+  - block_num
+  - lot_num
+
+✅ Address Fields (5):
+  - from_address_num
+  - to_address_num
+  - odd_even
+  - numbertext
+  - planning_district_number
+
+✅ Street Fields (2):
+  - street_name
+  - street_type
+
+================================================================================
+📊 SAMPLE RECORDS (First 3)
+================================================================================
+
+--- Record 1 ---
+
+  Block/Lot Information:
+    mapblklot: 4336023
+    blklot: 4336023
+    block_num: 4336
+    lot_num: 023
+
+  Address Information:
+    from_address_num: 2981
+    to_address_num: 2981
+    odd_even: O
+    numbertext: NINE
+    planning_district_number: 8
+
+  Street Information:
+    street_name: 26TH
+    street_type: ST
+
+--- Record 2 ---
+
+  Block/Lot Information:
+    mapblklot: 3533044A
+    blklot: 3533044A
+    block_num: 3533
+    lot_num: 044A
+
+  Address Information:
+    from_address_num: 156
+    to_address_num: 156
+    odd_even: E
+    numbertext: NINE
+    planning_district_number: 8
+
+  Street Information:
+    street_name: CLINTON
+    street_type: PARK
+
+--- Record 3 ---
+
+  Block/Lot Information:
+    mapblklot: 1238033
+    blklot: 1238033
+    block_num: 1238
+    lot_num: 033
+
+  Address Information:
+    from_address_num: 935
+    to_address_num: 937
+    odd_even: O
+    numbertext: FIVE
+    planning_district_number: 6
+
+  Street Information:
+    street_name: PAGE
+    street_type: ST
+
+================================================================================
+📈 COVERAGE STATISTICS
+================================================================================
+  mapblklot: 10/10 (100.0%)
+  blklot: 10/10 (100.0%)
+  block_num: 10/10 (100.0%)
+  lot_num: 10/10 (100.0%)
+  from_address_num: 9/10 (90.0%)
+  to_address_num: 9/10 (90.0%)
+  odd_even: 9/10 (90.0%)
+  numbertext: 10/10 (100.0%)
+  planning_district_number: 10/10 (100.0%)
+  street_name: 9/10 (90.0%)
+  street_type: 9/10 (90.0%)
+
+================================================================================
+🎯 ANALYSIS
+================================================================================
+
+✅ This dataset appears to contain:
+  - Block/Lot identifiers (Assessor Parcel Numbers)
+  - Address information (possibly with ranges)
+  - Street names
+
+💡 POTENTIAL USE CASES:
+  1. Address-to-Block/Lot mapping
+  2. Street name to parcel lookup
+  3. Address range validation
+  4. Comprehensive parcel directory
+
+🔗 RELATIONSHIP TO CNN ARCHITECTURE:
+  - This could bridge addresses → parcels → streets
+  - May enable address-based queries
+  - Could validate address ranges on street segments
+
+✅ Dataset includes geometry - can do spatial joins!

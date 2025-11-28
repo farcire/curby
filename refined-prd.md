@@ -36,7 +36,7 @@ source: BA-PRD Agent Refinement
 **Technical & Cost Constraints:**
 - **Platform:** Must be built as a Progressive Web App (PWA) to ensure native-like mobile experience without app store overhead.
 - **Cost Efficiency:** Architecture must prioritize free, open-domain, or low-cost APIs and services. High-cost proprietary solutions (like Google Maps API) should be avoided in favor of cost-effective alternatives (e.g., Leaflet with OpenStreetMap tiles).
-- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph"). Metered data is joined via CNN. **RPP (Residential Parking Permit) zones are determined using address-based matching** as the primary method: Active Streets provides address ranges (lf_fadd, lf_toadd, rt_fadd, rt_toadd) for each side of every street segment, and RPP Eligibility Parcels (i886-hxz9) provide building addresses with RPP codes. The system matches parcel addresses to street address ranges to deterministically assign RPP zones to L/R sides. **Address ranges are now stored in the StreetSegment model** (fromAddress, toAddress fields) for each CNN+side combination, enabling direct address-based queries and validation. Non-metered regulations (Time Limits) from dataset `hi6h-neyh` use spatially offset geometries as a fallback method, with geometric analysis (cross-product calculation) to assign regulations to the correct blockface when address data is unavailable.
+- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph"). **Address ranges are stored in the StreetSegment model** (fromAddress, toAddress fields) for each CNN+side combination, enabling direct address-based queries. **Parking regulations (hi6h-neyh) are assigned to CNN L and/or CNN R segments via spatial joins**: regulations within 10m of a segment centerline are clearly assigned to that side; regulations within 10m of both sides are assigned to BOTH; boundary cases (10-50m) use Parcel Overlay (9grn-xjpx) for conflict resolution by matching `analysis_neighborhood` + `supervisor_district`. RPP zones come directly from regulation records (`rpparea1` field). **Street cleaning (yhqp-riqs) uses direct CNN + Side joins** (100% coverage) and provides cardinal directions (N, S, E, W, NE, NW, SE, SW) for user-friendly display. Metered data is joined via CNN key.
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
@@ -84,13 +84,15 @@ source: BA-PRD Agent Refinement
     - **Residential Permits:** For non-metered areas, specifics on which Residential Parking Permit (RPP) Area is required to exceed time limits.
 
 **FR-005: Data Ingestion ("Trust, then Verify")**
-- **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA, with **address-based RPP matching** as the primary method.
+- **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA, using spatial joins for parking regulations.
 - **Acceptance Criteria:**
   - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone and address range source.
-  - [ ] **RPP zones are determined using address-based matching:** RPP Eligibility Parcels (i886-hxz9) provide building addresses and RPP codes, which are matched to Active Streets address ranges (lf_fadd, lf_toadd, rt_fadd, rt_toadd) to deterministically assign RPP zones to L/R sides.
+  - [ ] **Address ranges stored:** Each CNN L/R segment stores fromAddress and toAddress fields for direct address-based queries.
+  - [ ] **Parking regulations spatially joined:** Regulations (hi6h-neyh) are assigned to CNN L and/or CNN R based on distance (<10m = clear, 10-50m = boundary with Parcel Overlay resolution).
+  - [ ] **RPP zones from regulations:** RPP area codes come directly from regulation records (`rpparea1` field), not from separate address matching.
+  - [ ] **Street cleaning direct join:** Street cleaning (yhqp-riqs) uses CNN + Side fields for 100% direct matching.
+  - [ ] **Cardinal directions captured:** Street cleaning provides cardinal directions (N, S, E, W, etc.) for user-friendly display.
   - [ ] Metered data is joined via CNN key.
-  - [ ] Non-metered regulations (`hi6h-neyh`) are spatially joined and geometrically analyzed (using offset vectors) as a fallback method when address data is unavailable.
-  - [ ] **Address-based RPP matching achieves >95% accuracy** compared to geometric methods.
 
 **FR-006: Error Reporting System**
 - **Description:** Allow users to report incorrect parking rules they encounter.

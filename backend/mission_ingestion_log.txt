@@ -1,0 +1,154 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+
+================================================================================
+  MISSION NEIGHBORHOOD DATA INGESTION
+================================================================================
+
+Target: Mission District (Zip 94110, 94103)
+Demonstrating: How parking regs, meters, and street cleaning merge over streets
+Started: 2025-11-28 13:09:28
+
+================================================================================
+  LAYER 1: Active Streets (Foundation)
+================================================================================
+
+This layer provides:
+  • CNN identifiers
+  • Street names
+  • Address ranges (Left & Right)
+  • Centerline geometries
+
+Filtering for Mission neighborhood (Zip 94110, 94103)...
+  Fetching dataset 3psu-pn9h...
+  ✓ Fetched 2007 records
+
+✓ Found 2007 CNNs in Mission neighborhood
+  → Will create 4014 segments (Left & Right sides)
+
+Sample Street:
+  CNN: 1523000
+  Name: 26TH ST
+  Left Addresses: 3323-3345
+  Right Addresses: 3328-3348
+
+================================================================================
+  LAYER 2: Blockface Geometries (Enhancement)
+================================================================================
+
+This layer provides:
+  • Precise curb-side geometries (offset from centerline)
+  • GlobalID identifiers
+  • Side determination (L/R via geometric analysis)
+
+Fetching blockface geometries...
+  Fetching dataset pep9-66vw...
+  ✓ Fetched 18355 records
+
+Processing blockface geometries...
+
+✓ Created 218 blockface segments
+  → 218 with precise blockface geometry
+  → Coverage: 100.0%
+
+================================================================================
+  LAYER 3: Street Cleaning (Direct Join)
+================================================================================
+
+This layer provides:
+  • Street sweeping schedules
+  • Day and time restrictions
+  • Cardinal directions (N, S, E, W)
+
+Join Method: Direct CNN + Side match (no spatial analysis needed!)
+Fetching street cleaning schedules...
+  Fetching dataset yhqp-riqs...
+  ✓ Fetched 37878 records
+
+Merging street cleaning data...
+
+✓ Added 914 street cleaning rules
+  → 208 segments now have street cleaning schedules
+  → Coverage: 95.4%
+
+================================================================================
+  LAYER 4: Parking Regulations (Spatial Join)
+================================================================================
+
+This layer provides:
+  • Time limits (2 HR, 4 HR, etc.)
+  • RPP zones
+  • Tow-away zones
+  • Loading zones
+
+Join Method: Spatial proximity + geometric side determination
+Filtering for Mission neighborhood...
+  Fetching dataset hi6h-neyh...
+  ✓ Fetched 660 records
+
+Merging parking regulations via spatial analysis...
+
+✓ Added 0 parking regulations
+  → 0 segments now have parking regulations
+  → Skipped 0 without geometry
+  → Skipped 660 without spatial match
+
+================================================================================
+  LAYER 5: Parking Meters (CNN Join + Schedules)
+================================================================================
+
+This layer provides:
+  • Meter locations
+  • Rate schedules
+  • Operating hours
+
+Join Method: CNN match + schedule lookup
+Fetching meter schedules...
+  Fetching dataset 6cqg-dxku...
+  ✓ Fetched 72365 records
+Fetching parking meters...
+  Fetching dataset 8vzz-qzz9...
+  ✓ Fetched 38239 records
+
+Merging parking meters...
+
+✓ Linked 5790 meter instances
+  → 210 segments now have meter data
+
+================================================================================
+  SAVING MERGED DATA TO MONGODB
+================================================================================
+
+Saving 218 merged segments...
+  Saved batch 1/1
+
+Creating geospatial index...
+✓ Index created
+
+================================================================================
+  MISSION NEIGHBORHOOD DATA MERGE COMPLETE
+================================================================================
+
+Coverage Statistics:
+  Total CNNs: 2007
+  Total Segments: 218
+  With Blockface Geometry: 218 (100.0%)
+  With Street Cleaning: 208 (95.4%)
+  With Parking Regulations: 0 (0.0%)
+  With Parking Meters: 210 (96.3%)
+
+Data Layer Merge Summary:
+  203 segments with 4 data layers
+  12 segments with 3 data layers
+  3 segments with 2 data layers
+
+Sample Fully Merged Segment:
+  Street: 17TH ST (L side)
+  CNN: 797000
+  Address Range: 3301-3343
+  Data Layers: active_streets, blockface_geometry, street_cleaning, parking_meters
+  Rules: 3
+  Meter Schedules: 21
+
+Completed: 2025-11-28 13:10:15
+================================================================================
