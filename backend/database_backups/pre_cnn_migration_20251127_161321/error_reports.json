@@ -1,0 +1,16 @@
+[
+  {
+    "_id": "6926aca56b436a28039eaaff",
+    "blockfaceId": "test-id-123",
+    "description": "This is a test error report",
+    "createdAt": "2025-11-26 07:30:45.580000",
+    "status": "new"
+  },
+  {
+    "_id": "6926acb26b436a28039eab00",
+    "blockfaceId": "test-id-123",
+    "description": "This is a test error report",
+    "createdAt": "2025-11-26 07:30:58.549000",
+    "status": "new"
+  }
+]

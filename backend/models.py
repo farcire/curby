@@ -23,6 +23,35 @@ class Blockface(BaseModel):
     rules: List[Any] = []
     schedules: List[Schedule] = []
 
+class StreetSegment(BaseModel):
+    """
+    Represents one side of one CNN street segment.
+    Primary key: (cnn, side)
+    
+    This model provides 100% coverage by using CNN + side as the primary identifier,
+    rather than relying on incomplete blockface geometries.
+    """
+    cnn: str                                    # e.g., "1046000"
+    side: str                                   # "L" or "R"
+    streetName: str                             # e.g., "20TH ST"
+    fromStreet: Optional[str] = None            # From street sweeping limits
+    toStreet: Optional[str] = None              # From street sweeping limits
+    
+    # Geometries
+    centerlineGeometry: Dict                    # GeoJSON from Active Streets (REQUIRED)
+    blockfaceGeometry: Optional[Dict] = None    # GeoJSON from pep9 (OPTIONAL)
+    
+    # Rules and schedules
+    rules: List[Dict] = []                      # Parking regs, sweeping, etc.
+    schedules: List[Schedule] = []              # Meter schedules
+    
+    # Metadata
+    zip_code: Optional[str] = None
+    layer: Optional[str] = None
+    
+    class Config:
+        arbitrary_types_allowed = True
+
 class ErrorReport(BaseModel):
     blockfaceId: str
     description: str

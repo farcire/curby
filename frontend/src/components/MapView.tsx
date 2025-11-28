@@ -140,26 +140,9 @@ export function MapView({
     blockfacesWithResults.forEach(({ blockface, result }) => {
       const color = getStatusColor(result.status);
 
-      // Offset coordinates based on side to prevent overlapping lines
-      // Roughly 0.0001 degrees is ~11 meters
-      const OFFSET_AMOUNT = 0.00012;
-      
+      // Use exact coordinates from backend (geometry is already side-specific)
       const latlngs: [number, number][] = blockface.geometry.coordinates.map(
-        ([lng, lat]) => {
-          let latOffset = 0;
-          let lngOffset = 0;
-          
-          // Apply simple cardinal offset
-          // This separates the lines visually so both sides are visible
-          switch (blockface.side.toLowerCase()) {
-            case 'north': latOffset = OFFSET_AMOUNT; break;
-            case 'south': latOffset = -OFFSET_AMOUNT; break;
-            case 'east': lngOffset = OFFSET_AMOUNT; break;
-            case 'west': lngOffset = -OFFSET_AMOUNT; break;
-          }
-          
-          return [lat + latOffset, lng + lngOffset];
-        }
+        ([lng, lat]) => [lat, lng]
       );
 
       const polyline = L.polyline(latlngs, {
