@@ -2,6 +2,71 @@ import { Blockface, ParkingRule } from '@/types/parking';
 
 const BACKEND_API = 'http://localhost:8000/api/v1/blockfaces';
 
+/**
+ * Utility functions for formatting days and times
+ */
+
+// Convert abbreviated day names to full names
+function formatDayName(dayStr: string): string {
+  const dayMap: { [key: string]: string } = {
+    'Mon': 'Monday',
+    'Tue': 'Tuesday',
+    'Tues': 'Tuesday',
+    'Wed': 'Wednesday',
+    'Thu': 'Thursday',
+    'Thurs': 'Thursday',
+    'Fri': 'Friday',
+    'Sat': 'Saturday',
+    'Sun': 'Sunday',
+    'M': 'Monday',
+    'Tu': 'Tuesday',
+    'W': 'Wednesday',
+    'Th': 'Thursday',
+    'F': 'Friday',
+    'Sa': 'Saturday',
+    'Su': 'Sunday',
+  };
+  
+  // Handle ranges like "M-F" or "Mon-Fri"
+  if (dayStr.includes('-')) {
+    const parts = dayStr.split('-');
+    if (parts.length === 2) {
+      const start = dayMap[parts[0].trim()] || parts[0].trim();
+      const end = dayMap[parts[1].trim()] || parts[1].trim();
+      return `${start}-${end}`;
+    }
+  }
+  
+  return dayMap[dayStr] || dayStr;
+}
+
+// Convert 24-hour time to 12-hour format with am/pm
+function formatTime12Hour(time24: string): string {
+  if (!time24 || time24 === '00:00') return 'Midnight';
+  if (time24 === '12:00') return 'Noon';
+  
+  const [hourStr, minuteStr] = time24.split(':');
+  const hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+  
+  if (isNaN(hour)) return time24;
+  
+  const period = hour >= 12 ? 'pm' : 'am';
+  const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  
+  // Only include minutes if they're not :00
+  if (minute && minute !== 0) {
+    return `${hour12}:${minuteStr}${period}`;
+  }
+  
+  return `${hour12}${period}`;
+}
+
+// Format a time range (e.g., "09:00-11:00" -> "9am-11am")
+function formatTimeRange(startTime: string, endTime: string): string {
+  return `${formatTime12Hour(startTime)}-${formatTime12Hour(endTime)}`;
+}
+
 // Default center (20th & Bryant)
 const DEFAULT_CENTER = {
   lat: 37.76272,
@@ -117,41 +182,52 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
   // Handle combined days like "M-F"
   const days: number[] = [];
   
-  // Helper to normalize day string
-  const normalizedDay = rule.day.replace(/\./g, ''); // Remove periods (Mon. -> Mon)
-
-  if (normalizedDay === 'Daily') {
+  // Check if this is a parking regulation (has 'days' field) or street sweeping (has 'day' field)
+  const dayField = rule.days || rule.day;
+  
+  if (!dayField) {
+    // If no day information, default to all days for safety
+    console.warn('Rule has no day information, defaulting to all days:', rule);
     days.push(0, 1, 2, 3, 4, 5, 6);
-  } else if (normalizedDay === 'M-F' || normalizedDay === 'Mon-Fri') {
-    days.push(1, 2, 3, 4, 5);
-  } else if (normalizedDay === 'S-S' || normalizedDay === 'Sat-Sun') {
-    days.push(6, 0);
-  } else if (dayMap[normalizedDay] !== undefined) {
-    days.push(dayMap[normalizedDay]);
   } else {
-    // Try to parse CSV like "Mon, Wed, Fri"
-    const parts = normalizedDay.split(/,\s*/);
-    let allValid = true;
-    for (const part of parts) {
-      if (dayMap[part] !== undefined) {
-        days.push(dayMap[part]);
-      } else {
-        allValid = false;
+    // Helper to normalize day string
+    const normalizedDay = dayField.replace(/\./g, ''); // Remove periods (Mon. -> Mon)
+
+    if (normalizedDay === 'Daily' || normalizedDay === 'All') {
+      days.push(0, 1, 2, 3, 4, 5, 6);
+    } else if (normalizedDay === 'M-F' || normalizedDay === 'Mon-Fri' || normalizedDay === 'Weekdays') {
+      days.push(1, 2, 3, 4, 5);
+    } else if (normalizedDay === 'M-Su' || normalizedDay === 'Mon-Sun') {
+      days.push(0, 1, 2, 3, 4, 5, 6); // Monday through Sunday = all days
+    } else if (normalizedDay === 'M-Sa' || normalizedDay === 'Mon-Sat') {
+      days.push(1, 2, 3, 4, 5, 6); // Monday through Saturday
+    } else if (normalizedDay === 'S-S' || normalizedDay === 'Sat-Sun' || normalizedDay === 'Weekends') {
+      days.push(6, 0);
+    } else if (dayMap[normalizedDay] !== undefined) {
+      days.push(dayMap[normalizedDay]);
+    } else {
+      // Try to parse CSV like "Mon, Wed, Fri"
+      const parts = normalizedDay.split(/,\s*/);
+      let allValid = true;
+      for (const part of parts) {
+        if (dayMap[part] !== undefined) {
+          days.push(dayMap[part]);
+        } else {
+          allValid = false;
+        }
       }
-    }
-    
-    if (!allValid || days.length === 0) {
-      console.warn(`Unknown day format: ${rule.day}`);
-      // Fallback: If description exists, we might want to show it even if we can't parse logic
-      // But for now return null to be safe
-      return null;
+      
+      if (!allValid || days.length === 0) {
+        console.warn(`Unknown day format: ${dayField}, defaulting to all days`);
+        // Default to all days rather than returning null
+        days.push(0, 1, 2, 3, 4, 5, 6);
+      }
     }
   }
 
   // Format times (assuming backend sends "0", "6", "12", etc. or "0900")
-  // Based on curl output, we saw "0" and "6".
-  // Regulations sample saw "900" and "1800".
-  const formatTime = (t: string): string => {
+  // Also handle fromTime/toTime from parking regulations
+  const formatTime = (t: string | undefined | null): string => {
     if (!t) return '00:00';
     
     // Handle "900" or "1800" format
@@ -170,12 +246,14 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
     return t; // Return as is if it's already formatted or complex
   };
 
-  const startTime = formatTime(rule.startTime);
-  const endTime = formatTime(rule.endTime);
+  // Handle both street sweeping (startTime/endTime) and parking regulations (fromTime/toTime)
+  const startTime = formatTime(rule.startTime || rule.fromTime);
+  const endTime = formatTime(rule.endTime || rule.toTime);
 
   // Map rule type
   let type: any = rule.type;
   let precedence = 50;
+  let metadata: any = {};
 
   switch (rule.type) {
     case 'street-sweeping':
@@ -190,20 +268,88 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
       type = 'no-parking';
       precedence = 80;
       break;
+    case 'parking-regulation':
+      // Parse the regulation text to determine actual type
+      const regText = (rule.regulation || '').toLowerCase();
+      const details = (rule.details || '').toLowerCase();
+      
+      if (regText.includes('tow') || details.includes('tow')) {
+        type = 'tow-away';
+        precedence = 100;
+      } else if (regText.includes('no parking') || regText.includes('no stopping')) {
+        type = 'no-parking';
+        precedence = 80;
+      } else if (rule.timeLimit || regText.includes('hour') || regText.includes('hr')) {
+        type = 'time-limit';
+        precedence = 60;
+        metadata.timeLimit = rule.timeLimit ? parseInt(rule.timeLimit) * 60 : 120; // Convert hours to minutes
+      } else if (rule.permitArea || regText.includes('permit') || regText.includes('residential')) {
+        type = 'rpp-zone';
+        precedence = 70;
+        metadata.permitZone = rule.permitArea;
+      } else {
+        // Default to no-parking for unknown regulations
+        type = 'no-parking';
+        precedence = 80;
+      }
+      break;
     case 'rpp': // Backend might call it 'rpp'
     case 'rpp-zone':
       type = 'rpp-zone';
-      precedence = 50;
+      precedence = 70;
+      metadata.permitZone = rule.permitArea;
       break;
     default:
-      // Default to no-parking if unknown but restrictive, or maybe ignore?
-      // For now let's keep it if it maps to our types, otherwise null
+      // Default to no-parking if unknown but restrictive
       if (!['street-sweeping', 'tow-away', 'no-parking', 'meter', 'time-limit', 'rpp-zone'].includes(type)) {
-        console.warn(`Unknown rule type: ${type}`);
-        return null;
+        console.warn(`Unknown rule type: ${type}, defaulting to no-parking`);
+        type = 'no-parking';
+        precedence = 80;
       }
   }
 
+  // Build a better description with proper formatting
+  let description = rule.description || rule.details || '';
+  
+  // If no description or it's generic, build one from the data
+  if (!description || description === type) {
+    // Format the day field to full day names
+    const formattedDay = dayField ? formatDayName(dayField) : '';
+    // Format the time range
+    const formattedTimeRange = formatTimeRange(startTime, endTime);
+    
+    if (type === 'time-limit' && metadata.timeLimit) {
+      const hours = metadata.timeLimit / 60;
+      description = `${hours} hr time limit ${formattedDay} ${formattedTimeRange}`;
+      if (metadata.permitZone) {
+        description += `, permit holder ${metadata.permitZone} exempt`;
+      }
+    } else if (type === 'rpp-zone' && metadata.permitZone) {
+      description = `Residential Permit Zone ${metadata.permitZone}`;
+    } else if (type === 'street-sweeping') {
+      description = `Street Cleaning ${formattedDay} ${formattedTimeRange}`;
+    } else {
+      description = `${type} ${formattedDay} ${formattedTimeRange}`;
+    }
+  } else {
+    // If we have a description, expand abbreviated days to full names
+    description = description
+      .replace(/\bMon\b/g, 'Monday')
+      .replace(/\bTues?\b/g, 'Tuesday')
+      .replace(/\bWed\b/g, 'Wednesday')
+      .replace(/\bThurs?\b/g, 'Thursday')
+      .replace(/\bFri\b/g, 'Friday')
+      .replace(/\bSat\b/g, 'Saturday')
+      .replace(/\bSun\b/g, 'Sunday');
+    
+    // Format time ranges in the description (e.g., "9-11" -> "9am-11am")
+    description = description.replace(/\b(\d{1,2})-(\d{1,2})\b/g, (match, start, end) => {
+      const startFormatted = formatTime12Hour(`${start.padStart(2, '0')}:00`);
+      const endFormatted = formatTime12Hour(`${end.padStart(2, '0')}:00`);
+      return `${startFormatted}-${endFormatted}`;
+    });
+  }
+  
   return {
     id: `${blockfaceId}-${type}-${index}`,
     type: type,
@@ -212,8 +358,9 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
       endTime,
       daysOfWeek: days,
     }],
-    description: rule.description || `${type} ${rule.day} ${startTime}-${endTime}`,
+    description: description,
     precedence: precedence,
+    metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
   };
 }
 

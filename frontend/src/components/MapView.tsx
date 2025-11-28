@@ -3,14 +3,18 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { evaluateLegality, getStatusColor } from '@/utils/ruleEngine';
+import { renderToString } from 'react-dom/server';
+import { Logo } from './Logo';
 
 interface MapViewProps {
   checkTime: Date;
   durationMinutes: number;
   onBlockfaceClick: (blockface: Blockface, result: LegalityResult) => void;
   blockfaces: Blockface[];
-  centerPoint: [number, number]; // [lat, lng]
+  initialCenter: [number, number]; // [lat, lng] - initial map center
+  userLocation?: [number, number]; // [lat, lng] - user's actual device location
   onMapMove?: (bounds: L.LatLngBounds) => void;
+  onNavigateToUser?: () => void;
 }
 
 interface BlockfaceWithResult {
@@ -29,29 +33,35 @@ export function MapView({
   durationMinutes,
   onBlockfaceClick,
   blockfaces,
-  centerPoint,
+  initialCenter,
+  userLocation,
   onMapMove,
+  onNavigateToUser,
 }: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
+  const userMarkerRef = useRef<L.Marker | null>(null);
 
-  // Initialize map
+  // Initialize map (only once) - starts centered on user location
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Initial zoom ~17 is roughly 3 blocks radius view
+    // Initial zoom ~17 is roughly 2-3 blocks radius view
     const initialZoom = 17;
 
     const map = L.map(mapContainerRef.current, {
-      center: centerPoint,
+      center: initialCenter,
       zoom: initialZoom,
-      zoomControl: true,
+      zoomControl: false, // We'll add it manually with custom position
       minZoom: 14,
       maxZoom: 18,
       maxBounds: MISSION_BOUNDS, // Restrict to Mission District
       maxBoundsViscosity: 0.8,
     });
+
+    // Add zoom control at top-left position
+    L.control.zoom({ position: 'topleft' }).addTo(map);
 
     // Notify parent of initial bounds
     if (onMapMove) {
@@ -68,22 +78,6 @@ export function MapView({
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // Add center marker
-    const centerMarker = L.marker(centerPoint, {
-      icon: L.divIcon({
-        className: 'custom-center-marker',
-        html: '<div style="background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
-      }),
-    }).addTo(map);
-
-    centerMarker.bindTooltip('📍 You are here', {
-      permanent: false,
-      direction: 'top',
-      offset: [0, -15],
-    });
-
     mapRef.current = map;
 
     return () => {
@@ -92,7 +86,45 @@ export function MapView({
         mapRef.current = null;
       }
     };
-  }, [centerPoint]); // Re-initialize if center point deeply changes (usually it won't)
+  }, []); // Only initialize once - no re-centering after initial load
+
+  // Update user location marker (stays at user's actual location)
+  useEffect(() => {
+    if (!mapRef.current || !userLocation) return;
+
+    // Remove existing marker if any
+    if (userMarkerRef.current) {
+      mapRef.current.removeLayer(userMarkerRef.current);
+    }
+
+    // Create Curby logo marker using the actual logo design
+    const logoHtml = renderToString(<Logo size="sm" />);
+    const userMarker = L.marker(userLocation, {
+      icon: L.divIcon({
+        className: 'custom-user-marker',
+        html: `
+          <div style="
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 2px 8px rgba(139, 92, 246, 0.4));
+          ">
+            ${logoHtml}
+          </div>
+        `,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+      }),
+      zIndexOffset: 1000, // Keep marker on top
+    }).addTo(mapRef.current);
+
+    userMarker.bindTooltip('📍 Your Location', {
+      permanent: false,
+      direction: 'top',
+      offset: [0, -20],
+    });
+
+    userMarkerRef.current = userMarker;
+  }, [userLocation]);
 
   // Calculate distance between two points (Haversine formula)
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -194,11 +226,58 @@ export function MapView({
     });
   }, [blockfaces, checkTime, durationMinutes, onBlockfaceClick]);
 
+  // Handle navigate to user location
+  const handleNavigateToUser = () => {
+    if (mapRef.current && userLocation) {
+      mapRef.current.setView(userLocation, 17, { animate: true });
+    }
+    if (onNavigateToUser) {
+      onNavigateToUser();
+    }
+  };
+
   return (
-    <div 
-      ref={mapContainerRef} 
-      className="absolute inset-0 w-full h-full"
-      style={{ zIndex: 0 }}
-    />
+    <>
+      <div
+        ref={mapContainerRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ zIndex: 0 }}
+      />
+      
+      {/* Navigate to User Location Button - styled to match Leaflet controls */}
+      {userLocation && (
+        <button
+          onClick={handleNavigateToUser}
+          className="leaflet-control leaflet-bar absolute top-[94px] left-[10px] z-[1000] bg-white hover:bg-gray-50 text-gray-900 rounded-sm shadow-md border border-gray-300/50 transition-colors w-[30px] h-[30px] flex items-center justify-center"
+          title="Return to your location"
+          style={{
+            cursor: 'pointer',
+            fontSize: '18px',
+            lineHeight: '30px',
+            textAlign: 'center'
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-gray-700"
+          >
+            <circle cx="12" cy="12" r="3" />
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="2" x2="12" y2="4" />
+            <line x1="12" y1="20" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="4" y2="12" />
+            <line x1="20" y1="12" x2="22" y2="12" />
+          </svg>
+        </button>
+      )}
+    </>
   );
 }
