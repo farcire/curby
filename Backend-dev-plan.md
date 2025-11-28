@@ -165,16 +165,41 @@
 - **Rule Types:** Explicit mapping was required to categorize "Time limited", "Tow Away", and "Residential Permit" into internal types (`time-limit`, `tow-away`, `rpp-zone`).
 
 #### Side-of-Street Determination Strategy
-- **Dataset:** "Map of Parking Regulations" (`hi6h-neyh`).
-- **Finding:** This dataset does not typically contain explicit side codes (e.g., "Even", "Odd", "North"). Instead, it uses **offset geometries**. The lines representing regulations are drawn spatially to the left or right of the street centerline.
-- **Solution:** Implemented a Geometric Side Analysis:
-  1. Fetch street centerline (Active Streets).
-  2. Fetch nearby regulations.
-  3. Calculate the **Cross Product** of the regulation geometry's midpoint relative to the street centerline vector.
+
+**PRIMARY METHOD: Address-Based Matching (RPP Zones)**
+- **Datasets:** Active Streets (3psu-pn9h) + RPP Eligibility Parcels (i886-hxz9)
+- **Key Insight:** Active Streets contains address ranges for each side of every street segment!
+- **Fields Used:**
+  - `lf_fadd`, `lf_toadd`: Left side address range (e.g., 3200-3298)
+  - `rt_fadd`, `rt_toadd`: Right side address range (e.g., 3201-3299)
+  - RPP Parcels: `from_st` (address), `street` (name), `rppeligib` (RPP code)
+- **Solution:** Direct Address Range Matching:
+  1. Fetch Active Streets with address ranges
+  2. Fetch RPP parcels with building addresses and RPP codes
+  3. Match parcel address to street address range using simple numeric comparison
   4. **Result:**
-     - Cross Product > 0: Regulation is on the **Left** side.
-     - Cross Product < 0: Regulation is on the **Right** side.
-  5. Assign the regulation to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`) rather than the generic street.
+     - If `lf_fadd <= parcel_address <= lf_toadd`: Assign to **Left** side
+     - If `rt_fadd <= parcel_address <= rt_toadd`: Assign to **Right** side
+  5. Assign RPP code to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
+
+**Advantages:**
+- ✅ Deterministic (address either falls in range or doesn't)
+- ✅ No geometric calculations needed
+- ✅ Fast (simple integer comparison)
+- ✅ Accurate (based on official address assignments)
+- ✅ Works even with imperfect geometries
+
+**FALLBACK METHOD: Geometric Side Analysis (Non-Metered Regulations)**
+- **Dataset:** "Map of Parking Regulations" (`hi6h-neyh`)
+- **Finding:** This dataset uses **offset geometries** (lines drawn on the side of the street)
+- **Solution:** Geometric Side Analysis (used when address data unavailable):
+  1. Fetch street centerline (Active Streets)
+  2. Fetch nearby regulations
+  3. Calculate the **Cross Product** of the regulation geometry's midpoint relative to the street centerline vector
+  4. **Result:**
+     - Cross Product > 0: Regulation is on the **Left** side
+     - Cross Product < 0: Regulation is on the **Right** side
+  5. Assign the regulation to the specific Blockface ID (`{cnn}_L` or `{cnn}_R`)
 
 #### Runtime Spatial Join Strategy
 - **Problem:** Parking regulations (`parking_regulations` collection) are massive and complex to pre-join perfectly during ingestion without a robust spatial database (PostGIS).
