@@ -36,7 +36,7 @@ source: BA-PRD Agent Refinement
 **Technical & Cost Constraints:**
 - **Platform:** Must be built as a Progressive Web App (PWA) to ensure native-like mobile experience without app store overhead.
 - **Cost Efficiency:** Architecture must prioritize free, open-domain, or low-cost APIs and services. High-cost proprietary solutions (like Google Maps API) should be avoided in favor of cost-effective alternatives (e.g., Leaflet with OpenStreetMap tiles).
-- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph"). Metered data is joined via CNN. Non-metered regulations (RPP, Time Limits) are sourced from dataset `hi6h-neyh`. These records use spatially offset geometries (lines drawn on the side of the street) rather than explicit side codes. The system uses geometric analysis (cross-product calculation relative to the street centerline) to accurately assign these regulations to the correct left or right blockface.
+- **Data Strategy:** Use SFMTA's Active Streets dataset as the geometry backbone ("The Graph"). Metered data is joined via CNN. **RPP (Residential Parking Permit) zones are determined using address-based matching** as the primary method: Active Streets provides address ranges (lf_fadd, lf_toadd, rt_fadd, rt_toadd) for each side of every street segment, and RPP Eligibility Parcels (i886-hxz9) provide building addresses with RPP codes. The system matches parcel addresses to street address ranges to deterministically assign RPP zones to L/R sides. Non-metered regulations (Time Limits) from dataset `hi6h-neyh` use spatially offset geometries as a fallback method, with geometric analysis (cross-product calculation) to assign regulations to the correct blockface when address data is unavailable.
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
@@ -84,11 +84,13 @@ source: BA-PRD Agent Refinement
     - **Residential Permits:** For non-metered areas, specifics on which Residential Parking Permit (RPP) Area is required to exceed time limits.
 
 **FR-005: Data Ingestion ("Trust, then Verify")**
-- **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA.
+- **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA, with **address-based RPP matching** as the primary method.
 - **Acceptance Criteria:**
-  - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone.
+  - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone and address range source.
+  - [ ] **RPP zones are determined using address-based matching:** RPP Eligibility Parcels (i886-hxz9) provide building addresses and RPP codes, which are matched to Active Streets address ranges (lf_fadd, lf_toadd, rt_fadd, rt_toadd) to deterministically assign RPP zones to L/R sides.
   - [ ] Metered data is joined via CNN key.
-  - [ ] Non-metered regulations (`hi6h-neyh`) are spatially joined and geometrically analyzed (using offset vectors) to map specific regulations to the correct left/right blockface.
+  - [ ] Non-metered regulations (`hi6h-neyh`) are spatially joined and geometrically analyzed (using offset vectors) as a fallback method when address data is unavailable.
+  - [ ] **Address-based RPP matching achieves >95% accuracy** compared to geometric methods.
 
 **FR-006: Error Reporting System**
 - **Description:** Allow users to report incorrect parking rules they encounter.

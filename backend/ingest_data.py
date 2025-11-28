@@ -12,13 +12,14 @@ import math
 SFMTA_DOMAIN = "data.sfgov.org"
 
 # Dataset IDs (Ordered per instructions)
-STREETS_DATASET_ID = "3psu-pn9h"       # 1. Active Streets (Primary Backbone)
+STREETS_DATASET_ID = "3psu-pn9h"       # 1. Active Streets (Primary Backbone + Address Ranges)
 STREET_NODES_ID = "vd6w-dq8r"          # 2. Street Nodes
 INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # 3. List of Intersections
 INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # 4. Intersection Permutations
+RPP_PARCELS_ID = "i886-hxz9"           # 4.5 RPP Eligibility Parcels (Address-based RPP matching)
 BLOCKFACE_GEOMETRY_ID = "pep9-66vw"    # 5. Blockface Geometries (Link cnn -> blockface_id)
 STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # 6. Street Cleaning Schedules
-PARKING_REGULATIONS_ID = "hi6h-neyh"   # 7. Parking Regulations
+PARKING_REGULATIONS_ID = "hi6h-neyh"   # 7. Parking Regulations (Geometric fallback)
 METERED_BLOCKFACES_ID = "mk27-a5x2"    # 8. Metered Blockfaces (Metadata)
 METERS_DATASET_ID = "8vzz-qzz9"        # 9. Parking Meters (Link meters to streets)
 METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
@@ -102,9 +103,14 @@ async def main():
     except Exception:
         db = client["curby"]
 
-    # Store Base Street Metadata (CNN -> Name, etc.)
+    # Store Base Street Metadata (CNN -> Name, Address Ranges, etc.)
     # We use this to enrich the blockfaces created from pep9
+    # Address ranges (lf_fadd, lf_toadd, rt_fadd, rt_toadd) enable address-based RPP matching
     streets_metadata = {}
+    
+    # Store address range index for RPP matching
+    # Structure: { street_name: [ {cnn, lf_fadd, lf_toadd, rt_fadd, rt_toadd}, ... ] }
+    address_range_index = {}
 
     # List to hold all distinct blockface objects
     all_blockfaces = []
@@ -126,17 +132,35 @@ async def main():
         await db.streets.insert_many(streets_df.to_dict('records'))
         print("Saved raw 'streets' collection.")
 
-        # Build Metadata Map
+        # Build Metadata Map with Address Ranges
         for _, row in streets_df.iterrows():
             cnn = row.get("cnn")
+            street_name = row.get("streetname")
             if cnn:
                 streets_metadata[cnn] = {
-                    "streetName": row.get("streetname"),
-                    # We can store the centerline geometry here if needed for debugging,
-                    # but we won't use it for the blockface main geometry.
-                    "centerlineGeometry": row.get("line")
+                    "streetName": street_name,
+                    "centerlineGeometry": row.get("line"),
+                    # Address ranges for RPP matching
+                    "lf_fadd": row.get("lf_fadd"),  # Left from address
+                    "lf_toadd": row.get("lf_toadd"),  # Left to address
+                    "rt_fadd": row.get("rt_fadd"),  # Right from address
+                    "rt_toadd": row.get("rt_toadd")   # Right to address
                 }
+                
+                # Build address range index by street name
+                if street_name:
+                    if street_name not in address_range_index:
+                        address_range_index[street_name] = []
+                    address_range_index[street_name].append({
+                        'cnn': cnn,
+                        'lf_fadd': row.get("lf_fadd"),
+                        'lf_toadd': row.get("lf_toadd"),
+                        'rt_fadd': row.get("rt_fadd"),
+                        'rt_toadd': row.get("rt_toadd")
+                    })
+        
         print(f"Loaded metadata for {len(streets_metadata)} streets.")
+        print(f"Built address range index for {len(address_range_index)} street names.")
 
     # ==========================================
     # 2. Ingest Street Nodes - vd6w-dq8r
@@ -167,6 +191,60 @@ async def main():
         await db.intersection_permutations.delete_many({})
         await db.intersection_permutations.insert_many(perms_df.to_dict('records'))
         print("Saved 'intersection_permutations'.")
+
+    # ==========================================
+    # 4.5 Ingest RPP Eligibility Parcels - i886-hxz9
+    # ==========================================
+    print("\n--- 4.5. Processing RPP Eligibility Parcels (Address-Based RPP Matching) ---")
+    # Fetch parcels with RPP eligibility codes
+    # Filter for Mission/SOMA RPP areas: W, I, J, K, Q, R, S, T, U, V, X, Y, Z
+    rpp_parcels_df = fetch_data_as_dataframe(
+        RPP_PARCELS_ID,
+        app_token,
+        where="rppeligib IN ('W', 'I', 'J', 'K', 'Q', 'R', 'S', 'T', 'U', 'V', 'X', 'Y', 'Z')"
+    )
+    
+    # Build address-to-RPP mapping for later use
+    # Structure: { (street_name, address): rpp_code }
+    address_to_rpp = {}
+    
+    if not rpp_parcels_df.empty:
+        # Save raw collection for reference
+        await db.rpp_parcels.delete_many({})
+        await db.rpp_parcels.insert_many(rpp_parcels_df.to_dict('records'))
+        
+        # Create geospatial index for spatial queries (fallback method)
+        try:
+            await db.rpp_parcels.create_index([("shape", "2dsphere")])
+            print("Created 2dsphere index on 'rpp_parcels'.")
+        except Exception as e:
+            print(f"Warning: Could not create index on rpp_parcels: {e}")
+        
+        print(f"Saved {len(rpp_parcels_df)} RPP parcels to collection.")
+        
+        # Build address-to-RPP mapping for address-based matching
+        for _, row in rpp_parcels_df.iterrows():
+            street_address = row.get("from_st")
+            street_name = row.get("street")
+            rpp_code = row.get("rppeligib")
+            
+            if street_address and street_name and rpp_code:
+                try:
+                    address_num = int(street_address)
+                    key = (street_name.upper().strip(), address_num)
+                    address_to_rpp[key] = rpp_code
+                except (ValueError, TypeError):
+                    continue
+        
+        print(f"Built address-to-RPP mapping with {len(address_to_rpp)} entries.")
+        
+        # Log sample mappings
+        sample_count = min(5, len(address_to_rpp))
+        if sample_count > 0:
+            print(f"\nSample RPP Address Mappings:")
+            for i, (key, rpp) in enumerate(list(address_to_rpp.items())[:sample_count]):
+                street, addr = key
+                print(f"  {addr} {street} → RPP Area {rpp}")
 
     # ==========================================
     # 5. Create Blockfaces from Geometries - pep9-66vw

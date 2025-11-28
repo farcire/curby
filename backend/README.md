@@ -44,9 +44,10 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 
 ## Data Sources
 
-- **Active Streets** (3psu-pn9h): Street centerlines with CNN identifiers
+- **Active Streets** (3psu-pn9h): Street centerlines with CNN identifiers **+ Address Ranges** (lf_fadd, lf_toadd, rt_fadd, rt_toadd)
+- **RPP Eligibility Parcels** (i886-hxz9): Building addresses with RPP codes - **PRIMARY for address-based RPP matching**
 - **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side
-- **Parking Regulations** (hi6h-neyh): Regulations with geometry only
+- **Parking Regulations** (hi6h-neyh): Regulations with geometry only - **FALLBACK for geometric matching**
 - **Blockface Geometries** (pep9-66vw): Side-specific geometries (7.4% coverage)
 - **Meters** (8vzz-qzz9, 6cqg-dxku): Parking meter locations and schedules
 
@@ -149,25 +150,30 @@ python check_missing_blockfaces.py
 
 ### Key Files
 - **`ingest_data_cnn_segments.py`** - New CNN-based ingestion (522 lines)
-- **`ingest_data.py`** - Legacy blockface-based ingestion
+- **`ingest_data.py`** - Current ingestion with **address-based RPP matching**
 - **`models.py`** - Data models (includes StreetSegment)
 - **`main.py`** - FastAPI application
 - **`validate_cnn_segments.py`** - Validation script (226 lines)
 - **`run_cnn_segment_migration.sh`** - Migration runner
+- **`RPP_IMPLEMENTATION_PLAN.md`** - Four-method RPP validation strategy
 
 ### CNN Segment Ingestion Flow
-1. **Load Active Streets** → Create 2 segments per CNN (L & R)
-2. **Add Blockface Geometries** → Optional enhancement where available
-3. **Match Street Sweeping** → Direct CNN + side match (easy)
-4. **Match Parking Regulations** → Multi-point spatial + side analysis (complex)
-5. **Match Meters** → CNN + location inference (medium)
-6. **Save to MongoDB** → With proper indexes
+1. **Load Active Streets** → Create 2 segments per CNN (L & R) + Extract address ranges
+2. **Load RPP Parcels** → Build address-to-RPP mapping for address-based matching
+3. **Add Blockface Geometries** → Optional enhancement where available
+4. **Match Street Sweeping** → Direct CNN + side match (easy)
+5. **Match RPP Zones** → **Address-based matching (PRIMARY)** using address ranges
+6. **Match Parking Regulations** → Multi-point spatial + side analysis (FALLBACK)
+7. **Match Meters** → CNN + location inference (medium)
+8. **Save to MongoDB** → With proper indexes
 
 ### Key Features
-- **Multi-point sampling**: Robust regulation side determination
+- **Address-based RPP matching**: Primary method using street address ranges (most reliable)
+- **Multi-point sampling**: Robust regulation side determination (fallback)
 - **100% coverage**: Every CNN gets L & R segments
 - **Dual geometries**: Centerline (required) + blockface (optional)
 - **Confidence scores**: For debugging regulation matches
+- **Four-method validation**: Address, geometric, overlay, spatial matching
 
 ## Implementation Status
 
