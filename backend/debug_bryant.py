@@ -10,16 +10,18 @@ async def debug():
     client = Socrata("data.sfgov.org", app_token)
     
     # 1. Find CNN for Bryant St near 18th/Mariposa
-    # We'll fetch Bryant St records and look for block numbers or cross streets if available,
-    # or just list a few to pick one.
-    print("--- Fetching Bryant St Segments ---")
-    results = client.get("3psu-pn9h", where="streetname='Bryant St' AND zip_code='94110'", limit=20)
+    print("--- Fetching Bryant St Segments (No Zip Filter) ---")
+    # Use generic search
+    results = client.get("3psu-pn9h", where="streetname like '%Bryant%'", limit=20)
     
     target_cnn = None
     for row in results:
-        print(f"CNN: {row.get('cnn')}, From: {row.get('f_st')}, To: {row.get('t_st')}")
-        if row.get('f_st') == '18th St' or row.get('t_st') == '18th St':
+        print(f"CNN: {row.get('cnn')}, Street: {row.get('streetname')}, Zip: {row.get('zip_code')}, From: {row.get('f_st')}, To: {row.get('t_st')}")
+        # Look for the 18th/Mariposa block
+        if (row.get('f_st') == '18TH ST' and row.get('t_st') == 'MARIPOSA ST') or \
+           (row.get('f_st') == 'MARIPOSA ST' and row.get('t_st') == '18TH ST'):
             target_cnn = row.get('cnn')
+            print(">>> Found Target Segment!")
             
     if not target_cnn:
         print("Could not pinpoint exact segment, using first one found.")

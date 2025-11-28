@@ -98,6 +98,8 @@ function transformBackendBlockface(backendData: any): Blockface {
     streetName: streetName,
     side: parseSide(backendData.side),
     rules: rules,
+    fromStreet: backendData.fromStreet,
+    toStreet: backendData.toStreet
   };
 }
 
@@ -218,10 +220,15 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
 /**
  * Parses side of street string into a valid type
  */
-function parseSide(side: any): 'north' | 'south' | 'east' | 'west' {
+function parseSide(side: any): 'north' | 'south' | 'east' | 'west' | 'L' | 'R' {
   if (typeof side !== 'string' || side.length === 0) {
     return 'east'; // A sensible default
   }
+  
+  // Handle direct L/R from backend
+  if (side === 'L') return 'L';
+  if (side === 'R') return 'R';
+
   const lowerSide = side.toLowerCase();
   if (lowerSide.startsWith('n')) return 'north';
   if (lowerSide.startsWith('s')) return 'south';

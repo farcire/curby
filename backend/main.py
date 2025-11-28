@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-from models import Blockface, ErrorReport
+from models import Blockface, ErrorReport, StreetSegment
 
 load_dotenv()
 
@@ -27,10 +27,10 @@ async def lifespan(app: FastAPI):
         await client.admin.command('ismaster')
         print("Successfully connected to MongoDB.")
         
-        # Ensure 2dsphere index on blockfaces
+        # Ensure 2dsphere index on street_segments (was blockfaces)
         try:
-            await db.blockfaces.create_index([("geometry", "2dsphere")])
-            print("Ensured 2dsphere index on blockfaces collection.")
+            await db.street_segments.create_index([("centerlineGeometry", "2dsphere")])
+            print("Ensured 2dsphere index on street_segments collection.")
         except Exception as e:
             print(f"Failed to create index: {e}")
             
@@ -95,10 +95,11 @@ def map_regulation_type(reg_type: str) -> str:
         return 'rpp-zone'
     return 'unknown'
 
-@app.get("/api/v1/blockfaces", response_model=List[Blockface])
+@app.get("/api/v1/blockfaces", response_model=List[dict])
 async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
     """
-    Get blockfaces within a radius of a location.
+    Get street segments (formerly blockfaces) within a radius of a location.
+    Maps new StreetSegment model to the legacy Blockface response structure for frontend compatibility.
     """
     try:
         # Use $geoWithin with $centerSphere for robust radius search
@@ -106,117 +107,47 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         earth_radius_meters = 6378100
         radius_radians = radius_meters / earth_radius_meters
 
+        # Query street_segments using centerlineGeometry
         query = {
-            "geometry": {
+            "centerlineGeometry": {
                 "$geoWithin": {
                     "$centerSphere": [[lng, lat], radius_radians]
                 }
             }
         }
         
-        blockfaces = []
-        async for doc in db.blockfaces.find(query):
-            # Convert ObjectId to string if needed, though our schema uses 'id' as string
+        segments = []
+        async for doc in db.street_segments.find(query):
+            # Convert ObjectId to string
+            doc["id"] = str(doc.get("_id", ""))
             if "_id" in doc:
                 del doc["_id"]
-            blockfaces.append(doc)
             
-        print(f"Found {len(blockfaces)} blockfaces")
-
-        # --- Enrich with Non-Metered Regulations ---
-        # Fetch regulations within the same area
-        # We use a slightly larger radius to ensure we catch things starting/ending just outside
-        reg_query = {
-            "geometry": {
-                "$geoWithin": {
-                    "$centerSphere": [[lng, lat], radius_radians]
-                }
+            # Map to frontend expected structure
+            # Use blockfaceGeometry if available, otherwise fallback to centerlineGeometry
+            geometry = doc.get("blockfaceGeometry") or doc.get("centerlineGeometry")
+            
+            # Construct a response object compatible with frontend Blockface interface
+            segment_response = {
+                "id": doc["id"],
+                "cnn": doc.get("cnn"),
+                "streetName": doc.get("streetName"),
+                "side": doc.get("side"), # "L" or "R"
+                "geometry": geometry,
+                "rules": doc.get("rules", []),
+                "schedules": doc.get("schedules", []),
+                "fromStreet": doc.get("fromStreet"),
+                "toStreet": doc.get("toStreet")
             }
-        }
-        
-        regulations = []
-        async for reg in db.parking_regulations.find(reg_query):
-            regulations.append(reg)
             
-        print(f"Found {len(regulations)} regulations in area")
+            segments.append(segment_response)
+            
+        print(f"Found {len(segments)} segments")
         
-        # Simple spatial matching: Associate regulation with the nearest blockface(s)
-        # This is an approximation. Ideally this is done during ingestion with robust spatial joins.
-        if blockfaces and regulations:
-            from math import radians, cos, sin, asin, sqrt
-
-            def haversine(lon1, lat1, lon2, lat2):
-                """
-                Calculate the great circle distance between two points
-                on the earth (specified in decimal degrees)
-                """
-                # convert decimal degrees to radians
-                lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
-                # haversine formula
-                dlon = lon2 - lon1
-                dlat = lat2 - lat1
-                a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
-                c = 2 * asin(sqrt(a))
-                r = 6371000 # Radius of earth in meters
-                return c * r
-
-            def get_centroid(geometry):
-                if not geometry or 'coordinates' not in geometry:
-                    return None
-                coords = geometry['coordinates']
-                # Handle MultiLineString
-                if geometry['type'] == 'MultiLineString':
-                    # Flatten to single list of points
-                    all_points = [p for line in coords for p in line]
-                    coords = all_points
-                
-                if not coords:
-                    return None
-                    
-                # Simple average of points
-                avg_lng = sum(p[0] for p in coords) / len(coords)
-                avg_lat = sum(p[1] for p in coords) / len(coords)
-                return [avg_lng, avg_lat]
-
-            # Pre-calculate blockface centroids
-            bf_centroids = []
-            for bf in blockfaces:
-                c = get_centroid(bf.get('geometry'))
-                bf_centroids.append({'id': bf.get('id'), 'centroid': c})
-
-            for reg in regulations:
-                reg_center = get_centroid(reg.get('geometry'))
-                if not reg_center:
-                    continue
-                
-                # Find nearest blockface
-                nearest_bf = None
-                min_dist = float('inf')
-                
-                for bf_c in bf_centroids:
-                    if not bf_c['centroid']:
-                        continue
-                    dist = haversine(reg_center[0], reg_center[1], bf_c['centroid'][0], bf_c['centroid'][1])
-                    if dist < min_dist:
-                        min_dist = dist
-                        nearest_bf = bf_c['id']
-                
-                # If reasonably close (e.g., within 20 meters), attach rule
-                if nearest_bf and min_dist < 30:
-                    # Find the blockface object
-                    target_bf = next((b for b in blockfaces if b['id'] == nearest_bf), None)
-                    if target_bf:
-                        # Map regulation fields to rule structure
-                        rule = {
-                            "type": map_regulation_type(reg.get('regulation', '')),
-                            "day": reg.get('days', 'Daily'),
-                            "startTime": reg.get('hrs_begin', '0'),
-                            "endTime": reg.get('hrs_end', '2359'),
-                            "description": f"{reg.get('regulation')} ({reg.get('days')} {reg.get('hours')})"
-                        }
-                        target_bf['rules'].append(rule)
-
-        return blockfaces
+        # Note: Regulations are already attached during ingestion phase!
+        # No need for runtime spatial joining anymore.
+        
+        return segments
     except Exception as e:
         print(f"Error in get_blockfaces: {e}")
         import traceback
