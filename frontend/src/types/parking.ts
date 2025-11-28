@@ -34,8 +34,10 @@ export interface Blockface {
     coordinates: [number, number][]; // [lng, lat]
   };
   streetName: string;
-  side: 'north' | 'south' | 'east' | 'west';
+  side: 'north' | 'south' | 'east' | 'west' | 'L' | 'R'; // Added L/R for new backend
   rules: ParkingRule[];
+  fromStreet?: string; // Optional limits
+  toStreet?: string;
 }
 
 export interface LegalityResult {

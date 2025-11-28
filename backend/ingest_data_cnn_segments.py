@@ -5,7 +5,7 @@ import pandas as pd
 from sodapy import Socrata
 import motor.motor_asyncio
 from typing import List, Dict, Any, Optional
-from shapely.geometry import shape, LineString, Point
+from shapely.geometry import shape, LineString, Point, mapping
 import math
 
 # --- Constants ---
@@ -137,6 +137,53 @@ def match_regulation_to_segment(regulation_geo: Dict,
     except Exception as e:
         print(f"Error in match_regulation_to_segment: {e}")
         return False
+
+def generate_offset_geometry(centerline_geo: Dict, side: str, offset_degrees: float = 0.00005) -> Optional[Dict]:
+    """
+    Generates a synthetic blockface geometry by offsetting the centerline.
+    offset_degrees: 0.00005 is roughly 5 meters
+    """
+    try:
+        cl_shape = shape(centerline_geo)
+        
+        # parallel_offset only works on LineString
+        if not isinstance(cl_shape, LineString):
+            return None
+            
+        # Shapely parallel_offset:
+        # side='left' means left of the line direction
+        # side='right' means right of the line direction
+        
+        if side == 'L':
+            offset_shape = cl_shape.parallel_offset(offset_degrees, 'left')
+        elif side == 'R':
+            offset_shape = cl_shape.parallel_offset(offset_degrees, 'right')
+        else:
+            return None
+            
+        if offset_shape.is_empty:
+            return None
+
+        # Handling MultiLineString return (can happen with complex offsets or self-intersections)
+        if offset_shape.geom_type == 'MultiLineString':
+             # Take the longest segment
+             offset_shape = max(offset_shape.geoms, key=lambda g: g.length)
+
+        # Ensure direction consistency (fix for potential reversing by parallel_offset)
+        # Check if start point of offset is closer to start or end of original
+        p1_orig = Point(cl_shape.coords[0])
+        p1_off = Point(offset_shape.coords[0])
+        p2_orig = Point(cl_shape.coords[-1])
+        
+        # If start of offset is closer to END of original than START of original, it's reversed
+        if p1_off.distance(p1_orig) > p1_off.distance(p2_orig):
+            offset_shape = LineString(list(offset_shape.coords)[::-1])
+            
+        return mapping(offset_shape)
+        
+    except Exception as e:
+        print(f"Error generating offset: {e}")
+        return None
 
 def extract_street_limits(sweeping_schedule: Dict) -> tuple:
     """
@@ -354,6 +401,23 @@ async def main():
                         break
     
     print(f"✓ Added {blockface_count} blockface geometries to segments")
+
+    # ==========================================
+    # STEP 2.5: Generate Synthetic Blockfaces (Offset) for missing ones
+    # ==========================================
+    print("\n=== STEP 2.5: Generating Synthetic Blockfaces for Missing Geometries ===")
+    synthetic_count = 0
+    for segment in all_segments:
+        if not segment["blockfaceGeometry"] and segment["centerlineGeometry"]:
+            synthetic_geo = generate_offset_geometry(
+                segment["centerlineGeometry"],
+                segment["side"]
+            )
+            if synthetic_geo:
+                segment["blockfaceGeometry"] = synthetic_geo
+                synthetic_count += 1
+    
+    print(f"✓ Generated {synthetic_count} synthetic blockface geometries")
 
     # ==========================================
     # STEP 3: Match Street Sweeping (Direct CNN + Side)

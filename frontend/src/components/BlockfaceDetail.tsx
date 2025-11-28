@@ -105,6 +105,15 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
             <span className="font-semibold">{blockface.streetName}</span>
             <span className="text-gray-500">({blockface.side})</span>
           </div>
+          
+          {/* Limits */}
+          {(blockface.fromStreet || blockface.toStreet) && (
+            <div className="text-xs text-gray-500 pl-5 -mt-1 mb-2">
+              {blockface.fromStreet && blockface.toStreet
+                ? `${blockface.fromStreet} → ${blockface.toStreet}`
+                : blockface.fromStreet || blockface.toStreet}
+            </div>
+          )}
 
           {/* Rules - ALWAYS SHOW */}
           <div>
