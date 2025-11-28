@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Logo } from '@/components/Logo';
 import { SimpleDurationPicker } from '@/components/SimpleDurationPicker';
 import { ParkingNavigator } from '@/components/ParkingNavigator';
@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { showError } from '@/utils/toast';
 import L from 'leaflet';
 
-const CENTER_POINT: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - adjusted north
+const DEFAULT_CENTER: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - default fallback
 
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(180); // Default to 3 hours
@@ -23,8 +23,46 @@ const Index = () => {
   const [blockfaces, setBlockfaces] = useState<Blockface[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
+  const [userLocation, setUserLocation] = useState<[number, number]>(DEFAULT_CENTER);
+  const [hasInitialized, setHasInitialized] = useState(false);
   
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Get user's actual device location on startup
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLoc: [number, number] = [
+            position.coords.latitude,
+            position.coords.longitude,
+          ];
+          setUserLocation(userLoc);
+          // Load initial data centered on user location
+          if (!hasInitialized) {
+            loadSFMTAData(userLoc[0], userLoc[1], 300); // ~2 block radius
+            setHasInitialized(true);
+          }
+        },
+        (error) => {
+          console.warn('Geolocation error:', error);
+          // Fallback to default location
+          setUserLocation(DEFAULT_CENTER);
+          if (!hasInitialized) {
+            loadSFMTAData(DEFAULT_CENTER[0], DEFAULT_CENTER[1], 300);
+            setHasInitialized(true);
+          }
+        }
+      );
+    } else {
+      // Geolocation not supported, use default
+      setUserLocation(DEFAULT_CENTER);
+      if (!hasInitialized) {
+        loadSFMTAData(DEFAULT_CENTER[0], DEFAULT_CENTER[1], 300);
+        setHasInitialized(true);
+      }
+    }
+  }, []);
 
   const loadSFMTAData = async (lat: number, lng: number, radius: number) => {
     setIsLoadingData(true);
@@ -165,7 +203,8 @@ const Index = () => {
             durationMinutes={durationMinutes}
             onBlockfaceClick={handleBlockfaceClick}
             blockfaces={blockfaces}
-            centerPoint={CENTER_POINT}
+            initialCenter={userLocation}
+            userLocation={userLocation}
             onMapMove={handleMapMove}
           />
         )}

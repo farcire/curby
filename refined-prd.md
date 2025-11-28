@@ -110,11 +110,13 @@ source: BA-PRD Agent Refinement
 **FR-009: Location & Dynamic Map View (MVP Use Cases)**
 - **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to viewport changes.
 - **Acceptance Criteria:**
-  - [ ] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within Mission/SOMA) and zooms to a close-up street view.
-  - [ ] **Use Case 2 (Manual):** Users can pan the map freely within the Mission District bounds.
-  - [ ] **Dynamic Data:** Parking eligibility data automatically populates the entire visible map area as the user pans or zooms. No manual "Radius" slider or "Search" button is required.
-  - [ ] **Restricted Bounds:** The map view is strictly limited to the Mission District for the MVP.
-  - [ ] **Loading State:** The loading message must state "Street parking eligibility made easy..." with centered branding.
+  - [x] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within Mission/SOMA) and zooms to a close-up street view (~2-3 block radius).
+  - [x] **Use Case 2 (Manual):** Users can pan the map freely within the Mission District bounds without automatic re-centering.
+  - [x] **Dynamic Data:** Parking eligibility data automatically populates the entire visible map area as the user pans or zooms. No manual "Radius" slider or "Search" button is required.
+  - [x] **User Location Marker:** A Curby logo marker displays the user's actual device location and remains visible even when panning to other areas.
+  - [x] **Return to Location:** A button styled to match map controls allows users to quickly return to their actual device location.
+  - [x] **Restricted Bounds:** The map view is strictly limited to the Mission District for the MVP.
+  - [x] **Loading State:** The loading message must state "Street parking eligibility made easy..." with centered branding.
 
 **FR-010: Progressive Web App (PWA) Capabilities**
 - **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.
