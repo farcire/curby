@@ -1,0 +1,106 @@
+================================================================================
+CHECKING FOR MISSING BLOCKFACE GEOMETRIES
+================================================================================
+
+Total streets in database: 2007
+CNNs with blockfaces: 148
+CNNs WITHOUT blockfaces: 1859
+
+--- 20TH STREET ANALYSIS ---
+Total 20th Street CNN segments: 17
+  With blockfaces: 1 - ['1055000']
+  WITHOUT blockfaces: 16
+
+  Missing CNNs:
+    1044000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Tues 9-11 Side L
+    1045000
+      ✓ Has 2 street sweeping schedules
+        - Tues 9-11 Side L
+        - Thu 9-11 Side R
+    1046000
+      ✓ Has 2 street sweeping schedules
+        - Tues 9-11 Side L
+        - Thu 9-11 Side R
+    1047000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Tues 9-11 Side L
+    1048000
+      ✓ Has 2 street sweeping schedules
+        - Tues 9-11 Side L
+        - Thu 9-11 Side R
+    1049000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Tues 9-11 Side L
+    1050000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Tues 9-11 Side L
+    1051000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Tues 9-11 Side L
+    1052000
+      ✓ Has 5 street sweeping schedules
+        - Fri 6-8 Side L
+        - Tues 6-8 Side R
+    1053000
+      ✓ Has 5 street sweeping schedules
+        - Fri 6-8 Side L
+        - Mon 6-8 Side L
+    1054000
+      ✓ Has 5 street sweeping schedules
+        - Mon 6-8 Side L
+        - Fri 6-8 Side L
+    1056000
+      ✓ Has 5 street sweeping schedules
+        - Tues 6-8 Side R
+        - Wed 6-8 Side L
+    1057000
+      ✓ Has 5 street sweeping schedules
+        - Tues 6-8 Side R
+        - Thu 6-8 Side R
+    1058000
+      ✓ Has 5 street sweeping schedules
+        - Wed 6-8 Side L
+        - Thu 6-8 Side R
+    1059000
+      ✓ Has 2 street sweeping schedules
+        - Thu 9-11 Side R
+        - Mon 12-14 Side L
+    1060000
+      ✓ Has 2 street sweeping schedules
+        - Mon 9-11 Side L
+        - Thu 9-11 Side R
+
+--- CNN 1046000 SPECIFIC CHECK ---
+✓ CNN 1046000 exists in streets collection
+  Street: 20TH ST
+  Has centerline geometry: Yes
+✗ CNN 1046000 has NO blockface geometry
+✓ CNN 1046000 has 2 street sweeping schedules:
+    Tues 9-11 Side L
+    Limits: York St  -  Bryant St
+    Thu 9-11 Side R
+    Limits: York St  -  Bryant St
+
+================================================================================
+CONCLUSION
+================================================================================
+
+Out of 2007 street segments in our database:
+  148 have blockface geometries (7.4%)
+  1859 are MISSING blockface geometries (92.6%)
+
+For 20th Street specifically:
+  1 of 17 segments have blockfaces
+  Missing: 16 segments
+
+✗ CNN 1046000 (York-Bryant block) is MISSING blockface geometry
+  This is why we can't show regulations for this specific block
+
+NEXT STEP: Generate synthetic blockfaces from centerline geometries

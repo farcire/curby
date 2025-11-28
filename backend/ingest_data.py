@@ -5,6 +5,8 @@ import pandas as pd
 from sodapy import Socrata
 import motor.motor_asyncio
 from typing import List, Dict, Any, Optional
+from shapely.geometry import shape, LineString, Point
+import math
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
@@ -23,6 +25,53 @@ METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
 
 # --- Data Models ---
 Blockface = Dict[str, Any]
+
+def get_side_of_street(centerline_geo: Dict, blockface_geo: Dict) -> str:
+    """
+    Determines if the blockface geometry is on the Left or Right side of the centerline.
+    Returns 'L', 'R', or None if indeterminate.
+    """
+    try:
+        cl_shape = shape(centerline_geo)
+        bf_shape = shape(blockface_geo)
+        
+        if not isinstance(cl_shape, LineString) or not isinstance(bf_shape, LineString):
+            return None
+            
+        # Get midpoint of blockface
+        bf_mid = bf_shape.interpolate(0.5, normalized=True)
+        
+        # Project midpoint onto centerline
+        projected_dist = cl_shape.project(bf_mid)
+        projected_point = cl_shape.interpolate(projected_dist)
+        
+        # Get a point slightly further along the centerline to determine tangent vector
+        # Handle edge case where projection is at the very end
+        delta = 0.001
+        if projected_dist + delta > cl_shape.length:
+             p1 = cl_shape.interpolate(projected_dist - delta)
+             p2 = projected_point
+        else:
+             p1 = projected_point
+             p2 = cl_shape.interpolate(projected_dist + delta)
+             
+        # Vector along centerline (tangent)
+        cl_vec = (p2.x - p1.x, p2.y - p1.y)
+        
+        # Vector from centerline to blockface point
+        to_bf_vec = (bf_mid.x - projected_point.x, bf_mid.y - projected_point.y)
+        
+        # Cross product (2D): A x B = Ax*By - Ay*Bx
+        # If > 0, point is to the Left (in standard Cartesian with Y up, but GeoJSON usually has Y=Lat)
+        # Wait, standard math:
+        # If you walk from p1 to p2, Left is positive cross product z-component.
+        cross_product = cl_vec[0] * to_bf_vec[1] - cl_vec[1] * to_bf_vec[0]
+        
+        return 'L' if cross_product > 0 else 'R'
+        
+    except Exception as e:
+        # print(f"Error determining side: {e}")
+        return None
 
 def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: int = 200000, **kwargs) -> pd.DataFrame:
     """Fetches a dataset and returns it as a pandas DataFrame."""
@@ -53,16 +102,23 @@ async def main():
     except Exception:
         db = client["curby"]
 
-    # Dictionary to hold all blockfaces, keyed by CNN (Universal ID)
-    # Structure: { cnn_id: { id: cnn, geometry: ..., rules: [], ... } }
-    blockfaces_map = {}
+    # Store Base Street Metadata (CNN -> Name, etc.)
+    # We use this to enrich the blockfaces created from pep9
+    streets_metadata = {}
+
+    # List to hold all distinct blockface objects
+    all_blockfaces = []
+    
+    # Index to quickly find blockfaces by CNN for enrichment
+    # Structure: { cnn_id: [ reference_to_blockface_1, reference_to_blockface_2, ... ] }
+    cnn_to_blockfaces_index = {}
 
     # ==========================================
     # 1. Ingest Active Streets (The Backbone) - 3psu-pn9h
     # ==========================================
     print("\n--- 1. Processing Active Streets (The Backbone) ---")
-    # Filter for Zip Code 94110 (Mission)
-    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token, where="zip_code='94110'")
+    # Filter for Zip Code 94110 (Mission) and 94103 (SOMA/Mission/Mariposa area)
+    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token, where="zip_code='94110' OR zip_code='94103'")
     
     if not streets_df.empty:
         # Save raw collection
@@ -70,24 +126,17 @@ async def main():
         await db.streets.insert_many(streets_df.to_dict('records'))
         print("Saved raw 'streets' collection.")
 
-        # Initialize blockfaces_map
+        # Build Metadata Map
         for _, row in streets_df.iterrows():
             cnn = row.get("cnn")
-            if not cnn: continue
-            
-            # Shape comes as 'line' in this dataset
-            geometry = row.get("line")
-            
-            blockfaces_map[cnn] = {
-                "id": cnn,  # CNN is our internal primary key
-                "cnn": cnn,
-                "streetName": row.get("streetname"),
-                "geometry": geometry,
-                "blockfaceId": None, # To be filled by pep9 or mk27
-                "rules": [],
-                "schedules": []
-            }
-        print(f"Initialized {len(blockfaces_map)} blockfaces from Active Streets.")
+            if cnn:
+                streets_metadata[cnn] = {
+                    "streetName": row.get("streetname"),
+                    # We can store the centerline geometry here if needed for debugging,
+                    # but we won't use it for the blockface main geometry.
+                    "centerlineGeometry": row.get("line")
+                }
+        print(f"Loaded metadata for {len(streets_metadata)} streets.")
 
     # ==========================================
     # 2. Ingest Street Nodes - vd6w-dq8r
@@ -120,28 +169,50 @@ async def main():
         print("Saved 'intersection_permutations'.")
 
     # ==========================================
-    # 5. Enrich with Blockface Geometries - pep9-66vw
+    # 5. Create Blockfaces from Geometries - pep9-66vw
     # ==========================================
-    print("\n--- 5. Linking Blockface IDs (pep9-66vw) ---")
+    print("\n--- 5. Creating Blockfaces from pep9-66vw ---")
+    # Fetch all, or filter if possible. Ideally we filter by the same area as streets,
+    # but pep9 might not have zip code. We'll filter by matching CNNs we know about.
     geo_df = fetch_data_as_dataframe(BLOCKFACE_GEOMETRY_ID, app_token)
+    
     if not geo_df.empty:
         count = 0
         for _, row in geo_df.iterrows():
             cnn = row.get("cnn_id")
-            # 'blockface_' seems to be the ID column based on typical Socrata shapefiles, 
-            # but let's be safe and check 'globalid' or others if needed.
-            # Based on standard mappings, cnn is the join key.
             
-            if cnn in blockfaces_map:
-                # If pep9 has a geometry ('shape'), we might prefer it or keep 'line' from streets.
-                # Usually 'line' from Active Streets is the "centerline". 
-                # 'shape' from pep9 might be the specific blockface line.
-                # Let's keep Active Streets geometry for now as the "Graph" backbone, 
-                # but we could store this as 'blockface_geometry'.
-                pass
-                # blockfaces_map[cnn]["blockfaceGeometry"] = row.get("shape")
+            # Only process if this CNN belongs to our target area (found in Active Streets)
+            if cnn in streets_metadata:
+                metadata = streets_metadata[cnn]
+                
+                # Use globalid or blockface_ identifier
+                bf_id = row.get("globalid") or row.get("blockface_") or f"{cnn}_{count}"
+                bf_geo = row.get("shape")
+                
+                # Determine Side
+                side = None
+                if metadata.get("centerlineGeometry") and bf_geo:
+                    side = get_side_of_street(metadata["centerlineGeometry"], bf_geo)
+                
+                new_blockface = {
+                    "id": bf_id,
+                    "cnn": cnn,
+                    "streetName": metadata.get("streetName"),
+                    "side": side, # 'L' or 'R'
+                    "geometry": bf_geo, # Use the side-specific geometry
+                    "rules": [],
+                    "schedules": []
+                }
+                
+                all_blockfaces.append(new_blockface)
+                
+                # Update Index
+                if cnn not in cnn_to_blockfaces_index:
+                    cnn_to_blockfaces_index[cnn] = []
+                cnn_to_blockfaces_index[cnn].append(new_blockface)
+                
                 count += 1
-        print(f"Matched {count} records from pep9-66vw to Active Streets.")
+        print(f"Created {count} distinct blockfaces from pep9-66vw.")
 
     # ==========================================
     # 6. Enrich with Street Cleaning - yhqp-riqs
@@ -156,16 +227,32 @@ async def main():
         count = 0
         for _, row in sweeping_df.iterrows():
             cnn = row.get("cnn")
-            if cnn in blockfaces_map:
+            # Find all blockfaces for this CNN
+            related_blockfaces = cnn_to_blockfaces_index.get(cnn, [])
+            
+            rule_side = row.get("cnnrightleft")
+            
+            for bf in related_blockfaces:
+                # If we know the blockface side, and the rule specifies a side, check for match
+                bf_side = bf.get("side")
+                
+                # If rule_side is specified (L/R) and bf_side is known, they MUST match.
+                # If rule_side is None or Both, or bf_side is unknown, we might attach conservatively?
+                # Usually cleaning is specific.
+                
+                if rule_side and bf_side:
+                    if rule_side != bf_side:
+                        continue # Skip this blockface, it's the wrong side
+                
                 rule = {
                     "type": "street-sweeping",
                     "day": row.get("weekday"),
                     "startTime": row.get("fromhour"),
                     "endTime": row.get("tohour"),
-                    "side": row.get("cnnrightleft"), # R or L
+                    "side": rule_side, # R or L
                     "description": f"Street Cleaning {row.get('weekday')} {row.get('fromhour')}-{row.get('tohour')}"
                 }
-                blockfaces_map[cnn]["rules"].append(rule)
+                bf["rules"].append(rule)
                 count += 1
         print(f"Added {count} sweeping rules to blockfaces.")
 
@@ -190,7 +277,92 @@ async def main():
         except Exception as e:
             print(f"Warning: Could not create index on regulations: {e}")
             
-        print(f"Saved {len(reg_records)} parking regulations (to be spatially joined at runtime).")
+        print(f"Saved {len(reg_records)} parking regulations to collection.")
+        
+        # NOW JOIN REGULATIONS TO BLOCKFACES using SPATIAL intersection and geometric side matching
+        print("Enriching blockfaces with parking regulations via spatial join and geometric analysis...")
+        count = 0
+        skipped_no_geometry = 0
+        skipped_no_spatial_match = 0
+        
+        for idx, row in regulations_df.iterrows():
+            reg_geo = row.get("shape") or row.get("geometry")
+            if not reg_geo:
+                skipped_no_geometry += 1
+                continue
+            
+            try:
+                reg_shape = shape(reg_geo)
+            except Exception as e:
+                skipped_no_geometry += 1
+                continue
+            
+            # Find blockfaces that spatially intersect with this regulation
+            # We'll check all blockfaces and find ones whose geometry is close to the regulation
+            matched_blockface = None
+            min_distance = float('inf')
+            
+            for bf in all_blockfaces:
+                bf_geo = bf.get("geometry")
+                if not bf_geo:
+                    continue
+                
+                try:
+                    bf_shape = shape(bf_geo)
+                    
+                    # Check if geometries are nearby (within ~50 meters)
+                    distance = reg_shape.distance(bf_shape)
+                    
+                    if distance < 0.0005:  # roughly 50 meters in degrees
+                        # Get the CNN for this blockface to find the centerline
+                        cnn = bf.get("cnn")
+                        if cnn and cnn in streets_metadata:
+                            centerline_geo = streets_metadata[cnn].get("centerlineGeometry")
+                            
+                            if centerline_geo:
+                                # Determine which side the regulation is on
+                                reg_side = get_side_of_street(centerline_geo, reg_geo)
+                                bf_side = bf.get("side")
+                                
+                                # Must match sides
+                                if reg_side and bf_side and reg_side == bf_side:
+                                    if distance < min_distance:
+                                        min_distance = distance
+                                        matched_blockface = (bf, reg_side)
+                                # If sides aren't both known, match by closest distance
+                                elif not reg_side or not bf_side:
+                                    if distance < min_distance:
+                                        min_distance = distance
+                                        matched_blockface = (bf, reg_side)
+                
+                except Exception as e:
+                    continue
+            
+            # Attach regulation to the best matching blockface
+            if matched_blockface:
+                bf, reg_side = matched_blockface
+                bf["rules"].append({
+                    "type": "parking-regulation",
+                    "regulation": row.get("regulation"),
+                    "timeLimit": row.get("hrlimit"),
+                    "permitArea": row.get("rpparea1") or row.get("rpparea2"),
+                    "days": row.get("days"),
+                    "hours": row.get("hours"),
+                    "fromTime": row.get("from_time"),
+                    "toTime": row.get("to_time"),
+                    "details": row.get("regdetails"),
+                    "exceptions": row.get("exceptions"),
+                    "side": reg_side
+                })
+                count += 1
+            else:
+                skipped_no_spatial_match += 1
+        
+        print(f"Added {count} parking regulations to blockfaces.")
+        if skipped_no_geometry > 0:
+            print(f"  Skipped {skipped_no_geometry} regulations without valid geometry")
+        if skipped_no_spatial_match > 0:
+            print(f"  Skipped {skipped_no_spatial_match} regulations with no spatial match to blockfaces")
 
     # ==========================================
     # 8. Metered Blockfaces (Metadata) - mk27-a5x2
@@ -230,27 +402,32 @@ async def main():
             cnn = row.get("street_seg_ctrln_id") # This is CNN
             post_id = row.get("post_id")
             
-            if cnn in blockfaces_map and post_id:
-                # Add meter info
+            # Find related blockfaces
+            related_blockfaces = cnn_to_blockfaces_index.get(cnn, [])
+            
+            if related_blockfaces and post_id:
+                # Add meter info to ALL related blockfaces for now
+                # (Ideally we match meter location to blockface geometry closer,
+                # but CNN level is the best link we have without spatial join)
                 meter_info = {
                     "type": "meter",
                     "postId": post_id,
                     "active": row.get("active_meter_flag"),
                     "schedules": schedules_by_post.get(post_id, [])
                 }
-                blockfaces_map[cnn]["schedules"].append(meter_info)
-                count += 1
+                
+                for bf in related_blockfaces:
+                    bf["schedules"].append(meter_info)
+                    count += 1
         print(f"Linked {count} meters to blockfaces.")
 
     # ==========================================
     # Final Save
     # ==========================================
     print("\n--- Saving Unified Blockfaces to MongoDB ---")
-    final_blockfaces = list(blockfaces_map.values())
     
     # Filter out invalid geometries just in case
-    # (Active Streets usually has good geometries, but safe to check)
-    final_blockfaces = [b for b in final_blockfaces if b.get("geometry")]
+    final_blockfaces = [b for b in all_blockfaces if b.get("geometry")]
 
     if final_blockfaces:
         await db.blockfaces.delete_many({})

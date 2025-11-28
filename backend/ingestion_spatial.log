@@ -1,0 +1,61 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+
+--- 1. Processing Active Streets (The Backbone) ---
+Fetching dataset 3psu-pn9h...
+Successfully fetched 2007 records from 3psu-pn9h.
+Saved raw 'streets' collection.
+Loaded metadata for 2007 streets.
+
+--- 2. Processing Street Nodes ---
+Fetching dataset vd6w-dq8r...
+Successfully fetched 9719 records from vd6w-dq8r.
+Saved 'street_nodes'.
+
+--- 3. Processing Intersections ---
+Fetching dataset sw2d-qfup...
+Successfully fetched 18756 records from sw2d-qfup.
+Saved 'intersections'.
+
+--- 4. Processing Intersection Permutations ---
+Fetching dataset jfxm-zeee...
+Successfully fetched 21046 records from jfxm-zeee.
+Saved 'intersection_permutations'.
+
+--- 5. Creating Blockfaces from pep9-66vw ---
+Fetching dataset pep9-66vw...
+Successfully fetched 18355 records from pep9-66vw.
+Created 218 distinct blockfaces from pep9-66vw.
+
+--- 6. Enriching with Street Cleaning ---
+Fetching dataset yhqp-riqs...
+Successfully fetched 37878 records from yhqp-riqs.
+Saved 'street_cleaning_schedules' collection.
+Added 914 sweeping rules to blockfaces.
+
+--- 7. Processing Parking Regulations ---
+Fetching dataset hi6h-neyh...
+Successfully fetched 660 records from hi6h-neyh.
+Ensured 2dsphere index on 'parking_regulations'.
+Saved 660 parking regulations to collection.
+Enriching blockfaces with parking regulations via spatial join and geometric analysis...
+Added 0 parking regulations to blockfaces.
+  Skipped 660 regulations with no spatial match to blockfaces
+
+--- 8. Processing Metered Blockfaces (Metadata) ---
+Fetching dataset mk27-a5x2...
+Successfully fetched 3123 records from mk27-a5x2.
+
+--- 9-10. Enriching with Meters & Schedules ---
+Fetching dataset 6cqg-dxku...
+Successfully fetched 72365 records from 6cqg-dxku.
+Fetching dataset 8vzz-qzz9...
+Successfully fetched 38239 records from 8vzz-qzz9.
+Linked 5790 meters to blockfaces.
+
+--- Saving Unified Blockfaces to MongoDB ---
+Inserted batch 0 to 218
+Creating geospatial index...
+Successfully saved 218 unified blockfaces.
+
+Ingestion Complete.

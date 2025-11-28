@@ -14,6 +14,7 @@ class Geometry(BaseModel):
 
 class Blockface(BaseModel):
     id: str
+    cnn: Optional[str] = None
     streetName: Optional[str] = None
     fromStreet: Optional[str] = None
     toStreet: Optional[str] = None

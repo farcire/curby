@@ -1,0 +1,210 @@
+================================================================================
+ANALYZING 20TH STREET: Block between Bryant and Florida
+================================================================================
+
+--- REFERENCE STREETS ---
+Bryant St CNN: 3309000
+Florida St CNN: 5620000
+
+--- ALL 20TH STREET SEGMENTS ---
+Found 17 segments of 20TH ST
+
+CNN 1060000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.423488531, 37.758364549)
+  End point: (-122.425766807, 37.758226829)
+
+CNN 1044000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.406946874, 37.759365489)
+  End point: (-122.407940025, 37.759305174)
+
+CNN 1045000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.407940025, 37.759305174)
+  End point: (-122.408903725, 37.759246641)
+
+CNN 1046000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.408903725, 37.759246641)
+  End point: (-122.409770121, 37.75919401)
+
+CNN 1047000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.409770121, 37.75919401)
+  End point: (-122.410758543, 37.759133959)
+
+CNN 1048000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.410758543, 37.759133959)
+  End point: (-122.411579841, 37.759084056)
+
+CNN 1049000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.411579841, 37.759084056)
+  End point: (-122.41250093, 37.759028146)
+
+CNN 1050000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.41250093, 37.759028146)
+  End point: (-122.413599748, 37.758961798)
+
+CNN 1051000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.413599748, 37.758961798)
+  End point: (-122.414690031, 37.758895989)
+
+CNN 1052000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.414690031, 37.758895989)
+  End point: (-122.415779298, 37.758830232)
+
+CNN 1053000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.415779298, 37.758830232)
+  End point: (-122.416872481, 37.758764229)
+
+CNN 1054000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.416872481, 37.758764229)
+  End point: (-122.417964705, 37.758698273)
+
+CNN 1055000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.417964705, 37.758698273)
+  End point: (-122.419052607, 37.758632567)
+
+CNN 1056000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.419052607, 37.758632567)
+  End point: (-122.419841317, 37.758584926)
+
+CNN 1057000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.419841317, 37.758584926)
+  End point: (-122.420506832, 37.758544721)
+
+CNN 1058000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.420506832, 37.758544721)
+  End point: (-122.421271729, 37.758498509)
+
+CNN 1059000:
+  Street: 20TH
+  From: None to None
+  Layer: STREETS
+  Zip: 94110
+  Start point: (-122.421271729, 37.758498509)
+  End point: (-122.423488531, 37.758364549)
+
+================================================================================
+BLOCKFACES ON 20TH STREET
+================================================================================
+Found 2 blockfaces
+
+--- Blockface CNN 1055000 Side R ---
+Street segment: None to None
+Geometry: 2 points
+  Start: (-122.41884644346882, 37.758603812795194)
+  End: (-122.41813532356785, 37.75864706247098)
+Rules (6 total):
+  - SWEEPING: Thu 6-8
+  - SWEEPING: Tues 6-8
+  - REGULATION: Time limited, 1hr limit, Area I, M-Sa 900-1800
+  - REGULATION: Time limited, 1hr limit, Area I, M-Sa 900-1800
+  - REGULATION: Time limited, 2hr limit, Area I, M-Sa 900-1800
+  - REGULATION: Time limited, 2hr limit, Area I, M-Sa 900-1800
+
+--- Blockface CNN 1055000 Side L ---
+Street segment: None to None
+Geometry: 2 points
+  Start: (-122.41892691351377, 37.75869233265535)
+  End: (-122.41821176308224, 37.758735582629804)
+Rules (3 total):
+  - SWEEPING: Mon 6-8
+  - SWEEPING: Fri 6-8
+  - SWEEPING: Wed 6-8
+
+================================================================================
+EXPECTED vs ACTUAL
+================================================================================
+
+EXPECTED for 20th St between Bryant and Florida:
+  North side (Left): No parking Thursday 9am-11am (street cleaning)
+  South side (Right): No parking Tuesday 9am-11am + 1hr parking 8am-6pm M-F (non-RPP)
+
+ACTUAL in database:
+
+  Side R:
+    - Sweeping: Thu 6-8
+    - Sweeping: Tues 6-8
+    - Parking: Time limited, 1hr, M-Sa 900-1800
+    - Parking: Time limited, 1hr, M-Sa 900-1800
+    - Parking: Time limited, 2hr, M-Sa 900-1800
+    - Parking: Time limited, 2hr, M-Sa 900-1800
+
+  Side L:
+    - Sweeping: Mon 6-8
+    - Sweeping: Fri 6-8
+    - Sweeping: Wed 6-8
+
+================================================================================
+ISSUE ANALYSIS
+================================================================================
+
+Potential Issues:
+1. Times don't match:
+   - Expected sweeping: 9am-11am
+   - Actual sweeping: 6am-8am
+
+2. Multiple blocks of 20th St may exist
+3. Data might be from wrong street segment
+4. Need to verify we're looking at Bryant-Florida block specifically

@@ -1,0 +1,226 @@
+================================================================================
+20TH STREET BLOCKFACES
+================================================================================
+
+================================================================================
+Street: 20TH ST
+CNN: 1055000
+Side: R
+Blockface ID: {F45E0F0B-AE21-4FF2-B385-D438D5A9E0A1}
+Geometry Type: LineString
+
+Total Rules: 6
+
+STREET-SWEEPING (2 rules):
+  Rule #1:
+    day: Thu
+    startTime: 6
+    endTime: 8
+    side: R
+    description: Street Cleaning Thu 6-8
+  Rule #2:
+    day: Tues
+    startTime: 6
+    endTime: 8
+    side: R
+    description: Street Cleaning Tues 6-8
+
+PARKING-REGULATION (4 rules):
+  Rule #1:
+    regulation: Time limited
+    timeLimit: 1
+    permitArea: I
+    days: M-Sa
+    hours: 900-1800
+    fromTime: 9am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+  Rule #2:
+    regulation: Time limited
+    timeLimit: 1
+    permitArea: I
+    days: M-Sa
+    hours: 900-1800
+    fromTime: 9am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+  Rule #3:
+    regulation: Time limited
+    timeLimit: 2
+    permitArea: I
+    days: M-Sa
+    hours: 900-1800
+    fromTime: 9am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+  Rule #4:
+    regulation: Time limited
+    timeLimit: 2
+    permitArea: I
+    days: M-Sa
+    hours: 900-1800
+    fromTime: 9am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+
+================================================================================
+Street: 20TH ST
+CNN: 1055000
+Side: L
+Blockface ID: {76A64316-DD45-40D8-AEF1-0749F9B31668}
+Geometry Type: LineString
+
+Total Rules: 3
+
+STREET-SWEEPING (3 rules):
+  Rule #1:
+    day: Mon
+    startTime: 6
+    endTime: 8
+    side: L
+    description: Street Cleaning Mon 6-8
+  Rule #2:
+    day: Fri
+    startTime: 6
+    endTime: 8
+    side: L
+    description: Street Cleaning Fri 6-8
+  Rule #3:
+    day: Wed
+    startTime: 6
+    endTime: 8
+    side: L
+    description: Street Cleaning Wed 6-8
+
+
+================================================================================
+OTHER STREETS WITH PARKING REGULATIONS (Sample)
+================================================================================
+
+================================================================================
+Street: BRYANT ST
+CNN: 3307000
+Side: L
+
+Parking Regulations: 6
+  Regulation #1:
+    regulation: No oversized vehicles
+    timeLimit: 0
+    permitArea: nan
+    days: M-Su
+    hours: 2400-600
+    fromTime: 12am
+    toTime: 6am
+    details: Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet
+    exceptions: Yes. Typical passenger vehicles are exempt.
+    side: None
+  Regulation #2:
+    regulation: No oversized vehicles
+    timeLimit: 0
+    permitArea: nan
+    days: M-Su
+    hours: 2400-600
+    fromTime: 12am
+    toTime: 6am
+    details: Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet
+    exceptions: Yes. Typical passenger vehicles are exempt.
+    side: None
+  Regulation #3:
+    regulation: Time limited
+    timeLimit: 12
+    permitArea: nan
+    days: M-Su
+    hours: 0-0
+    fromTime: nan
+    toTime: nan
+    details: 11-117
+    exceptions: None. Regulation applies to all vehicles.
+    side: None
+  Regulation #4:
+    regulation: No oversized vehicles
+    timeLimit: 0
+    permitArea: nan
+    days: M-Su
+    hours: 2400-600
+    fromTime: 12am
+    toTime: 6am
+    details: Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet
+    exceptions: Yes. Typical passenger vehicles are exempt.
+    side: None
+  Regulation #5:
+    regulation: Time limited
+    timeLimit: 2
+    permitArea: W
+    days: M-F
+    hours: 800-1800
+    fromTime: 8am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+  Regulation #6:
+    regulation: No oversized vehicles
+    timeLimit: 0
+    permitArea: nan
+    days: M-Su
+    hours: 2400-600
+    fromTime: 12am
+    toTime: 6am
+    details: Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet
+    exceptions: Yes. Typical passenger vehicles are exempt.
+    side: None
+
+================================================================================
+Street: VALENCIA ST
+CNN: 13064000
+Side: L
+
+Parking Regulations: 1
+  Regulation #1:
+    regulation: Time limited
+    timeLimit: 2
+    permitArea: S
+    days: M-F
+    hours: 900-2100
+    fromTime: 9am
+    toTime: 9pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+
+================================================================================
+Street: VALENCIA ST
+CNN: 13063000
+Side: R
+
+Parking Regulations: 2
+  Regulation #1:
+    regulation: Time limited
+    timeLimit: 2
+    permitArea: S
+    days: M-F
+    hours: 800-2100
+    fromTime: 8am
+    toTime: 9pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None
+  Regulation #2:
+    regulation: Time limited
+    timeLimit: 1
+    permitArea: I
+    days: M-Sa
+    hours: 900-1800
+    fromTime: 9am
+    toTime: 6pm
+    details: nan
+    exceptions: Yes. RPP holders are exempt from time limits.
+    side: None

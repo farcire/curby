@@ -1,0 +1,156 @@
+
+=== BLOCKFACES WITH PARKING REGULATIONS ===
+Total: 61 blockfaces have parking regulations
+
+Streets with parking regulations: 26
+
+
+10TH ST: 1 blockfaces
+  Side R: 1 parking regulations
+    - None
+
+11TH ST: 1 blockfaces
+  Side L: 1 parking regulations
+    - None
+
+14TH ST: 1 blockfaces
+  Side R: 1 parking regulations
+    - None
+
+17TH ST: 1 blockfaces
+  Side L: 1 parking regulations
+    - None
+
+19TH ST: 1 blockfaces
+  Side R: 6 parking regulations
+    - None
+
+20TH ST: 1 blockfaces
+  Side R: 4 parking regulations
+    - None
+
+21ST ST: 3 blockfaces
+  Side L: 1 parking regulations
+    - None
+  Side L: 1 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+
+22ND ST: 4 blockfaces
+  Side R: 2 parking regulations
+    - None
+  Side L: 2 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+
+23RD ST: 3 blockfaces
+  Side L: 5 parking regulations
+    - None
+  Side R: 1 parking regulations
+    - None
+  Side L: 1 parking regulations
+    - None
+
+24TH ST: 7 blockfaces
+  Side R: 1 parking regulations
+    - None
+  Side R: 1 parking regulations
+    - None
+  Side R: 1 parking regulations
+    - None
+
+26TH ST: 1 blockfaces
+  Side L: 4 parking regulations
+    - None
+
+ALAMEDA ST: 3 blockfaces
+  Side R: 1 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+  Side L: 1 parking regulations
+    - None
+
+BRANNAN ST: 2 blockfaces
+  Side R: 1 parking regulations
+    - None
+  Side L: 1 parking regulations
+    - None
+
+BRYANT ST: 3 blockfaces
+  Side L: 6 parking regulations
+    - None
+  Side L: 2 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+
+CAPP ST: 2 blockfaces
+  Side L: 1 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+
+CESAR CHAVEZ ST: 1 blockfaces
+  Side R: 1 parking regulations
+    - None
+
+DOLORES ST: 1 blockfaces
+  Side R: 4 parking regulations
+    - None
+
+HARRISON ST: 1 blockfaces
+  Side R: 1 parking regulations
+    - None
+
+HOFF ST: 1 blockfaces
+  Side L: 2 parking regulations
+    - None
+
+HOWARD ST: 1 blockfaces
+  Side L: 1 parking regulations
+    - None
+
+MCCOPPIN ST: 1 blockfaces
+  Side L: 1 parking regulations
+    - None
+
+MISSION ST: 4 blockfaces
+  Side L: 2 parking regulations
+    - None
+  Side R: 1 parking regulations
+    - None
+  Side R: 1 parking regulations
+    - None
+
+OTIS ST: 2 blockfaces
+  Side L: 1 parking regulations
+    - None
+  Side L: 1 parking regulations
+    - None
+
+POTRERO AVE: 2 blockfaces
+  Side L: 5 parking regulations
+    - None
+  Side L: 8 parking regulations
+    - None
+
+UTAH ST: 1 blockfaces
+  Side L: 3 parking regulations
+    - None
+
+VALENCIA ST: 12 blockfaces
+  Side L: 1 parking regulations
+    - None
+  Side R: 2 parking regulations
+    - None
+  Side L: 3 parking regulations
+    - None
+
+
+=== 20TH STREET CHECK ===
+Found 2 blockfaces on 20th Street:
+  CNN 1055000, Side R: 4 parking regs, 6 total rules
+  CNN 1055000, Side L: 0 parking regs, 3 total rules

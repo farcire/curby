@@ -16,20 +16,46 @@ def inspect_dataset():
     # Unknown dataset from user feedback
     dataset_id = "pep9-66vw"
     
-    print(f"Fetching first 1 records from {dataset_id}...")
+    print("--- Investigating Mariposa St ---")
+    
+    # Check the other dataset ID mentioned in the link
+    dataset_link_id = "4qnp-gcxs" # Map of Blockfaces
+    
+    print("--- Searching for ANY duplicate CNNs in pep9-66vw to confirm sides exist ---")
     try:
-        results = client.get(dataset_id, limit=1)
+        # Fetch a larger batch
+        results = client.get(dataset_id, limit=5000)
         if results:
             df = pd.DataFrame.from_records(results)
-            print(f"\n--- Columns in {dataset_id} ---")
-            print(df.columns.tolist())
             
-            print("\n--- Sample Record ---")
-            print(df.iloc[0].to_dict())
+            if 'cnn_id' in df.columns:
+                # Filter out NULL/empty CNNs
+                df_clean = df[df['cnn_id'].notna() & (df['cnn_id'] != 'NULL') & (df['cnn_id'] != '')]
+                
+                counts = df_clean['cnn_id'].value_counts()
+                duplicates = counts[counts > 1]
+                
+                print(f"Found {len(duplicates)} valid CNNs with multiple records.")
+                
+                if not duplicates.empty:
+                    # Get the top 3 duplicated CNNs
+                    top_dups = duplicates.head(3).index.tolist()
+                    
+                    for cnn in top_dups:
+                        print(f"\n--- Duplicate CNN: {cnn} ---")
+                        # Show columns that might indicate side
+                        cols = ['cnn_id', 'street_nam', 'blockface_', 'cnnrightleft', 'side', 'shape']
+                        present_cols = [c for c in cols if c in df_clean.columns]
+                        print(df_clean[df_clean['cnn_id'] == cnn][present_cols].to_string())
+                else:
+                    print("No valid duplicates found in sample.")
+            else:
+                print("'cnn_id' column not found.")
         else:
-            print("No results returned. Dataset might not exist or be empty.")
+            print("No results.")
+            
     except Exception as e:
-        print(f"Error fetching data: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
     inspect_dataset()
