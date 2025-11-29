@@ -108,9 +108,9 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         earth_radius_meters = 6378100
         radius_radians = radius_meters / earth_radius_meters
 
-        # Query street_segments using centerlineGeometry
+        # Query blockfaces using geometry field
         query = {
-            "centerlineGeometry": {
+            "geometry": {
                 "$geoWithin": {
                     "$centerSphere": [[lng, lat], radius_radians]
                 }
@@ -118,7 +118,7 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         }
         
         segments = []
-        async for doc in db.street_segments.find(query):
+        async for doc in db.blockfaces.find(query):
             # Convert ObjectId to string
             doc["id"] = str(doc.get("_id", ""))
             if "_id" in doc:
