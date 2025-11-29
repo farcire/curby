@@ -28,10 +28,10 @@ async def lifespan(app: FastAPI):
         await client.admin.command('ismaster')
         print("Successfully connected to MongoDB.")
         
-        # Ensure 2dsphere index on blockfaces collection for centerlineGeometry
+        # Ensure 2dsphere index on street_segments collection for centerlineGeometry
         try:
-            await db.blockfaces.create_index([("centerlineGeometry", "2dsphere")])
-            print("Ensured 2dsphere index on blockfaces.centerlineGeometry.")
+            await db.street_segments.create_index([("centerlineGeometry", "2dsphere")])
+            print("Ensured 2dsphere index on street_segments.centerlineGeometry.")
         except Exception as e:
             print(f"Failed to create index: {e}")
             
@@ -108,9 +108,9 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         earth_radius_meters = 6378100
         radius_radians = radius_meters / earth_radius_meters
 
-        # Query blockfaces using centerlineGeometry field (100% coverage)
+        # Query street_segments using centerlineGeometry field (100% coverage)
         # Note: centerlineGeometry is always present from Active Streets (Layer 1)
-        # while geometry (blockface-specific) is only present ~50-60% of the time
+        # while blockfaceGeometry is only present ~50-60% of the time
         query = {
             "centerlineGeometry": {
                 "$geoWithin": {
@@ -120,9 +120,13 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         }
         
         segments = []
-        async for doc in db.blockfaces.find(query):
-            # Convert ObjectId to string
-            doc["id"] = str(doc.get("_id", ""))
+        async for doc in db.street_segments.find(query):
+            # Create composite ID in format CNN_SIDE (e.g., "797000_L")
+            # This is required for frontend map overlays to work correctly
+            cnn = doc.get("cnn", "")
+            side = doc.get("side", "")
+            composite_id = f"{cnn}_{side}" if cnn and side else str(doc.get("_id", ""))
+            doc["id"] = composite_id
             if "_id" in doc:
                 del doc["_id"]
             
