@@ -28,10 +28,10 @@ async def lifespan(app: FastAPI):
         await client.admin.command('ismaster')
         print("Successfully connected to MongoDB.")
         
-        # Ensure 2dsphere index on street_segments (was blockfaces)
+        # Ensure 2dsphere index on blockfaces collection for centerlineGeometry
         try:
-            await db.street_segments.create_index([("centerlineGeometry", "2dsphere")])
-            print("Ensured 2dsphere index on street_segments collection.")
+            await db.blockfaces.create_index([("centerlineGeometry", "2dsphere")])
+            print("Ensured 2dsphere index on blockfaces.centerlineGeometry.")
         except Exception as e:
             print(f"Failed to create index: {e}")
             
@@ -108,9 +108,11 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
         earth_radius_meters = 6378100
         radius_radians = radius_meters / earth_radius_meters
 
-        # Query blockfaces using geometry field
+        # Query blockfaces using centerlineGeometry field (100% coverage)
+        # Note: centerlineGeometry is always present from Active Streets (Layer 1)
+        # while geometry (blockface-specific) is only present ~50-60% of the time
         query = {
-            "geometry": {
+            "centerlineGeometry": {
                 "$geoWithin": {
                     "$centerSphere": [[lng, lat], radius_radians]
                 }
