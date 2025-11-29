@@ -9,7 +9,7 @@ import json
 import hashlib
 from typing import Dict, Optional, List, Any
 from datetime import datetime, timedelta
-import anthropic
+import google.generativeai as genai
 from functools import lru_cache
 
 
@@ -23,15 +23,16 @@ class RestrictionInterpreter:
         Initialize the interpreter.
         
         Args:
-            api_key: API key for LLM service (Claude)
+            api_key: API key for LLM service (Gemini)
             cache_ttl_days: How long to cache interpretations (default 30 days)
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("GEMINI_API_KEY")
         if not self.api_key:
-            print("Warning: ANTHROPIC_API_KEY not found in environment variables. Interpretation will use fallback.")
+            print("Warning: GEMINI_API_KEY not found in environment variables. Interpretation will use fallback.")
             self.client = None
         else:
-            self.client = anthropic.Anthropic(api_key=self.api_key)
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel("gemini-2.0-flash")
             
         self.cache_ttl_days = cache_ttl_days
         self.cache = {}  # In-memory cache (could be Redis in production)
@@ -112,27 +113,22 @@ class RestrictionInterpreter:
         if cached:
             return cached
         
-        # If no client (no API key), use fallback immediately
-        if not self.client:
+        # If no API key, use fallback immediately
+        if not self.api_key:
             return self._fallback_interpretation(restriction_data)
         
         # Build prompt
         prompt = self._build_interpretation_prompt(restriction_data)
+        system_prompt = self._get_system_prompt()
         
         # Call LLM
         try:
-            response = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=1024,
-                system=self._get_system_prompt(),
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
-            )
+            # Combine system prompt and user prompt for Gemini as it handles system instructions differently in some versions
+            # or we can use the generation_config to ensure JSON output
+            full_prompt = f"{system_prompt}\n\n{prompt}"
             
-            # Parse response
-            # Extract JSON from the text response
-            response_text = response.content[0].text
+            response = self.model.generate_content(full_prompt)
+            response_text = response.text
             
             # Find JSON block if wrapped in markdown
             if "```json" in response_text:
@@ -170,7 +166,7 @@ Guidelines:
 3. Extract CONDITIONS: vehicle size limits, permit exceptions, user classes.
 4. Generate DISPLAY text: concise summary and clear details.
 5. Normalize days (0=Sunday, 1=Monday... 6=Saturday) and times (24h format HH:MM).
-6. IMPORTANT: Return ONLY valid JSON, no other text.
+6. IMPORTANT: Return ONLY valid JSON, no other text. Do NOT include markdown formatting like ```json.
 
 Output Format (JSON):
 {
@@ -234,7 +230,7 @@ Provide your compilation in the specified JSON format."""
         interpretation["meta"] = {
             "interpreted_at": datetime.utcnow().isoformat(),
             "original_text": original_data.get("regulation"),
-            "model": "claude-3-5-sonnet"
+            "model": "gemini-2.0-flash"
         }
         
         return interpretation

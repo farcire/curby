@@ -1,0 +1,734 @@
+[
+  {
+    "id": "test_case_1",
+    "original_data": {
+      "_id": "6928df008119af47c3c6ddc9",
+      "objectid": "4134",
+      "regulation": "Limited No Parking",
+      "days": "M-F",
+      "hours": "1000-1900",
+      "hrs_begin": "1000",
+      "hrs_end": "1900",
+      "regdetails": "Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
+      "modified": null,
+      "editor": "JMANDELLA",
+      "fid_100": null,
+      "length_ft": "22",
+      "conflict": "0",
+      "enacted": null,
+      "last_edite": null,
+      "last_edi_1": null,
+      "hrlimit": null,
+      "last_edited_user": "RAYNELLCOOPER",
+      "last_edited_date": "2024-04-29 17:21:10-07:00",
+      "exceptions": "Yes. SF Public Works vehicles are exempt.",
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.418975416,
+              37.765140164
+            ],
+            [
+              -122.419057543,
+              37.765134832
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2024-04-29T17:21:10.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "9",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "170606-068",
+      "created_user": "JMANDELLA",
+      "created_date": "2018-01-02 11:04:59-08:00",
+      "mtab_date": "2017-06-05 17:00:00-07:00",
+      "mtab_reso_text": "B. ESTABLISH\u2013TOWAWAY,NOPARKING,10A.M.TO7P.M.,MONDAYTO FRIDAY, EXCEPT SF PUBLIC WORKS VEHICLES \u2013 16th Street, north side, from 95 feet to 117 feet west of Capp Street.",
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Limited No Parking Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_2",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dc85",
+      "objectid": "2809",
+      "regulation": "No oversized vehicles",
+      "days": "M-Su",
+      "hours": "2400-600",
+      "hrs_begin": "2400",
+      "hrs_end": "600",
+      "regdetails": "Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet",
+      "modified": "2015-01-04 16:00:00-08:00",
+      "editor": "Steph A. Nelson",
+      "fid_100": "1246",
+      "length_ft": "197",
+      "conflict": "2",
+      "enacted": "March 2014",
+      "last_edite": "mta",
+      "last_edi_1": "1442448000000",
+      "hrlimit": "0",
+      "last_edited_user": "RAYNELLCOOPER",
+      "last_edited_date": "2024-04-29 17:21:10-07:00",
+      "exceptions": "Yes. Typical passenger vehicles are exempt.",
+      "from_time": "12am",
+      "to_time": "6am",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.405022509,
+              37.768582368
+            ],
+            [
+              -122.405702527,
+              37.768541621
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2024-04-29T17:21:10.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": null,
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "No oversized vehicles Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_3",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dc8a",
+      "objectid": "4341",
+      "regulation": "Time limited",
+      "days": "M-Sa",
+      "hours": "800-1800",
+      "hrs_begin": "800",
+      "hrs_end": "1800",
+      "regdetails": "MM. ESTABLISH \u2013 4-HOUR TIME LIMIT, 8 AM TO 6 PM, EXCEPT SUNDAYS",
+      "modified": "2016-07-17 17:00:00-07:00",
+      "editor": "Arty Zhang",
+      "fid_100": "384",
+      "length_ft": "395",
+      "conflict": "0",
+      "enacted": "4/5/2016",
+      "last_edite": "mta",
+      "last_edi_1": "1468800000000",
+      "hrlimit": "4",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2017-05-12 17:13:15-07:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": "8am",
+      "to_time": "6pm",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.404949475,
+              37.768426078
+            ],
+            [
+              -122.404843941,
+              37.767345529
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2017-05-12T17:13:15.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "16-036",
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Time limited MM. ESTABLISH \u2013 4-HOUR TIME LIMIT, 8 AM TO 6 PM, EXCEPT SUNDAYS",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_4",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dca9",
+      "objectid": "2112",
+      "regulation": "No overnight parking",
+      "days": null,
+      "hours": "1800-600",
+      "hrs_begin": "1800",
+      "hrs_end": "600",
+      "regdetails": null,
+      "modified": null,
+      "editor": null,
+      "fid_100": "472",
+      "length_ft": "181",
+      "conflict": "0",
+      "enacted": null,
+      "last_edite": "mta",
+      "last_edi_1": "1442448000000",
+      "hrlimit": "0",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2017-05-12 17:09:13-07:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": "6pm",
+      "to_time": "6am",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.412943957,
+              37.766649407
+            ],
+            [
+              -122.413068683,
+              37.7661619
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2017-05-12T17:09:13.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "9",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": null,
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "No overnight parking",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_5",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dcb8",
+      "objectid": "4048",
+      "regulation": "No parking any time",
+      "days": null,
+      "hours": null,
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "regdetails": null,
+      "modified": null,
+      "editor": "JMANDELLA",
+      "fid_100": null,
+      "length_ft": "86",
+      "conflict": null,
+      "enacted": null,
+      "last_edite": null,
+      "last_edi_1": null,
+      "hrlimit": null,
+      "last_edited_user": "JOELMANDELLA",
+      "last_edited_date": "2018-01-02 16:16:52-08:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.422360053,
+              37.763171342
+            ],
+            [
+              -122.422060474,
+              37.763182617
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2018-01-02T16:16:52.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "9",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "171107-137",
+      "created_user": "JOELMANDELLA",
+      "created_date": "2018-01-02 16:14:40-08:00",
+      "mtab_date": "2017-11-06 16:00:00-08:00",
+      "mtab_reso_text": "B. ESTABLISH \u2013 TOW-AWAY, NO STOPPING ANYTIME - 17th Street, south side, from 88 feet to 174 feet west of Valencia Street",
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "No parking any time",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_6",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dcc5",
+      "objectid": "1401",
+      "regulation": "Government permit",
+      "days": null,
+      "hours": "0-0",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "regdetails": null,
+      "modified": null,
+      "editor": null,
+      "fid_100": "105",
+      "length_ft": "329",
+      "conflict": "0",
+      "enacted": null,
+      "last_edite": "mta",
+      "last_edi_1": "1442448000000",
+      "hrlimit": "0",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2016-09-09 16:06:09-07:00",
+      "exceptions": null,
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.403817112,
+              37.756630559
+            ],
+            [
+              -122.403731556,
+              37.75573082
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2016-09-09T16:06:09.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "10",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": null,
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": "SFGH",
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Government permit",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_7",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dc87",
+      "objectid": "1113",
+      "regulation": "Time limited",
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrs_begin": "800",
+      "hrs_end": "1800",
+      "regdetails": null,
+      "modified": null,
+      "editor": null,
+      "fid_100": "8952",
+      "length_ft": "166",
+      "conflict": "0",
+      "enacted": null,
+      "last_edite": null,
+      "last_edi_1": null,
+      "hrlimit": "2",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2017-05-12 17:13:36-07:00",
+      "exceptions": "Yes. RPP holders are exempt from time limits.",
+      "from_time": "8am",
+      "to_time": "6pm",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.417471015,
+              37.773112402
+            ],
+            [
+              -122.417010944,
+              37.772840265
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2017-05-12T17:13:36.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": "U",
+      "rpp_sym": "lapis lazuli, 2.5 pt, no dash",
+      "sym_rpp2": "lapis lazuli, 2.5 pt, no dash | 2, M-F, 800-1800",
+      "mtab_motion": null,
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Time limited",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_8",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dcdc",
+      "objectid": "3950",
+      "regulation": "Time Limited",
+      "days": "M-Sa",
+      "hours": "700-1800",
+      "hrs_begin": "700",
+      "hrs_end": "1800",
+      "regdetails": null,
+      "modified": null,
+      "editor": null,
+      "fid_100": null,
+      "length_ft": null,
+      "conflict": null,
+      "enacted": "3/20/2018",
+      "last_edite": null,
+      "last_edi_1": null,
+      "hrlimit": "4",
+      "last_edited_user": "JOELMANDELLA",
+      "last_edited_date": "2018-03-30 14:05:08-07:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.407602673,
+              37.769364691
+            ],
+            [
+              -122.406731679,
+              37.76941598
+            ],
+            [
+              -122.406486886,
+              37.76947526
+            ],
+            [
+              -122.406349991,
+              37.769525163
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2018-03-30T14:05:08.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "180320-043",
+      "created_user": "JOELMANDELLA",
+      "created_date": "2018-03-30 13:45:37-07:00",
+      "mtab_date": "2018-03-19 17:00:00-07:00",
+      "mtab_reso_text": "F. ESTABLISH \u2013 4-HOUR PARKING, 7 AM TO 6 PM, MONDAY THROUGH SATURDAY - Division Street, north side, from 9th Street to Brannan Street; Brannan Street, both sides from Division Street to 9th Street; and 9th Street, west side, from Division Street to Brannan Street.",
+      "agency": "SFMTA",
+      "rpparea2": null,
+      "created_us": "BHoma",
+      "created_da": "1522368000000"
+    },
+    "regulation_text": "Time Limited",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_9",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dd27",
+      "objectid": "3376",
+      "regulation": "Limited No Parking",
+      "days": "M-Su",
+      "hours": "2400-600",
+      "hrs_begin": "2400",
+      "hrs_end": "600",
+      "regdetails": null,
+      "modified": null,
+      "editor": "JMANDELLA",
+      "fid_100": null,
+      "length_ft": null,
+      "conflict": "0",
+      "enacted": null,
+      "last_edite": null,
+      "last_edi_1": null,
+      "hrlimit": null,
+      "last_edited_user": "JOELMANDELLA",
+      "last_edited_date": "2018-02-20 17:19:28-08:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.407517251,
+              37.767178245
+            ],
+            [
+              -122.40688778,
+              37.76721919
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2018-02-20T17:19:28.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "180206-017",
+      "created_user": "JOELMANDELLA",
+      "created_date": "2018-02-20 17:19:24-08:00",
+      "mtab_date": "2018-02-05 16:00:00-08:00",
+      "mtab_reso_text": "M. ESTABLISH \u2013 NO PARKING, 12:01 AM to 6 AM, EVERY DAY \u2212 Utah Street, both sides, between 15th Street and 16th Street; 15th Street, south side, between Utah Street and San Bruno Avenue; and 15th Street, both sides, between Potrero Avenue and Utah Street.",
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Limited No Parking",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_10",
+    "original_data": {
+      "_id": "6928df008119af47c3c6dd4e",
+      "objectid": "1032",
+      "regulation": "Time limited",
+      "days": "M-Su",
+      "hours": "0-0",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "regdetails": "11-117",
+      "modified": "2015-11-11 16:00:00-08:00",
+      "editor": "Arty Zhang",
+      "fid_100": "336",
+      "length_ft": "400",
+      "conflict": "0",
+      "enacted": "9/6/2011",
+      "last_edite": "mta",
+      "last_edi_1": "1447372800000",
+      "hrlimit": "12",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2017-04-28 17:14:17-07:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": null,
+      "to_time": null,
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.408501773,
+              37.764330764
+            ],
+            [
+              -122.408400001,
+              37.76323442
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2017-04-28T17:14:17.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "9",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "11-117",
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Time limited 11-117",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_11",
+    "original_data": {
+      "_id": "6928df008119af47c3c6ddd9",
+      "objectid": "682",
+      "regulation": "Time limited",
+      "days": "M-Sa",
+      "hours": "700-1800",
+      "hrs_begin": "700",
+      "hrs_end": "1800",
+      "regdetails": "12-119",
+      "modified": "2015-11-11 16:00:00-08:00",
+      "editor": "Arty Zhang",
+      "fid_100": "553",
+      "length_ft": "415",
+      "conflict": "0",
+      "enacted": "9/18/2012",
+      "last_edite": "mta",
+      "last_edi_1": "1447372800000",
+      "hrlimit": "2",
+      "last_edited_user": "MTA",
+      "last_edited_date": "2017-05-12 17:12:58-07:00",
+      "exceptions": "None. Regulation applies to all vehicles.",
+      "from_time": "7am",
+      "to_time": "6pm",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.413009383,
+              37.769641504
+            ],
+            [
+              -122.41296854,
+              37.769631192
+            ],
+            [
+              -122.411575519,
+              37.76959027
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2017-05-12T17:12:58.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "6",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": null,
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "12-119",
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Time limited 12-119",
+    "expected_result": null
+  },
+  {
+    "id": "test_case_12",
+    "original_data": {
+      "_id": "6928df008119af47c3c6deb7",
+      "objectid": "1669",
+      "regulation": "Time limited",
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrs_begin": "800",
+      "hrs_end": "1800",
+      "regdetails": "08-183, 230718-060",
+      "modified": "2015-11-11 16:00:00-08:00",
+      "editor": "Arty Zhang",
+      "fid_100": "3735",
+      "length_ft": "151",
+      "conflict": "0",
+      "enacted": "11/18/2008",
+      "last_edite": "mta",
+      "last_edi_1": "1447286400000",
+      "hrlimit": "4",
+      "last_edited_user": "RAYNELLCOOPER",
+      "last_edited_date": "2023-08-03 14:54:02-07:00",
+      "exceptions": "Yes. RPP holders are exempt from time limits.",
+      "from_time": "8am",
+      "to_time": "6pm",
+      "shape": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [
+              -122.405081009,
+              37.751286949
+            ],
+            [
+              -122.405113009,
+              37.751701947
+            ]
+          ]
+        ]
+      },
+      "data_as_of": "2023-08-03T14:54:02.000",
+      "analysis_neighborhood": "Mission",
+      "supervisor_district": "9",
+      "data_loaded_at": "2025-05-03T10:16:38.810",
+      "rpparea1": "W",
+      "rpp_sym": null,
+      "sym_rpp2": null,
+      "mtab_motion": "08-183",
+      "created_user": null,
+      "created_date": null,
+      "mtab_date": null,
+      "mtab_reso_text": null,
+      "agency": null,
+      "rpparea2": null,
+      "created_us": null,
+      "created_da": null
+    },
+    "regulation_text": "Time limited 08-183, 230718-060",
+    "expected_result": null
+  }
+]
