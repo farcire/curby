@@ -1,6 +1,7 @@
 import { Blockface, ParkingRule } from '@/types/parking';
 
-const BACKEND_API = 'http://localhost:8000/api/v1/blockfaces';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BACKEND_API = `${API_BASE_URL}/api/v1/blockfaces`;
 
 /**
  * Utility functions for formatting days and times
@@ -391,7 +392,7 @@ export async function submitErrorReport(
   blockfaceId: string,
   description: string
 ): Promise<void> {
-  const url = 'http://localhost:8000/api/v1/error-reports';
+  const url = `${API_BASE_URL}/api/v1/error-reports`;
   
   const response = await fetch(url, {
     method: 'POST',

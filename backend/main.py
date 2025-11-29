@@ -1,4 +1,5 @@
 import os
+import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -262,3 +263,6 @@ async def create_error_report(report: ErrorReport):
     except Exception as e:
         print(f"Error in create_error_report: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
