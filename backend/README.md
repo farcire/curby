@@ -117,11 +117,13 @@ python3 validate_cnn_segments.py     # Step 2: Validate
 ```
 
 ### Expected Results
-- ✅ 4,014 street segments created (2 per CNN)
-- ✅ 100% coverage achieved
-- ✅ CNN 1046000 validated with Tuesday 9-11am sweeping
-- ✅ 1,800+ street sweeping rules attached
-- ✅ 400-600 parking regulations matched
+- ✅ 34,324 street segments created (2 per CNN for 17,162 Active Streets)
+- ✅ 100% coverage achieved (All Active Streets)
+- ✅ 22,573 segments with street cleaning data (65.8% of segments)
+  - **Note**: This reflects 100% of the data provided in the cleaning dataset.
+  - The missing ~34% corresponds to streets not present in the official `yhqp-riqs` source (likely private/non-swept streets).
+- ✅ 6,965 segments with parking regulations
+- ✅ 4,090 segments with parking meters
 
 ## API Endpoints
 

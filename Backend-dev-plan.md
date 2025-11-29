@@ -132,7 +132,7 @@
 
 ---
 
-### ✅ S4 – Runtime Spatial Join & Future Legality (PARTIALLY COMPLETE)
+### ✅ S4 – Runtime Spatial Join & Future Legality (COMPLETED)
 
 - **Objectives:**
   - **CRITICAL:** Implement runtime spatial join to merge `parking_regulations` (non-metered rules) with `blockfaces`.

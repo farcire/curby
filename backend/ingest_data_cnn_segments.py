@@ -230,7 +230,9 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
     
     for idx, reg_row in regulations_df.iterrows():
         reg_geo = reg_row.get("shape") or reg_row.get("geometry")
-        if not reg_geo:
+        
+        # Skip if no geometry or if geometry is not a dict (handles NaN/null values)
+        if not reg_geo or not isinstance(reg_geo, dict):
             skipped_no_geometry += 1
             continue
         
@@ -315,8 +317,8 @@ async def main():
     # STEP 1: Load Active Streets & Create Segments
     # ==========================================
     print("\n=== STEP 1: Creating CNN-Based Street Segments ===")
-    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token, 
-                                         where="zip_code='94110' OR zip_code='94103'")
+    # Fetch ALL San Francisco streets (no zip code filter)
+    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
     
     if not streets_df.empty:
         # Save raw collection
@@ -472,8 +474,8 @@ async def main():
     # STEP 4: Match Parking Regulations (Complex - Spatial + Side)
     # ==========================================
     print("\n=== STEP 4: Matching Parking Regulations (Enhanced Algorithm) ===")
-    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token,
-                                             where="analysis_neighborhood='Mission'")
+    # Fetch ALL San Francisco parking regulations (no neighborhood filter)
+    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
     
     matched_regs = 0
     if not regulations_df.empty:
