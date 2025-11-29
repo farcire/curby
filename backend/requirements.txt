@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+motor
+python-dotenv
+pydantic
+pandas
+sodapy
+shapely
+requests
+google-generativeai
