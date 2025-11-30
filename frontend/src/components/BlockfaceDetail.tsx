@@ -103,7 +103,10 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
           <div className="flex items-center gap-1.5 text-xs text-gray-700">
             <MapPin className="h-3.5 w-3.5 text-purple-600 flex-shrink-0" />
             <span className="font-semibold">{blockface.streetName}</span>
-            <span className="text-gray-500">({blockface.side})</span>
+            <span className="text-gray-500">
+              ({blockface.cardinalDirection || blockface.side}
+              {blockface.fromAddress && blockface.toAddress ? `, ${blockface.fromAddress}-${blockface.toAddress}` : ''})
+            </span>
           </div>
           
           {/* Limits */}

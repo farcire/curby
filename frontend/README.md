@@ -5,6 +5,7 @@ Curby is a mobile-first Progressive Web App (PWA) designed to simplify street pa
 ## Key Features
 
 - **Interactive Map:** Displays parking legality for all blockfaces within the Mission & SOMA.
+- **Enhanced Location Context:** Shows street name, cardinal direction (e.g., "North side"), and address range (e.g., "100-199") for clear identification.
 - **Three-Tier Zoom:** Specialized zoom levels for Immediate Vicinity, Walking Distance, and Neighborhood Context.
 - **Unrestricted Exploration:** Pan freely across the city without boundary limits.
 - **Dynamic Data Fetching:** Automatically fetches parking regulations based on the visible map area.

@@ -77,6 +77,9 @@ source: BA-PRD Agent Refinement
 - **Description:** Display clear, human-readable explanations of parking rules.
 - **Acceptance Criteria:**
   - [ ] Tapping a blockface displays a clear explanation of the current rules.
+  - [ ] The display must include **Location Context**:
+    - **Street Name** with **Cardinal Direction** (e.g., "North", "East side") where available.
+    - **Address Range** (e.g., "100-199") to confirm the specific block.
   - [ ] The explanation must explicitly include:
     - **Street Sweeping:** Day and time window (e.g., "Mon 8am-10am").
     - **Closures:** Any current or planned future permitted closures (date/time range).
