@@ -113,21 +113,127 @@ def parse_cleaning(record: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 def _parse_days(day_str: str) -> List[int]:
-    """Parse day string into list of integers (0=Sun, 1=Mon... 6=Sat)."""
-    # Simple mapping
-    # This needs to be robust for "Mo-Fr", "Mon,Tue", etc.
-    # Placeholder implementation
+    """
+    Parse day string into list of integers (0=Mon, 1=Tue... 6=Sun).
+    Standardizing on Python weekday() convention for consistency.
+    """
     if not day_str:
-        return [0, 1, 2, 3, 4, 5, 6]
+        return []
+        
+    day_str = day_str.strip().upper()
     
-    # TODO: Implement robust day parsing
-    # Returning default M-F for now to prevent errors
-    return [1, 2, 3, 4, 5]
+    if day_str in ["DAILY", "EVERY DAY", "7 DAYS"]:
+        return [0, 1, 2, 3, 4, 5, 6]
+        
+    if "SCHOOL" in day_str:
+        return [0, 1, 2, 3, 4]  # Mon-Fri
+        
+    # Python weekday mapping: 0=Mon, 6=Sun
+    day_map = {
+        'MO': 0, 'MON': 0, 'MONDAY': 0,
+        'TU': 1, 'TUE': 1, 'TUES': 1, 'TUESDAY': 1,
+        'WE': 2, 'WED': 2, 'WEDNES': 2, 'WEDNESDAY': 2,
+        'TH': 3, 'THU': 3, 'THUR': 3, 'THURS': 3, 'THURSDAY': 3,
+        'FR': 4, 'FRI': 4, 'FRIDAY': 4,
+        'SA': 5, 'SAT': 5, 'SATURDAY': 5,
+        'SU': 6, 'SUN': 6, 'SUNDAY': 6
+    }
+    
+    # Check for range (e.g., "Mon-Fri")
+    for separator in ['-', ' THRU ', ' THROUGH ']:
+        if separator in day_str:
+            parts = day_str.split(separator)
+            if len(parts) == 2:
+                start_day = _get_day_val(parts[0], day_map)
+                end_day = _get_day_val(parts[1], day_map)
+                
+                if start_day is not None and end_day is not None:
+                    if start_day <= end_day:
+                        return list(range(start_day, end_day + 1))
+                    else:
+                        # Wrap around (e.g., Fri-Mon)
+                        return list(range(start_day, 7)) + list(range(0, end_day + 1))
+    
+    # Check for list (e.g., "Mon,Wed,Fri")
+    parts = re.split(r'[,&/]', day_str)
+    result = set()
+    for part in parts:
+        val = _get_day_val(part, day_map)
+        if val is not None:
+            result.add(val)
+            
+    return sorted(list(result))
+
+def _get_day_val(d: str, mapping: dict) -> Optional[int]:
+    """Helper to get integer value for a single day string."""
+    clean_d = d.strip().upper()
+    if clean_d in mapping:
+        return mapping[clean_d]
+    for key, val in mapping.items():
+        if clean_d.startswith(key):
+            return val
+    return None
 
 def _parse_time(time_str: str) -> str:
     """Parse time string into HH:MM 24h format."""
-    # Placeholder
-    return "09:00"
+    # This helper returns string format, but we might want minutes int as well.
+    # For now keeping signature but implementing logic.
+    if not time_str:
+        return "00:00"
+    
+    minutes = parse_time_to_minutes(time_str)
+    if minutes is None:
+        return "00:00"
+        
+    h = minutes // 60
+    m = minutes % 60
+    return f"{h:02d}:{m:02d}"
+
+def parse_time_to_minutes(time_str: Optional[str]) -> Optional[int]:
+    """
+    Convert time string to minutes from midnight (0-1439).
+    """
+    if not time_str:
+        return None
+        
+    time_str = str(time_str).strip().upper()
+    if not time_str:
+        return None
+        
+    try:
+        # Simple integer check (e.g. "900")
+        if time_str.isdigit():
+            val = int(time_str)
+            if val < 24: return val * 60
+            if val >= 100:
+                hours = val // 100
+                minutes = val % 100
+                return hours * 60 + minutes
+            return val * 60
+
+        # Standard parsing
+        clean_str = re.sub(r'[^\d:]', '', time_str)
+        is_pm = "PM" in time_str
+        is_am = "AM" in time_str
+        
+        if ':' in clean_str:
+            parts = clean_str.split(':')
+            hours = int(parts[0])
+            minutes = int(parts[1]) if len(parts) > 1 else 0
+        elif len(clean_str) >= 3:
+            val = int(clean_str)
+            hours = val // 100
+            minutes = val % 100
+        else:
+            hours = int(clean_str)
+            minutes = 0
+            
+        if is_pm and hours < 12: hours += 12
+        elif is_am and hours == 12: hours = 0
+            
+        return hours * 60 + minutes
+    except Exception:
+        return None
 
 def _parse_duration(limit_str: Optional[str]) -> int:
     """Parse duration string (e.g. '60 minutes') into int minutes."""

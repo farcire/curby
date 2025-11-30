@@ -1,0 +1,43 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+
+=== STEP 1: Creating CNN-Based Street Segments ===
+Fetching dataset 3psu-pn9h...
+Successfully fetched 17162 records from 3psu-pn9h.
+Saved 17162 streets to raw collection.
+✓ Created 34324 street segments (2 per CNN)
+  - 17162 CNNs × 2 sides = 34324 segments
+
+=== STEP 2: Adding Blockface Geometries (where available) ===
+Fetching dataset pep9-66vw...
+Successfully fetched 18355 records from pep9-66vw.
+✓ Added 1888 blockface geometries to segments
+
+=== STEP 2.5: Generating Synthetic Blockfaces for Missing Geometries ===
+✓ Generated 32508 synthetic blockface geometries
+
+=== STEP 3: Matching Street Sweeping Schedules ===
+Fetching dataset yhqp-riqs...
+Successfully fetched 37878 records from yhqp-riqs.
+✓ Matched 37878 street sweeping schedules
+
+=== STEP 4: Matching Parking Regulations (Enhanced Algorithm) ===
+Fetching dataset hi6h-neyh...
+Successfully fetched 7783 records from hi6h-neyh.
+Processing 7783 parking regulations...
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/ingest_data_cnn_segments.py", line 715, in <module>
+    asyncio.run(main())
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/ingest_data_cnn_segments.py", line 566, in main
+    matched_regs = await match_parking_regulations_to_segments(all_segments, regulations_df)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/ingest_data_cnn_segments.py", line 312, in match_parking_regulations_to_segments
+    description = format_restriction_description(
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/display_utils.py", line 455, in format_restriction_description
+    start_12hr = convert_24hr_to_12hr(start_time)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/display_utils.py", line 341, in convert_24hr_to_12hr
+    if 'AM' in time_str.upper() or 'PM' in time_str.upper():
+AttributeError: 'float' object has no attribute 'upper'

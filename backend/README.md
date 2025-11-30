@@ -40,7 +40,7 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 - ✅ **Database Backup**: Complete (pre_cnn_migration_20251127_161321)
 - ✅ **Migration Scripts**: Ready to execute
 - ⏳ **API Updates**: Pending
-- ⏳ **Frontend Updates**: Pending
+- ✅ **Frontend Updates**: Complete (Navigation & Zoom Overhaul)
 
 ## Data Sources
 
@@ -157,6 +157,10 @@ python check_missing_blockfaces.py
 
 ## Development
 
+### Benchmarking
+- **`benchmark_api.py`**: Run performance tests against the local API.
+- **`BENCHMARK_LOG.md`**: Historical log of performance metrics.
+
 ### Key Files
 - **`ingest_data_cnn_segments.py`** - New CNN-based ingestion (522 lines)
 - **`ingest_data.py`** - Current ingestion with **address-based RPP matching**
@@ -206,10 +210,11 @@ python check_missing_blockfaces.py
 - [ ] Update existing endpoints
 - [ ] Test with Postman/curl
 
-### ⏳ Phase 3: Frontend Updates (Next - 2-3 days)
-- [ ] Update data types
-- [ ] Modify API calls
-- [ ] Update map visualization
+### ✅ Phase 3: Frontend Updates (COMPLETE)
+- [x] Update data types
+- [x] Modify API calls
+- [x] Update map visualization
+- [x] Navigation & Zoom Overhaul (Vicinity, Walking, Neighborhood)
 
 See **[CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md](CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md)** for full implementation summary.
 

@@ -124,7 +124,8 @@
   - ✅ Mobile viewport optimized (no accidental scaling)
   - ✅ Dynamic map view with viewport-based data loading
   - ✅ Duration slider (1-24h) with non-linear scale and emoji feedback
-  - ✅ Map bounds restricted to Mission District
+  - ✅ Map bounds unrestricted for city-wide exploration (no `maxBounds`)
+  - ✅ Three-tier zoom system (Vicinity, Walking, Neighborhood)
   - ✅ Transparent overlays for better map visibility
   - ✅ User location marker with "return to location" button
   - ✅ Loading screen with Curby branding
@@ -226,6 +227,7 @@
 - ✅ 174 files cleaned up and organized (100+ archived)
 - ✅ Code committed and pushed to GitHub
 - ✅ Documentation updated
+- ✅ **Performance Benchmarks Established:** <100ms for standard queries, <1s for medium range
 
 **Beta Testing Checklist:**
 - [ ] Deploy to production environment (Vercel/Netlify for frontend, Railway/Render for backend)

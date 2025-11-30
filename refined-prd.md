@@ -40,7 +40,7 @@ source: BA-PRD Agent Refinement
 
 **MVP Success Metrics:**
 - Users can select any point within Mission/SOMA and see parking legality for a chosen radius and duration.
-- The system returns accurate results in <2 seconds for 95% of queries.
+- **Performance:** System returns results in <100ms for small queries (300m radius) and <1s for medium queries (1000m radius).
 - The map displays complete blockface coverage for Mission & SOMA with correct color coding.
 - Users can successfully report data errors.
 
@@ -112,12 +112,13 @@ source: BA-PRD Agent Refinement
 **FR-009: Location & Dynamic Map View (MVP Use Cases)**
 - **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to viewport changes.
 - **Acceptance Criteria:**
-  - [x] **Use Case 1 (GPS):** On app load, the map centers on the user's current location (if within Mission/SOMA) and zooms to a close-up street view (~2-3 block radius).
-  - [x] **Use Case 2 (Manual):** Users can pan the map freely within the Mission District bounds without automatic re-centering.
+  - [x] **Use Case 1 (GPS):** On app load, the map centers on the user's current location exactly once and zooms to a close-up street view ("Immediate Vicinity").
+  - [x] **Use Case 2 (Manual):** Users can pan the map freely without automatic re-centering; the map remains where the user pans even if location updates.
+  - [x] **Three-Tier Zoom:** Map zooming is restricted to three distinct levels: Immediate Vicinity (Zoom 18), Walking Distance (Zoom 16.5), and Neighborhood Context (Zoom 15).
   - [x] **Dynamic Data:** Parking eligibility data automatically populates the entire visible map area as the user pans or zooms. No manual "Radius" slider or "Search" button is required.
   - [x] **User Location Marker:** A Curby logo marker displays the user's actual device location and remains visible even when panning to other areas.
   - [x] **Return to Location:** A button styled to match map controls allows users to quickly return to their actual device location.
-  - [x] **Restricted Bounds:** The map view is strictly limited to the Mission District for the MVP.
+  - [x] **Unrestricted Exploration:** Neighborhood boundary limits are removed; users can pan freely to any part of the city.
   - [x] **Loading State:** The loading message must state "Street parking eligibility made easy..." with centered branding.
   - [x] **Location Marker Centering:** The user location marker appears at the center of the map view at app initialization, using actual device geolocation (no mock data).
 

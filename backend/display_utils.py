@@ -332,6 +332,10 @@ def convert_24hr_to_12hr(time_str: Optional[str]) -> Optional[str]:
     """
     if not time_str:
         return None
+        
+    # Handle already formatted strings
+    if 'AM' in str(time_str).upper() or 'PM' in str(time_str).upper():
+        return time_str
     
     # If it already contains AM/PM, return as is
     if 'AM' in time_str.upper() or 'PM' in time_str.upper():
@@ -349,17 +353,24 @@ def convert_24hr_to_12hr(time_str: Optional[str]) -> Optional[str]:
     # Parse the time
     try:
         # Remove any non-digit characters except colon
-        clean_time = re.sub(r'[^\d:]', '', time_str)
+        clean_time = re.sub(r'[^\d:]', '', str(time_str))
         
         # Handle formats like "0", "6", "18"
-        if ':' not in clean_time:
+        if ':' not in clean_time and len(clean_time) < 3:
             hour = int(clean_time)
             minute = 0
-        else:
+        elif ':' in clean_time:
             # Handle formats like "08:30", "18:45"
             parts = clean_time.split(':')
             hour = int(parts[0])
             minute = int(parts[1]) if len(parts) > 1 else 0
+        elif len(clean_time) >= 3:
+             # Handle formats like "0900", "1830"
+            val = int(clean_time)
+            hour = val // 100
+            minute = val % 100
+        else:
+            return time_str
         
         # Convert to 12-hour format
         if hour == 0:
@@ -381,7 +392,7 @@ def convert_24hr_to_12hr(time_str: Optional[str]) -> Optional[str]:
         else:
             return f"{hour_12}:{minute:02d} {period}"
             
-    except (ValueError, IndexError):
+    except (ValueError, IndexError, TypeError):
         # If parsing fails, return original
         return time_str
 

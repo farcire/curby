@@ -9,7 +9,6 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 from models import Blockface, ErrorReport, StreetSegment
-from display_utils import generate_display_messages, normalize_day_of_week, format_restriction_description
 
 load_dotenv()
 
@@ -135,99 +134,36 @@ async def get_blockfaces(lat: float, lng: float, radius_meters: int = 500):
             # Use blockfaceGeometry if available, otherwise fallback to centerlineGeometry
             geometry = doc.get("blockfaceGeometry") or doc.get("centerlineGeometry")
             
-            # Generate display messages using normalization utilities
-            street_name = doc.get("streetName", "")
-            side = doc.get("side", "")
-            from_address = doc.get("fromAddress")
-            to_address = doc.get("toAddress")
-            
-            # Try to get cardinal direction from rules (street cleaning data has Blockside field)
-            cardinal_direction = None
-            rules = doc.get("rules", [])
-            for rule in rules:
-                # Look for Blockside field in street cleaning rules
-                if rule.get("blockside"):
-                    cardinal_direction = rule.get("blockside")
-                    break
-                elif rule.get("cardinalDirection"):
-                    cardinal_direction = rule.get("cardinalDirection")
-                    break
-            
-            # If no cardinal direction, determine even/odd from address range
-            address_parity = None
-            if from_address:
-                try:
-                    addr_num = int(from_address)
-                    address_parity = "even" if addr_num % 2 == 0 else "odd"
-                except (ValueError, TypeError):
-                    pass
-            
-            # Generate display messages
-            display_msgs = generate_display_messages(
-                street_name=street_name,
-                side_code=side,
-                cardinal_direction=cardinal_direction,
-                from_address=from_address,
-                to_address=to_address,
-                address_parity=address_parity
-            )
-            
-            # Normalize rules to restrictions with user-friendly descriptions
-            restrictions = []
-            for rule in rules:
-                restriction = dict(rule)  # Copy the rule
-                
-                # Add normalized description
-                restriction_type = rule.get("type", "")
-                day = rule.get("day")
-                start_time = rule.get("startTime")
-                end_time = rule.get("endTime")
-                time_limit = rule.get("timeLimit")
-                permit_area = rule.get("permitArea")
-                
-                # Generate user-friendly description
-                restriction["description"] = format_restriction_description(
-                    restriction_type=restriction_type,
-                    day=day,
-                    start_time=start_time,
-                    end_time=end_time,
-                    time_limit=time_limit,
-                    permit_area=permit_area
-                )
-                
-                # Normalize day if present
-                if day:
-                    restriction["dayNormalized"] = normalize_day_of_week(day)
-                
-                restrictions.append(restriction)
+            # Pre-computed display fields from ingestion
+            # These are now stored directly on the document
             
             # Construct a response object compatible with frontend Blockface interface
             segment_response = {
                 "id": doc["id"],
                 "cnn": doc.get("cnn"),
-                "street_name": doc.get("streetName"),  # Use snake_case for consistency
+                "street_name": doc.get("streetName"),
                 "streetName": doc.get("streetName"),
                 "side": doc.get("side"), # "L" or "R"
                 "geometry": geometry,
                 
-                # NEW: Display messages
-                "display_name": display_msgs.get("display_name"),
-                "display_name_short": display_msgs.get("display_name_short"),
-                "display_address_range": display_msgs.get("display_address_range"),
-                "display_cardinal": display_msgs.get("display_cardinal"),
+                # Display messages (Pre-computed)
+                "display_name": doc.get("displayName"),
+                "display_name_short": doc.get("displayNameShort"),
+                "display_address_range": doc.get("displayAddressRange"),
+                "display_cardinal": doc.get("displayCardinal"),
                 
-                # Keep rules for backward compatibility, but also add restrictions
+                # Rules now contain pre-computed descriptions and parsed logic
                 "rules": doc.get("rules", []),
-                "restrictions": restrictions,  # NEW: Normalized restrictions with descriptions
+                "restrictions": doc.get("rules", []),  # Map rules to restrictions for frontend compat
                 
                 "schedules": doc.get("schedules", []),
                 "from_street": doc.get("fromStreet"),
                 "fromStreet": doc.get("fromStreet"),
                 "to_street": doc.get("toStreet"),
                 "toStreet": doc.get("toStreet"),
-                "fromAddress": doc.get("fromAddress"),  # Add address ranges
+                "fromAddress": doc.get("fromAddress"),
                 "toAddress": doc.get("toAddress"),
-                "cardinalDirection": cardinal_direction  # NEW: Cardinal direction
+                "cardinalDirection": doc.get("cardinalDirection")
             }
             
             segments.append(segment_response)
