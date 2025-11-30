@@ -618,8 +618,12 @@ async def main():
         cardinal = None
         for rule in segment.get("rules", []):
             if rule.get("blockside"):
-                cardinal = rule.get("blockside")
-                break
+                # Ensure we handle non-string values (e.g. float/nan) safely
+                raw_cardinal = rule.get("blockside")
+                cardinal_str = str(raw_cardinal).strip()
+                if cardinal_str.lower() not in ['nan', 'none', 'null', '']:
+                    cardinal = cardinal_str
+                    break
         
         segment["cardinalDirection"] = cardinal
         

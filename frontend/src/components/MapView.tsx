@@ -193,6 +193,17 @@ export function MapView({
 
     // Add blockfaces as polylines
     blockfacesWithResults.forEach(({ blockface, result }) => {
+      // Debug logging for address ranges
+      if (blockface.streetName.includes('YORK')) {
+        console.log('York St Blockface:', {
+          id: blockface.id,
+          from: blockface.fromAddress,
+          to: blockface.toAddress,
+          side: blockface.side,
+          cardinal: blockface.cardinalDirection
+        });
+      }
+
       const color = getStatusColor(result.status);
 
       // Use exact coordinates from backend (geometry is already side-specific)
@@ -217,8 +228,16 @@ export function MapView({
         statusEmoji = '🤔 ';
       }
 
+      // Format label: "Street Name (Side/Cardinal, Start-End)"
+      const sideText = blockface.cardinalDirection || blockface.side;
+      let label = `${statusEmoji} ${blockface.streetName} (${sideText}`;
+      if (blockface.fromAddress && blockface.toAddress) {
+        label += `, ${blockface.fromAddress}-${blockface.toAddress}`;
+      }
+      label += ')';
+
       polyline.bindTooltip(
-        statusEmoji + blockface.streetName,
+        label,
         {
           permanent: false,
           direction: 'top',

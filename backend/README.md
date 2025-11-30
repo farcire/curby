@@ -48,7 +48,8 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
   - ✅ **Address ranges now stored in StreetSegment model** (fromAddress, toAddress fields)
   - Enables direct address-based queries and conflict resolution
 - **Parking Regulations** (hi6h-neyh): Regulations with geometry and RPP codes (`rpparea1` field) - **PRIMARY source for RPP zones**
-- **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side + cardinal directions
+- **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side + cardinal directions (via `blockside` field)
+  - ✅ **Fixed**: Cardinal directions now correctly ingested and displayed (Nov 2024)
 - **Parcel Overlay** (9grn-xjpx): Administrative boundaries for conflict resolution (boundary cases only)
 - **Blockface Geometries** (pep9-66vw): Side-specific geometries (7.4% coverage)
 - **Meters** (8vzz-qzz9, 6cqg-dxku): Parking meter locations and schedules

@@ -165,7 +165,10 @@ function transformBackendBlockface(backendData: any): Blockface {
     side: parseSide(backendData.side),
     rules: rules,
     fromStreet: backendData.fromStreet,
-    toStreet: backendData.toStreet
+    toStreet: backendData.toStreet,
+    fromAddress: backendData.fromAddress,
+    toAddress: backendData.toAddress,
+    cardinalDirection: backendData.cardinalDirection ? backendData.cardinalDirection.replace(/\s*Side$/i, '') : undefined
   };
 }
 

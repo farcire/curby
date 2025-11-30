@@ -38,6 +38,9 @@ export interface Blockface {
   rules: ParkingRule[];
   fromStreet?: string; // Optional limits
   toStreet?: string;
+  fromAddress?: number | string;
+  toAddress?: number | string;
+  cardinalDirection?: string;
 }
 
 export interface LegalityResult {
