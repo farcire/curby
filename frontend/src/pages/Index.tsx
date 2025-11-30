@@ -19,7 +19,8 @@ const Index = () => {
   const [legalityResult, setLegalityResult] = useState<LegalityResult | null>(null);
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [blockfaces, setBlockfaces] = useState<Blockface[]>([]);
-  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number]>(DEFAULT_CENTER);
   const [hasInitialized, setHasInitialized] = useState(false);
   
@@ -77,7 +78,7 @@ const Index = () => {
   }, [hasInitialized]);
 
   const loadSFMTAData = async (lat: number, lng: number, radius: number) => {
-    setIsLoadingData(true);
+    setIsFetching(true);
     try {
       const sfmtaData = await fetchSFMTABlockfaces(lat, lng, radius);
       setBlockfaces(sfmtaData);
@@ -90,7 +91,8 @@ const Index = () => {
       setBlockfaces([]);
       showError('Failed to load parking data');
     } finally {
-      setIsLoadingData(false);
+      setIsFetching(false);
+      setIsInitialLoad(false);
     }
   };
 
@@ -169,15 +171,23 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Loading */}
-      {isLoadingData && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
+      {/* Initial Loading Screen */}
+      {isInitialLoad && (
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/95 via-purple-50/95 to-pink-50/95 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none transition-opacity duration-500">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="mb-4">
               <Logo size="lg" animated={true} />
             </div>
             <p className="text-lg font-semibold text-gray-900 mb-1">Street parking eligibility made easy...</p>
           </div>
+        </div>
+      )}
+
+      {/* Subtle Background Loading Indicator */}
+      {isFetching && !isInitialLoad && (
+        <div className="absolute top-[72px] left-1/2 transform -translate-x-1/2 z-40 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm border border-purple-100 flex items-center gap-2">
+          <Sparkles className="h-3.5 w-3.5 text-purple-600 animate-spin" />
+          <span className="text-xs font-medium text-purple-900">Updating map...</span>
         </div>
       )}
 
