@@ -36,6 +36,7 @@ export function MapView({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
   const userMarkerRef = useRef<L.Marker | null>(null);
+  const userHasInteractedRef = useRef(false);
 
   // Initialize map (only once)
   useEffect(() => {
@@ -66,6 +67,14 @@ export function MapView({
       }
     });
 
+    // Track user interaction to prevent unwanted auto-centering
+    map.on('dragstart', () => {
+      userHasInteractedRef.current = true;
+    });
+    map.on('zoomstart', () => {
+      userHasInteractedRef.current = true;
+    });
+
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
@@ -89,7 +98,11 @@ export function MapView({
         // Check if this is likely the default location
         const isDefault = Math.abs(userLocation[0] - DEFAULT_LAT) < 0.00001;
 
-        if (!isDefault && !hasCenteredRef.current) {
+        // Only center if:
+        // 1. It's a real location (not default)
+        // 2. We haven't centered yet
+        // 3. The user hasn't already started manually interacting with the map
+        if (!isDefault && !hasCenteredRef.current && !userHasInteractedRef.current) {
             mapRef.current.setView(userLocation, 18, { animate: true });
             hasCenteredRef.current = true;
         }
