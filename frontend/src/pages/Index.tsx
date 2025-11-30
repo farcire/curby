@@ -1,14 +1,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Logo } from '@/components/Logo';
 import { SimpleDurationPicker } from '@/components/SimpleDurationPicker';
-import { ParkingNavigator } from '@/components/ParkingNavigator';
 import { MapView } from '@/components/MapView';
 import { BlockfaceDetail } from '@/components/BlockfaceDetail';
 import { ErrorReportDialog } from '@/components/ErrorReportDialog';
 import { Blockface, LegalityResult } from '@/types/parking';
-import { Sparkles, Map as MapIcon, Navigation } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { fetchSFMTABlockfaces } from '@/utils/sfmtaDataFetcher';
-import { Button } from '@/components/ui/button';
 import { showError } from '@/utils/toast';
 import L from 'leaflet';
 
@@ -22,7 +20,6 @@ const Index = () => {
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [blockfaces, setBlockfaces] = useState<Blockface[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [viewMode, setViewMode] = useState<'navigator' | 'map'>('map');
   const [userLocation, setUserLocation] = useState<[number, number]>(DEFAULT_CENTER);
   const [hasInitialized, setHasInitialized] = useState(false);
   
@@ -30,15 +27,19 @@ const Index = () => {
 
   // Get user's actual device location on startup
   useEffect(() => {
+    let watchId: number | null = null;
+
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
+      // Use watchPosition to keep track of user location for the blue dot
+      watchId = navigator.geolocation.watchPosition(
         (position) => {
           const userLoc: [number, number] = [
             position.coords.latitude,
             position.coords.longitude,
           ];
           setUserLocation(userLoc);
-          // Load initial data centered on user location
+          
+          // Only load initial data once when we get the first fix
           if (!hasInitialized) {
             loadSFMTAData(userLoc[0], userLoc[1], 300); // ~2 block radius
             setHasInitialized(true);
@@ -46,12 +47,17 @@ const Index = () => {
         },
         (error) => {
           console.warn('Geolocation error:', error);
-          // Fallback to default location
-          setUserLocation(DEFAULT_CENTER);
+          // Fallback to default location if we haven't initialized yet
           if (!hasInitialized) {
+            setUserLocation(DEFAULT_CENTER);
             loadSFMTAData(DEFAULT_CENTER[0], DEFAULT_CENTER[1], 300);
             setHasInitialized(true);
           }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
         }
       );
     } else {
@@ -62,7 +68,13 @@ const Index = () => {
         setHasInitialized(true);
       }
     }
-  }, []);
+
+    return () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+    };
+  }, [hasInitialized]);
 
   const loadSFMTAData = async (lat: number, lng: number, radius: number) => {
     setIsLoadingData(true);
@@ -154,26 +166,6 @@ const Index = () => {
               </h1>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode(viewMode === 'navigator' ? 'map' : 'navigator')}
-              className="text-white hover:bg-white/20 rounded-full"
-            >
-              {viewMode === 'navigator' ? (
-                <>
-                  <MapIcon className="h-4 w-4 mr-1" />
-                  Map
-                </>
-              ) : (
-                <>
-                  <Navigation className="h-4 w-4 mr-1" />
-                  Navigate
-                </>
-              )}
-            </Button>
-          </div>
         </div>
       </header>
 
@@ -191,27 +183,19 @@ const Index = () => {
 
       {/* Main Content */}
       <div className="flex-1 relative overflow-hidden">
-        {viewMode === 'navigator' ? (
-          <ParkingNavigator
-            blockfaces={blockfaces}
-            durationMinutes={durationMinutes}
-            onShowMap={() => setViewMode('map')}
-          />
-        ) : (
-          <MapView
-            checkTime={selectedTime}
-            durationMinutes={durationMinutes}
-            onBlockfaceClick={handleBlockfaceClick}
-            blockfaces={blockfaces}
-            initialCenter={userLocation}
-            userLocation={userLocation}
-            onMapMove={handleMapMove}
-          />
-        )}
+        <MapView
+          checkTime={selectedTime}
+          durationMinutes={durationMinutes}
+          onBlockfaceClick={handleBlockfaceClick}
+          blockfaces={blockfaces}
+          initialCenter={userLocation}
+          userLocation={userLocation}
+          onMapMove={handleMapMove}
+        />
       </div>
 
       {/* Floating Duration Picker - Replaces RadiusControl position */}
-      {viewMode === 'map' && !selectedBlockface && (
+      {!selectedBlockface && (
         <SimpleDurationPicker
           durationMinutes={durationMinutes}
           onDurationChange={setDurationMinutes}

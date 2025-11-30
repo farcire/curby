@@ -22,12 +22,6 @@ interface BlockfaceWithResult {
   result: LegalityResult;
 }
 
-// Mission District Approximate Bounds
-const MISSION_BOUNDS = L.latLngBounds(
-  [37.747, -122.427], // SW (Cesar Chavez & Guerreroish)
-  [37.773, -122.403]  // NE (13th/Duboce & Potreroish)
-);
-
 export function MapView({
   checkTime,
   durationMinutes,
@@ -47,17 +41,15 @@ export function MapView({
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Initial zoom ~17 is roughly 2-3 blocks radius view
-    const initialZoom = 17;
+    // Initial zoom 18 (Immediate Detail)
+    const initialZoom = 18;
 
     const map = L.map(mapContainerRef.current, {
       center: initialCenter,
       zoom: initialZoom,
-      zoomControl: false, // We'll add it manually with custom position
-      minZoom: 14,
-      maxZoom: 18,
-      maxBounds: MISSION_BOUNDS, // Restrict to Mission District
-      maxBoundsViscosity: 0.8,
+      zoomControl: false,
+      minZoom: 15, // Neighborhood Context (~800m radius)
+      maxZoom: 18, // Immediate Vicinity
     });
 
     // Add zoom control at top-left position
@@ -88,21 +80,19 @@ export function MapView({
     };
   }, []); // Only initialize once
 
-  // Center map on user location when it becomes available
+  const hasCenteredRef = useRef(false);
+  const DEFAULT_LAT = 37.76272;
+
+  // Center map on user location only once when a real location is found
   useEffect(() => {
     if (mapRef.current && userLocation) {
-      // Only center if this is the actual user location (not the default fallback)
-      // Check if userLocation is different from the current map center
-      const currentCenter = mapRef.current.getCenter();
-      const distance = Math.sqrt(
-        Math.pow(currentCenter.lat - userLocation[0], 2) +
-        Math.pow(currentCenter.lng - userLocation[1], 2)
-      );
-      
-      // If the distance is significant (more than ~0.01 degrees ≈ 1km), recenter
-      if (distance > 0.01) {
-        mapRef.current.setView(userLocation, 17, { animate: false });
-      }
+        // Check if this is likely the default location
+        const isDefault = Math.abs(userLocation[0] - DEFAULT_LAT) < 0.00001;
+
+        if (!isDefault && !hasCenteredRef.current) {
+            mapRef.current.setView(userLocation, 18, { animate: true });
+            hasCenteredRef.current = true;
+        }
     }
   }, [userLocation]);
 
@@ -247,7 +237,7 @@ export function MapView({
   // Handle navigate to user location
   const handleNavigateToUser = () => {
     if (mapRef.current && userLocation) {
-      mapRef.current.setView(userLocation, 17, { animate: true });
+      mapRef.current.setView(userLocation, 18, { animate: true });
     }
     if (onNavigateToUser) {
       onNavigateToUser();

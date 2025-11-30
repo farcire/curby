@@ -54,6 +54,13 @@ class StreetSegment(BaseModel):
     zip_code: Optional[str] = None
     layer: Optional[str] = None
     
+    # Pre-computed display fields (Optimization)
+    displayName: Optional[str] = None               # e.g., "18th Street (North side, 3401-3449)"
+    displayNameShort: Optional[str] = None          # e.g., "18th Street (North side)"
+    displayAddressRange: Optional[str] = None       # e.g., "3401-3449"
+    displayCardinal: Optional[str] = None           # e.g., "North side"
+    cardinalDirection: Optional[str] = None         # e.g., "N", "North"
+
     class Config:
         arbitrary_types_allowed = True
 

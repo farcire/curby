@@ -7,6 +7,13 @@ import motor.motor_asyncio
 from typing import List, Dict, Any, Optional
 from shapely.geometry import shape, LineString, Point, mapping
 import math
+import re
+import sys
+# Ensure we can import from the current directory
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from display_utils import generate_display_messages, format_restriction_description
+from deterministic_parser import _parse_days, parse_time_to_minutes
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
@@ -22,6 +29,23 @@ PARKING_REGULATIONS_ID = "hi6h-neyh"   # 7. Parking Regulations
 METERED_BLOCKFACES_ID = "mk27-a5x2"    # 8. Metered Blockfaces (Metadata)
 METERS_DATASET_ID = "8vzz-qzz9"        # 9. Parking Meters (Link meters to streets)
 METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
+
+def map_regulation_type(reg_desc: str) -> str:
+    """Maps raw regulation description to internal type."""
+    if not reg_desc:
+        return 'unknown'
+    reg_desc = reg_desc.lower()
+    if 'sweeping' in reg_desc or 'cleaning' in reg_desc:
+        return 'street-sweeping'
+    if 'tow' in reg_desc:
+        return 'tow-away'
+    if 'no parking' in reg_desc:
+        return 'no-parking'
+    if 'time' in reg_desc or 'limit' in reg_desc:
+        return 'time-limit'
+    if 'permit' in reg_desc or 'residential' in reg_desc:
+        return 'rpp-zone'
+    return 'parking-regulation'
 
 def get_side_of_street(centerline_geo: Dict, blockface_geo: Dict) -> str:
     """
@@ -268,15 +292,48 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
         
         # Attach regulation to best matching segment
         if best_match:
+            # Map type and format description
+            raw_reg = reg_row.get("regulation", "")
+            reg_type = map_regulation_type(raw_reg)
+            
+            active_days = _parse_days(reg_row.get("days"))
+            start_min = parse_time_to_minutes(reg_row.get("from_time"))
+            end_min = parse_time_to_minutes(reg_row.get("to_time"))
+            
+            # Parse time limit (convert hours to minutes)
+            time_limit_mins = None
+            try:
+                hr_limit = float(reg_row.get("hrlimit", 0))
+                if hr_limit > 0:
+                    time_limit_mins = int(hr_limit * 60)
+            except:
+                pass
+                
+            description = format_restriction_description(
+                reg_type,
+                day=reg_row.get("days"),
+                start_time=reg_row.get("from_time"),
+                end_time=reg_row.get("to_time"),
+                time_limit=time_limit_mins,
+                permit_area=reg_row.get("rpparea1") or reg_row.get("rpparea2")
+            )
+
             best_match["rules"].append({
-                "type": "parking-regulation",
-                "regulation": reg_row.get("regulation"),
+                "type": reg_type,
+                "regulation": raw_reg,
                 "timeLimit": reg_row.get("hrlimit"),
                 "permitArea": reg_row.get("rpparea1") or reg_row.get("rpparea2"),
                 "days": reg_row.get("days"),
                 "hours": reg_row.get("hours"),
                 "fromTime": reg_row.get("from_time"),
                 "toTime": reg_row.get("to_time"),
+                
+                # New pre-computed fields
+                "activeDays": active_days,
+                "startTimeMin": start_min,
+                "endTimeMin": end_min,
+                "description": description,
+                
                 "details": reg_row.get("regdetails"),
                 "exceptions": reg_row.get("exceptions"),
                 "side": best_match.get("side"),
@@ -449,13 +506,31 @@ async def main():
             # Find matching segment (direct match on CNN + side)
             for segment in all_segments:
                 if segment["cnn"] == cnn and segment["side"] == side:
+                    # Pre-calculate fields
+                    active_days = _parse_days(row.get("weekday"))
+                    start_min = parse_time_to_minutes(row.get("fromhour"))
+                    end_min = parse_time_to_minutes(row.get("tohour"))
+                    
+                    description = format_restriction_description(
+                        "street-sweeping",
+                        day=row.get("weekday"),
+                        start_time=row.get("fromhour"),
+                        end_time=row.get("tohour")
+                    )
+
                     segment["rules"].append({
                         "type": "street-sweeping",
                         "day": row.get("weekday"),
                         "startTime": row.get("fromhour"),
                         "endTime": row.get("tohour"),
+                        # New pre-computed fields
+                        "activeDays": active_days,
+                        "startTimeMin": start_min,
+                        "endTimeMin": end_min,
+                        "description": description,
+                        "blockside": row.get("blockside"), # Capture cardinal direction
+                        
                         "side": side,
-                        "description": f"Street Cleaning {row.get('weekday')} {row.get('fromhour')}-{row.get('tohour')}",
                         "limits": row.get("limits")
                     })
                     
@@ -533,6 +608,46 @@ async def main():
                     matched_meters += 1
     
     print(f"✓ Matched {matched_meters} parking meters")
+
+    # ==========================================
+    # STEP 5.5: Finalize Segments (Display Strings & Cardinal)
+    # ==========================================
+    print("\n=== STEP 5.5: Finalizing Segments ===")
+    for segment in all_segments:
+        # Determine cardinal direction from rules
+        cardinal = None
+        for rule in segment.get("rules", []):
+            if rule.get("blockside"):
+                cardinal = rule.get("blockside")
+                break
+        
+        segment["cardinalDirection"] = cardinal
+        
+        # Determine address parity
+        parity = None
+        if segment.get("fromAddress"):
+            try:
+                # Basic check: last digit even/odd
+                # Or cast to int
+                addr_num = int(re.sub(r'\D', '', str(segment["fromAddress"])))
+                parity = "even" if addr_num % 2 == 0 else "odd"
+            except:
+                pass
+
+        # Generate display messages
+        msgs = generate_display_messages(
+            street_name=segment.get("streetName", ""),
+            side_code=segment.get("side", ""),
+            cardinal_direction=cardinal,
+            from_address=segment.get("fromAddress"),
+            to_address=segment.get("toAddress"),
+            address_parity=parity
+        )
+        
+        segment["displayName"] = msgs["display_name"]
+        segment["displayNameShort"] = msgs["display_name_short"]
+        segment["displayAddressRange"] = msgs["display_address_range"]
+        segment["displayCardinal"] = msgs["display_cardinal"]
 
     # ==========================================
     # STEP 6: Save Street Segments to Database
