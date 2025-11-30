@@ -49,8 +49,10 @@ export function MapView({
       center: initialCenter,
       zoom: initialZoom,
       zoomControl: false,
-      minZoom: 15, // Neighborhood Context (~800m radius)
+      minZoom: 13, // City-wide Context
       maxZoom: 18, // Immediate Vicinity
+      maxBounds: null, // Explicitly allow unrestricted panning
+      maxBoundsViscosity: 0,
     });
 
     // Add zoom control at top-left position
