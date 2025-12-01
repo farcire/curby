@@ -2,7 +2,9 @@
 title: Product Requirements Document - REFINED
 app: elegant-lynx-play
 created: 2025-11-25T07:06:20.848Z
-version: 7
+updated: 2025-12-01T01:49:00.000Z
+version: 8
+status: Beta Ready
 source: BA-PRD Agent Refinement
 ---
 
@@ -59,28 +61,28 @@ source: BA-PRD Agent Refinement
 **FR-001: Interactive Parking Legality Map**
 - **Description:** Visual map interface showing parking legality for all blockfaces within the **Mission and SOMA neighborhoods**.
 - **Acceptance Criteria:**
-  - [ ] Map loads showing all blockfaces within Mission & SOMA with correct color coding.
-  - [ ] Map lines follow the actual curvature of the streets (high-fidelity geometry).
+  - [x] Map loads showing all blockfaces within Mission & SOMA with correct color coding.
+  - [x] Map lines follow the actual curvature of the streets (high-fidelity geometry).
 
 **FR-002: Short-Term Future Legality Checking**
 - **Description:** Allow users to check parking legality for the current time or up to 48 hours in the future (to support 24-hour parking durations).
 - **Acceptance Criteria:**
-  - [ ] System defaults to the current time on app load.
-  - [ ] User can select a start time up to 48 hours in the future.
+  - [x] System defaults to the current time on app load.
+  - [x] User can select a start time up to 7 days in the future (expanded from 48 hours).
 
 **FR-003: Parking Rule Interpretation Engine**
 - **Description:** Backend system that evaluates parking rules from the live data source with correct precedence.
 - **Acceptance Criteria:**
-  - [ ] The highest-precedence rule determines the result when multiple rules apply.
+  - [x] The highest-precedence rule determines the result when multiple rules apply.
 
 **FR-004: Plain-Language Rule Explanations**
 - **Description:** Display clear, human-readable explanations of parking rules.
 - **Acceptance Criteria:**
-  - [ ] Tapping a blockface displays a clear explanation of the current rules.
-  - [ ] The display must include **Location Context**:
+  - [x] Tapping a blockface displays a clear explanation of the current rules.
+  - [x] The display includes **Location Context**:
     - **Street Name** with **Cardinal Direction** (e.g., "North", "East side") where available.
     - **Address Range** (e.g., "100-199") to confirm the specific block.
-  - [ ] The explanation must explicitly include:
+  - [x] The explanation explicitly includes:
     - **Street Sweeping:** Day and time window (e.g., "Mon 8am-10am").
     - **Closures:** Any current or planned future permitted closures (date/time range).
     - **Duration:** Maximum allowed parking duration for the current time (for both metered and non-metered areas).
@@ -89,28 +91,28 @@ source: BA-PRD Agent Refinement
 **FR-005: Data Ingestion ("Trust, then Verify")**
 - **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA, using spatial joins for parking regulations.
 - **Acceptance Criteria:**
-  - [ ] The system uses Active Streets (3psu-pn9h) as the geometry backbone and address range source.
-  - [ ] **Address ranges stored:** Each CNN L/R segment stores fromAddress and toAddress fields for direct address-based queries.
-  - [ ] **Parking regulations spatially joined:** Regulations (hi6h-neyh) are assigned to CNN L and/or CNN R based on distance (<10m = clear, 10-50m = boundary with Parcel Overlay resolution).
-  - [ ] **RPP zones from regulations:** RPP area codes come directly from regulation records (`rpparea1` field), not from separate address matching.
-  - [ ] **Street cleaning direct join:** Street cleaning (yhqp-riqs) uses CNN + Side fields for 100% direct matching.
-  - [ ] **Cardinal directions captured:** Street cleaning provides cardinal directions (N, S, E, W, etc.) for user-friendly display.
-  - [ ] Metered data is joined via CNN key.
+  - [x] The system uses Active Streets (3psu-pn9h) as the geometry backbone and address range source.
+  - [x] **Address ranges stored:** Each CNN L/R segment stores fromAddress and toAddress fields for direct address-based queries.
+  - [x] **Parking regulations spatially joined:** Regulations (hi6h-neyh) are assigned to CNN L and/or CNN R based on distance (<10m = clear, 10-50m = boundary with Parcel Overlay resolution).
+  - [x] **RPP zones from regulations:** RPP area codes come directly from regulation records (`rpparea1` field), not from separate address matching.
+  - [x] **Street cleaning direct join:** Street cleaning (yhqp-riqs) uses CNN + Side fields for 100% direct matching.
+  - [x] **Cardinal directions captured:** Street cleaning provides cardinal directions (N, S, E, W, etc.) for user-friendly display.
+  - [x] Metered data is joined via CNN key.
 
 **FR-006: Error Reporting System**
 - **Description:** Allow users to report incorrect parking rules they encounter.
 - **Acceptance Criteria:**
-  - [ ] Users can easily find and use a "Report Incorrect Rule" button.
+  - [x] Users can easily find and use a "Report Incorrect Rule" button.
 
 **FR-007: Anonymous Usage (No Authentication)**
 - **Description:** Allow users to access all features without creating accounts.
 - **Acceptance Criteria:**
-  - [ ] All features are immediately accessible on app load.
+  - [x] All features are immediately accessible on app load.
 
 **FR-008: Automated Parking Data Monitoring ("Listener Mode")**
 - **Description:** A backend process that periodically checks the SFMTA data source for changes to rules within Mission & SOMA.
 - **Acceptance Criteria:**
-  - [ ] The system automatically polls the SFMTA data source on a regular schedule.
+  - [ ] The system automatically polls the SFMTA data source on a regular schedule. (Planned for post-beta)
 
 **FR-009: Location & Dynamic Map View (MVP Use Cases)**
 - **Description:** Supports two distinct modes of operation with a dynamic map interface that responds to viewport changes.
@@ -128,19 +130,19 @@ source: BA-PRD Agent Refinement
 **FR-010: Progressive Web App (PWA) Capabilities**
 - **Description:** The application must be installable on mobile devices, work offline (loading cached app shell), and feel like a native application.
 - **Acceptance Criteria:**
-  - [ ] Valid Web App Manifest provided (name, icons, theme color).
-  - [ ] Service Worker registered for caching static assets (app shell).
-  - [ ] "Add to Home Screen" prompt triggerable on supported devices.
-  - [ ] Viewport configuration prevents accidental zooming/scaling on mobile.
+  - [x] Valid Web App Manifest provided (name, icons, theme color).
+  - [x] Service Worker registered for caching static assets (app shell).
+  - [x] "Add to Home Screen" prompt triggerable on supported devices.
+  - [x] Viewport configuration prevents accidental zooming/scaling on mobile.
 
 **FR-011: Enhanced User Controls (Duration & Visuals)**
 - **Description:** Provide intuitive controls for parking duration and refined map visuals.
 - **Acceptance Criteria:**
-  - [ ] **Duration Slider:** Replaces fixed buttons with a 0-24 hour slider.
-    - [ ] Non-linear scale prioritizing 1-6 hours (hourly steps) and "squeezing" longer durations (8, 10, 12, 16, 20, 24 hours).
-    - [ ] Visual labels for key milestones (1h, 3h, 6h, 12h, 24h).
-    - [ ] Dynamic emoji feedback based on duration (e.g., ☕ for short, 🌙 for overnight).
-  - [ ] **Map Visuals:** Parking eligibility lines must use semi-transparent colors (opacity ~0.6) to blend with the map, avoiding a "harsh" overlay look.
+  - [x] **Duration Slider:** Replaces fixed buttons with a 0-24 hour slider.
+    - [x] Non-linear scale prioritizing 1-6 hours (hourly steps) and "squeezing" longer durations (8, 10, 12, 16, 20, 24 hours).
+    - [x] Visual labels for key milestones (1h, 3h, 6h, 12h, 24h).
+    - [x] Dynamic emoji feedback based on duration (e.g., ☕ for short, 🌙 for overnight).
+  - [x] **Map Visuals:** Parking eligibility lines use semi-transparent colors (opacity ~0.6) to blend with the map, avoiding a "harsh" overlay look.
 
 ## 3. USER WORKFLOWS
 

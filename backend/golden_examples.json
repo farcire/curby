@@ -1,0 +1,105 @@
+{
+  "statistics": {
+    "total_completed": 227,
+    "by_action": {
+      "No data": 5,
+      "Permit-required": 14,
+      "Prohibited": 43,
+      "Restricted": 15,
+      "Time-limited": 150
+    }
+  },
+  "best_examples": [
+    {
+      "label": "Time-limited (simple)",
+      "regulation": "Time limited",
+      "days": "M-Sa",
+      "hours": "700-1600",
+      "hrs_begin": "700",
+      "hrs_end": "1600",
+      "rpparea1": "",
+      "hrlimit": "2",
+      "golden_action": "Time-limited",
+      "golden_summary": "2hr Limit 7am - 4pm",
+      "golden_severity": "medium"
+    },
+    {
+      "label": "Time-limited (RPP)",
+      "regulation": "Time Limited",
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrs_begin": "800",
+      "hrs_end": "1800",
+      "rpparea1": "AA",
+      "hrlimit": "2",
+      "golden_action": "Time-limited",
+      "golden_summary": "2hr Limit Monday - Friday 8am - 6pm except residential permit",
+      "golden_severity": "medium"
+    },
+    {
+      "label": "Prohibited (anytime)",
+      "regulation": "No parking any time",
+      "days": "",
+      "hours": "",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "rpparea1": "0",
+      "hrlimit": "",
+      "golden_action": "Prohibited",
+      "golden_summary": "No parking information. Check street signs.",
+      "golden_severity": "critical"
+    },
+    {
+      "label": "Prohibited (timed)",
+      "regulation": "Limited No Parking",
+      "days": "M-F",
+      "hours": "600-1000",
+      "hrs_begin": "600",
+      "hrs_end": "1000",
+      "rpparea1": "",
+      "hrlimit": "",
+      "golden_action": "Prohibited",
+      "golden_summary": "No parking Monday - Friday 6am - 10am",
+      "golden_severity": "critical"
+    },
+    {
+      "label": "Permit-required",
+      "regulation": "Government permit",
+      "days": "",
+      "hours": "0-0",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "rpparea1": "",
+      "hrlimit": "0",
+      "golden_action": "Permit-required",
+      "golden_summary": "No parking except government permit.",
+      "golden_severity": "high"
+    },
+    {
+      "label": "Restricted (oversized)",
+      "regulation": "No oversized vehicles",
+      "days": "",
+      "hours": "0-0",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "rpparea1": "",
+      "hrlimit": "0",
+      "golden_action": "Restricted",
+      "golden_summary": "No oversized vehicles",
+      "golden_severity": "low"
+    },
+    {
+      "label": "No data",
+      "regulation": "",
+      "days": "",
+      "hours": "0-0",
+      "hrs_begin": "0",
+      "hrs_end": "0",
+      "rpparea1": "",
+      "hrlimit": "0",
+      "golden_action": "No data",
+      "golden_summary": "No parking information. Check street signs.",
+      "golden_severity": "low"
+    }
+  ]
+}

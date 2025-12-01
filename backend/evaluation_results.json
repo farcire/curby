@@ -1,10 +1,10 @@
 {
   "summary": {
     "total_cases": 12,
-    "passed_count": 4,
-    "pass_rate": 33.33333333333333,
-    "average_score": 0.4166666666666667,
-    "timestamp": "2025-11-29 00:02:04",
+    "passed_count": 10,
+    "pass_rate": 83.33333333333334,
+    "average_score": 0.875,
+    "timestamp": "2025-11-30 12:58:15",
     "model": "gemini-2.0-flash"
   },
   "results": [
@@ -30,27 +30,27 @@
         },
         "conditions": {
           "permit_exception": [
-            "SF Public Works"
+            "SF Public Works vehicles"
           ]
         },
         "display": {
-          "summary": "No Parking: DPW Pit Stop",
-          "details": "No parking Monday-Friday, 10:00 AM to 7:00 PM, except for SF Public Works vehicles. This regulation is due to the DPW Pit Stop program.",
+          "summary": "Limited No Parking - DPW Pit Stop",
+          "details": "No parking due to the DPW Pit Stop program, Monday to Friday from 10:00 to 19:00. SF Public Works vehicles are exempt.",
           "severity": "medium",
           "icon": "no-parking"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:40.630706",
+          "interpreted_at": "2025-11-30T20:57:03.397279",
           "original_text": "Limited No Parking Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.0,
-        "reasoning": "The interpretation hallucinates both the days and time ranges. The original text only mentions the 'DPW Pit Stop program', implying a No Parking regulation is in effect but does not provide any specific days or times. The interpretation provides \"Monday-Friday, 10:00 AM to 7:00 PM\" without evidence, which is a critical safety error, as a user may rely on this hallucinated information, leading to a tow.",
-        "flagged": true
+        "score": 1.0,
+        "reasoning": "The interpretation accurately reflects the original text and the structured context provided. The time range, days, and exception are correctly represented. The summary is also accurate and relevant.",
+        "flagged": false
       },
-      "duration_seconds": 3.19
+      "duration_seconds": 2.42
     },
     {
       "test_case_id": "test_case_2",
@@ -81,23 +81,23 @@
           }
         },
         "display": {
-          "summary": "No Oversized Vehicles",
-          "details": "Vehicles over 22ft long or 7ft tall prohibited between 12 AM and 6 AM daily.",
+          "summary": "No Oversized Vehicles (12AM-6AM)",
+          "details": "Oversized vehicles (longer than 22 feet or taller than 7 feet) prohibited from 12AM to 6AM.",
           "severity": "high",
           "icon": "no-truck"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:43.643941",
+          "interpreted_at": "2025-11-30T20:57:05.857595",
           "original_text": "No oversized vehicles Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.0,
-        "reasoning": "The original text states \"No oversized vehicles Oversized vehicles and trailers are those longer than 22 feet or taller than 7 feet\". The interpretation includes a time range where this restriction applies (00:00-06:00 daily). This is a hallucination. There's no temporal information within the raw text. By adding a time constraint that does not exist, it creates a false sense of security for the remaining time in the day. If someone were to park their oversized vehicle during the time not in the rule, they would be at risk of getting ticketed or towed.",
+        "score": 0.5,
+        "reasoning": "The original text states \"No oversized vehicles\", and the structured context says this is effective 2400-600 (12am-6am), every day. The interpretation's logic correctly reflects the time restriction to 00:00-06:00 daily, and correctly identifies the vehicle size restrictions. However, the original text does NOT mention any restriction on time, it's only the structured context that does. Given the discrepancy between the original text (unrestricted) and the interpretation (restricted), the interpretation is over-cautious which causes a temporal mismatch. Therefore, score 0.5",
         "flagged": true
       },
-      "duration_seconds": 3.52
+      "duration_seconds": 3.27
     },
     {
       "test_case_id": "test_case_3",
@@ -123,23 +123,23 @@
         },
         "conditions": {},
         "display": {
-          "summary": "4-Hour Parking, Except Sundays",
-          "details": "4-hour time limit from 8 AM to 6 PM, Monday through Saturday. No restrictions on Sundays.",
+          "summary": "4-Hour Time Limit (Mon-Sat)",
+          "details": "4-hour time limit between 8 AM and 6 PM, Monday through Saturday. No time limit on Sundays.",
           "severity": "medium",
           "icon": "time-limit"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:47.362848",
+          "interpreted_at": "2025-11-30T20:57:09.030774",
           "original_text": "Time limited MM. ESTABLISH \u2013 4-HOUR TIME LIMIT, 8 AM TO 6 PM, EXCEPT SUNDAYS",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
         "score": 1.0,
-        "reasoning": "The interpretation accurately reflects the original text. The time range, days, and duration are correctly captured, and the exception for Sundays is also noted. No safety concerns or inaccuracies are present.",
+        "reasoning": "The interpretation accurately reflects the original text. It correctly identifies the time limit as 4 hours, the days it applies to (Monday to Saturday), and the time range (8 AM to 6 PM). The exception for Sundays is also correctly noted. No safety concerns are present.",
         "flagged": false
       },
-      "duration_seconds": 2.78
+      "duration_seconds": 2.56
     },
     {
       "test_case_id": "test_case_4",
@@ -165,23 +165,23 @@
         },
         "conditions": {},
         "display": {
-          "summary": "No Overnight Parking",
+          "summary": "No overnight parking",
           "details": "No parking allowed between 6pm and 6am daily.",
           "severity": "medium",
           "icon": "no-parking"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:49.915574",
+          "interpreted_at": "2025-11-30T20:57:11.374530",
           "original_text": "No overnight parking",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
         "score": 1.0,
-        "reasoning": "The interpretation accurately reflects the \"No overnight parking\" restriction. The time range of 6 PM to 6 AM is a reasonable and safe interpretation of 'overnight'. The days of the week cover all days. No conflicting or hallucinated information is present.",
+        "reasoning": "The interpretation accurately captures the meaning of \"No overnight parking\" by prohibiting parking between 6pm and 6am daily. This aligns perfectly with the structured context, which defines overnight parking as between 1800 and 0600. There are no temporal mismatches or added exceptions, and the summary is clear and concise.",
         "flagged": false
       },
-      "duration_seconds": 2.86
+      "duration_seconds": 2.46
     },
     {
       "test_case_id": "test_case_5",
@@ -208,22 +208,22 @@
         "conditions": {},
         "display": {
           "summary": "No Parking Any Time",
-          "details": "Parking is prohibited at all times.",
-          "severity": "critical",
+          "details": "No parking allowed at any time.",
+          "severity": "high",
           "icon": "no-parking"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:52.477091",
+          "interpreted_at": "2025-11-30T20:57:13.933234",
           "original_text": "No parking any time",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
         "score": 1.0,
-        "reasoning": "The interpretation accurately reflects the original text, indicating that parking is prohibited at all times, every day of the week, with no exceptions.",
+        "reasoning": "The interpretation accurately reflects the original text \"No parking any time\". The time range covers all days of the week and all hours of the day (00:00 to 23:59), which is the correct interpretation. There are no safety concerns or inaccuracies.",
         "flagged": false
       },
-      "duration_seconds": 2.37
+      "duration_seconds": 2.46
     },
     {
       "test_case_id": "test_case_6",
@@ -243,7 +243,7 @@
                 6
               ],
               "start": "00:00",
-              "end": "23:59"
+              "end": "00:00"
             }
           ]
         },
@@ -254,22 +254,22 @@
         },
         "display": {
           "summary": "Government Permit Required",
-          "details": "Parking allowed only with a valid government permit.",
+          "details": "Parking allowed only with a valid Government permit.",
           "severity": "medium",
           "icon": "permit"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:55.044654",
+          "interpreted_at": "2025-11-30T20:57:16.253282",
           "original_text": "Government permit",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
         "score": 1.0,
-        "reasoning": "The interpretation accurately reflects the original text, indicating that parking is allowed with a government permit at all times.",
+        "reasoning": "The interpretation accurately reflects that a government permit is required and correctly states that it is required at all times (00:00-00:00 every day). The summary and details are appropriate and the severity is reasonable.",
         "flagged": false
       },
-      "duration_seconds": 2.56
+      "duration_seconds": 2.25
     },
     {
       "test_case_id": "test_case_7",
@@ -298,23 +298,23 @@
           ]
         },
         "display": {
-          "summary": "2 Hour Parking, M-F 8AM-6PM",
-          "details": "2-hour parking limit, Monday to Friday, 8:00 AM to 6:00 PM. RPP holders are exempt from time limits.",
+          "summary": "Time Limited Parking",
+          "details": "2-hour time limit, Monday to Friday, 8:00 AM to 6:00 PM. RPP holders exempt.",
           "severity": "medium",
           "icon": "clock"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:01:57.760354",
+          "interpreted_at": "2025-11-30T20:57:18.689875",
           "original_text": "Time limited",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.5,
-        "reasoning": "The interpretation assumes 'Time limited' implies a Monday-Friday restriction from 8 AM to 6 PM, and a 2-hour limit, which are not explicitly stated in the original text. It also hallucinates the U permit exception. The original text is too vague to determine accuracy, and the interpretation fills in too many unstated details.",
-        "flagged": true
+        "score": 1.0,
+        "reasoning": "The interpretation accurately reflects the 'Time limited' regulation, including the days (M-F), hours (8:00 AM to 6:00 PM), the 2-hour limit, and the RPP exception. No safety concerns or inaccuracies were detected.",
+        "flagged": false
       },
-      "duration_seconds": 2.98
+      "duration_seconds": 2.41
     },
     {
       "test_case_id": "test_case_8",
@@ -340,55 +340,29 @@
         },
         "conditions": {},
         "display": {
-          "summary": "4-Hour Parking, Mon-Sat 7AM-6PM",
-          "details": "4-hour parking limit enforced Monday through Saturday from 7:00 AM to 6:00 PM.",
+          "summary": "4-Hour Parking",
+          "details": "4-hour parking limit, Monday through Saturday, 7:00 AM to 6:00 PM.",
           "severity": "medium",
           "icon": "time-limit"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:02:00.572657",
+          "interpreted_at": "2025-11-30T20:57:21.100883",
           "original_text": "Time Limited",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.0,
-        "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.0-flash\nPlease retry in 59.276499688s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 59\n}\n]",
-        "flagged": true
+        "score": 1.0,
+        "reasoning": "The interpretation accurately reflects the provided data. The time-limit is correctly represented as 4 hours (240 minutes), the days are correctly identified as Monday through Saturday (1-6), and the time range is accurately set as 7:00 AM to 6:00 PM (07:00-18:00). The summary and details also align with the structured data. No safety concerns are present.",
+        "flagged": false
       },
-      "duration_seconds": 1.73
+      "duration_seconds": 2.68
     },
     {
       "test_case_id": "test_case_9",
       "original_text": "Limited No Parking",
       "interpretation": {
-        "type": "unknown",
-        "display": {
-          "summary": "Limited No Parking",
-          "details": "Unable to fully interpret this restriction. Please check signage.",
-          "severity": "medium",
-          "icon": "info"
-        },
-        "logic": {},
-        "conditions": {},
-        "meta": {
-          "interpreted_at": "2025-11-29T08:02:00.870737",
-          "original_text": "Limited No Parking",
-          "fallback": true
-        }
-      },
-      "evaluation": {
-        "score": 0.0,
-        "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.0-flash\nPlease retry in 58.975838133s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 58\n}\n]",
-        "flagged": true
-      },
-      "duration_seconds": 0.3
-    },
-    {
-      "test_case_id": "test_case_10",
-      "original_text": "Time limited 11-117",
-      "interpretation": {
-        "type": "time-limit",
+        "type": "no-parking",
         "logic": {
           "time_ranges": [
             {
@@ -402,82 +376,142 @@
                 6
               ],
               "start": "00:00",
-              "end": "00:00"
+              "end": "06:00"
             }
-          ],
-          "duration_minutes": 720
+          ]
         },
         "conditions": {},
         "display": {
-          "summary": "12 Hour Time Limit",
-          "details": "Parking limited to 12 hours, everyday.",
+          "summary": "No Parking 12:01 AM to 6 AM Every Day",
+          "details": "No parking allowed from 12:01 AM to 6 AM, every day of the week.",
           "severity": "medium",
-          "icon": "time-limit"
+          "icon": "no-parking"
         },
         "meta": {
-          "interpreted_at": "2025-11-29T08:02:02.714796",
-          "original_text": "Time limited 11-117",
+          "interpreted_at": "2025-11-30T20:57:23.635851",
+          "original_text": "Limited No Parking",
           "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
+        "score": 1.0,
+        "reasoning": "The interpretation accurately reflects the structured context provided. The 'original_text' and the 'interpretation' accurately capture the meaning that there is no parking allowed from 00:00 to 06:00 every day. The summary is also accurate.",
+        "flagged": false
+      },
+      "duration_seconds": 2.34
+    },
+    {
+      "test_case_id": "test_case_10",
+      "original_text": "Time limited 11-117",
+      "interpretation": {
+        "type": "unknown",
+        "display": {
+          "summary": "Time limited 11-117",
+          "details": "Unable to fully interpret this restriction. Please check signage.",
+          "severity": "medium",
+          "icon": "info"
+        },
+        "logic": {},
+        "conditions": {},
+        "meta": {
+          "interpreted_at": "2025-11-30T20:57:39.904457",
+          "original_text": "Time limited 11-117",
+          "fallback": true
+        }
+      },
+      "evaluation": {
         "score": 0.0,
-        "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.0-flash\nPlease retry in 57.132899231s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 57\n}\n]",
+        "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.0-flash\nPlease retry in 4.819785303s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 4\n}\n]",
         "flagged": true
       },
-      "duration_seconds": 1.84
+      "duration_seconds": 30.55
     },
     {
       "test_case_id": "test_case_11",
       "original_text": "Time limited 12-119",
       "interpretation": {
-        "type": "unknown",
-        "display": {
-          "summary": "Time limited 12-119",
-          "details": "Unable to fully interpret this restriction. Please check signage.",
-          "severity": "medium",
-          "icon": "info"
+        "type": "time-limit",
+        "logic": {
+          "time_ranges": [
+            {
+              "days": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ],
+              "start": "07:00",
+              "end": "18:00"
+            }
+          ],
+          "duration_minutes": 120
         },
-        "logic": {},
         "conditions": {},
+        "display": {
+          "summary": "2 Hour Time Limit",
+          "details": "2 hour parking limit from 7:00 AM to 6:00 PM, Monday through Saturday.",
+          "severity": "medium",
+          "icon": "time-limit"
+        },
         "meta": {
-          "interpreted_at": "2025-11-29T08:02:03.105828",
+          "interpreted_at": "2025-11-30T20:58:11.785911",
           "original_text": "Time limited 12-119",
-          "fallback": true
+          "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.5,
-        "reasoning": "The interpretation correctly identifies that it cannot fully understand the parking restriction. However, it doesn't provide any structured data, which is not ideal. It also classifies the severity as 'medium,' which is appropriate given the uncertainty. Flagging this because the lack of structured data limits usability.",
-        "flagged": true
+        "score": 1.0,
+        "reasoning": "The interpretation accurately reflects the original text and structured context. It correctly identifies the regulation as a time limit, specifies the days and hours of enforcement, and the duration limit. There are no safety concerns or inaccuracies.",
+        "flagged": false
       },
-      "duration_seconds": 1.46
+      "duration_seconds": 17.57
     },
     {
       "test_case_id": "test_case_12",
       "original_text": "Time limited 08-183, 230718-060",
       "interpretation": {
-        "type": "unknown",
-        "display": {
-          "summary": "Time limited 08-183, 230718-060",
-          "details": "Unable to fully interpret this restriction. Please check signage.",
-          "severity": "medium",
-          "icon": "info"
+        "type": "time-limit",
+        "logic": {
+          "time_ranges": [
+            {
+              "days": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "start": "08:00",
+              "end": "18:00"
+            }
+          ],
+          "duration_minutes": 240
         },
-        "logic": {},
-        "conditions": {},
+        "conditions": {
+          "permit_exception": [
+            "W"
+          ]
+        },
+        "display": {
+          "summary": "4-Hour Parking, Mon-Fri 8am-6pm",
+          "details": "4-hour parking limit enforced Monday through Friday, 8:00 AM to 6:00 PM. RPP Area W permit holders exempt.",
+          "severity": "medium",
+          "icon": "time-limit"
+        },
         "meta": {
-          "interpreted_at": "2025-11-29T08:02:04.460698",
+          "interpreted_at": "2025-11-30T20:58:14.349071",
           "original_text": "Time limited 08-183, 230718-060",
-          "fallback": true
+          "model": "gemini-2.0-flash"
         }
       },
       "evaluation": {
-        "score": 0.0,
-        "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15, model: gemini-2.0-flash\nPlease retry in 55.309475692s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 55\n}\n]",
-        "flagged": true
+        "score": 1.0,
+        "reasoning": "The interpretation accurately captures the time-limited parking regulation, including the days, hours, duration, and permit exception. The summary and details are consistent with the structured data, and there are no safety concerns.",
+        "flagged": false
       },
-      "duration_seconds": 0.41
+      "duration_seconds": 2.49
     }
   ]
 }
