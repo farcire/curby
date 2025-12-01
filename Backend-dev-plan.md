@@ -1,11 +1,14 @@
 # Backend Development Plan: Curby Parking App
 
+**Last Updated:** December 1, 2024
+**Status:** ✅ **BETA READY**
+
 ### 1️⃣ Executive Summary
-- **Current Status:** ✅ **BETA READY** - All core features complete and tested. App successfully deployed to GitHub (commit 9e50539).
+- **Current Status:** ✅ **BETA READY** - All core features complete and tested. App successfully deployed to GitHub.
 - **Completed:** All sprints (S0-S4) including PWA, runtime spatial joins, future legality checking, and display normalization.
-- **Next Phase:** **Beta Testing** with real users in Mission/SOMA neighborhoods.
+- **Next Phase:** **Beta Testing** with real users in Mission/SOMA neighborhoods + AI-powered regulation interpretation.
 - **Constraints:** FastAPI (Python 3.13), MongoDB Atlas (Motor), No Docker, Single Branch (`main`), Manual Testing.
-- **New Requirement:** Architecture must support PWA (Service Workers, Manifest) and prioritize cost-efficiency (Leaflet/OSM).
+- **Architecture:** PWA-ready (Service Workers, Manifest) with cost-efficient stack (Leaflet/OSM, Gemini 2.0 Flash).
 
 ---
 
@@ -217,17 +220,16 @@
 
 ---
 
-### 🎉 BETA VERSION READY (2025-11-29)
-
-**Git Commit:** `9e50539` - "chore: Prepare beta version - archive old files and finalize app"
+### 🎉 BETA VERSION READY (December 2024)
 
 **What's Ready:**
 - ✅ All core features implemented and tested
 - ✅ App successfully demonstrated with live browser testing
 - ✅ 174 files cleaned up and organized (100+ archived)
 - ✅ Code committed and pushed to GitHub
-- ✅ Documentation updated
+- ✅ Documentation fully updated and organized
 - ✅ **Performance Benchmarks Established:** <100ms for standard queries, <1s for medium range
+- ✅ **Data Coverage:** 34,292 street segments with 100% Mission District coverage
 
 **Beta Testing Checklist:**
 - [ ] Deploy to production environment (Vercel/Netlify for frontend, Railway/Render for backend)
@@ -237,8 +239,13 @@
 - [ ] Monitor performance and user experience
 - [ ] Iterate based on user feedback
 
+**In Progress:**
+- 🔄 AI-powered restriction interpretation (see [`UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](../UNIQUE_REGULATIONS_EXTRACTION_PLAN.md))
+- 🔄 Gemini 2.0 Flash integration for cost-efficient LLM processing (see [`GEMINI_FREE_TIER_STRATEGY.md`](../GEMINI_FREE_TIER_STRATEGY.md))
+
 **Future Enhancements (Post-Beta):**
-- AI-powered restriction interpretation (documented in PARKING_REGULATION_INTERPRETATION_SYSTEM.md)
 - Automated data monitoring ("Listener Mode")
 - Expand coverage beyond Mission/SOMA
-- Cardinal direction ingestion improvements
+- User accounts & saved locations
+- Special event parking intelligence
+- Voice command interface

@@ -11,6 +11,7 @@ from typing import Dict, Optional, List, Any
 from datetime import datetime, timedelta
 import google.generativeai as genai
 from functools import lru_cache
+import time
 
 
 class RestrictionInterpreter:
@@ -32,6 +33,7 @@ class RestrictionInterpreter:
             self.client = None
         else:
             genai.configure(api_key=self.api_key)
+            # Use Gemini 2.0 Flash as requested
             self.model = genai.GenerativeModel("gemini-2.0-flash")
             
         self.cache_ttl_days = cache_ttl_days
@@ -127,8 +129,22 @@ class RestrictionInterpreter:
             # or we can use the generation_config to ensure JSON output
             full_prompt = f"{system_prompt}\n\n{prompt}"
             
-            response = self.model.generate_content(full_prompt)
-            response_text = response.text
+            # Implement exponential backoff for rate limits
+            max_retries = 3
+            retry_delay = 5  # Start with 5 seconds
+            
+            for attempt in range(max_retries):
+                try:
+                    response = self.model.generate_content(full_prompt)
+                    response_text = response.text
+                    break
+                except Exception as e:
+                    if "429" in str(e) and attempt < max_retries - 1:
+                        print(f"Rate limit hit. Retrying in {retry_delay} seconds...")
+                        time.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                    else:
+                        raise e
             
             # Find JSON block if wrapped in markdown
             if "```json" in response_text:
@@ -157,16 +173,21 @@ class RestrictionInterpreter:
         """Get the system prompt for the LLM."""
         return """You are a Parking Regulation Compiler for San Francisco. Your goal is NOT just to summarize, but to EXTRACT LOGIC into a structured format that a rule engine can execute.
 
-Input: Raw parking regulation text (often ambiguous or technical).
+Input:
+- Raw parking regulation text (often ambiguous or technical).
+- Structured fields like 'days', 'hours', 'time_limit_minutes', 'exceptions' (if available).
+
 Output: A JSON object representing the logic, conditions, and user-friendly display text.
 
 Guidelines:
 1. Identify the TYPE of rule (tow-away, no-parking, time-limit, etc.).
-2. Extract LOGIC: standard time ranges (days/hours) and specific conditions.
+2. Extract LOGIC:
+   - PRIORITY: Use structured 'days', 'hours', and 'exceptions' fields if provided. They are the ground truth and supersede the text if ambiguous.
+   - If structured data is missing, infer strictly from the regulation text.
+   - Normalize days (0=Sunday, 1=Monday... 6=Saturday) and times (24h format HH:MM).
 3. Extract CONDITIONS: vehicle size limits, permit exceptions, user classes.
 4. Generate DISPLAY text: concise summary and clear details.
-5. Normalize days (0=Sunday, 1=Monday... 6=Saturday) and times (24h format HH:MM).
-6. IMPORTANT: Return ONLY valid JSON, no other text. Do NOT include markdown formatting like ```json.
+5. IMPORTANT: Return ONLY valid JSON, no other text. Do NOT include markdown formatting like ```json.
 
 Output Format (JSON):
 {
@@ -199,7 +220,17 @@ Output Format (JSON):
         # Convert data to string for prompt
         clean_data = {k: v for k, v in restriction_data.items() if v is not None}
         
-        return f"""Compile this parking restriction into structured logic:
+        return f"""Compile this parking restriction into structured logic.
+
+CONTEXT EXPLANATION:
+- "regulation": The main text description.
+- "days": The days the rule applies (e.g., "M-F").
+- "hours": The hours the rule applies (e.g., "0900-1800").
+- "exceptions": Specific exceptions to the rule.
+
+INSTRUCTION:
+Use the structured "days" and "hours" fields to populate the logic.time_ranges section. These are more accurate than the text.
+Use the "regulation" text to determine the 'type', 'severity', and descriptive 'details'.
 
 Input Data:
 {json.dumps(clean_data, indent=2)}

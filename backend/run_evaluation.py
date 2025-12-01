@@ -64,10 +64,19 @@ def run_evaluation():
         try:
             # We extract some context from original_data if available to pass as hints
             # But main input is regulation_text
+            # Extract structured fields
+            hr_limit = original_data.get('hrlimit')
+            try:
+                time_limit_minutes = int(float(hr_limit) * 60) if hr_limit and str(hr_limit).lower() != 'nan' and float(hr_limit) > 0 else None
+            except (ValueError, TypeError):
+                time_limit_minutes = None
+
             interpretation = interpreter.interpret_restriction(
                 regulation_text=original_text,
                 days=original_data.get('days'),
                 hours=original_data.get('hours'),
+                time_limit_minutes=time_limit_minutes,
+                permit_area=original_data.get('rpparea1'),
                 additional_context=original_data
             )
         except Exception as e:
@@ -76,7 +85,7 @@ def run_evaluation():
 
         # 2. Judge
         try:
-            evaluation = judge.evaluate(original_text, interpretation)
+            evaluation = judge.evaluate(original_text, interpretation, original_data)
         except Exception as e:
             print(f"  Error during evaluation: {e}")
             evaluation = {"score": 0, "reasoning": f"Evaluation error: {str(e)}", "flagged": True}

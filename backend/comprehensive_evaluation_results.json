@@ -1,0 +1,682 @@
+[
+  {
+    "object_id": "5534",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": "Metered. Also is active for special event Sundays",
+      "days": "M-Sa",
+      "hours": "900-2200",
+      "hrlimit": "4",
+      "rpparea1": null,
+      "exceptions": null
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited Metered. Also is active for special event Sundays",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:25:49.224570",
+        "original_text": "Time limited Metered. Also is active for special event Sundays",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 58.915878973s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 58\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:03:03.138905"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Su",
+      "hours": "700-1800",
+      "hrlimit": "4",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:25:53.427402",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 41.42980161s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 41\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:03:20.621398"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Sa",
+      "hours": "800-1800",
+      "hrlimit": "2",
+      "rpparea1": "A",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:25:57.580509",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 23.990782927s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 23\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:03:38.063962"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "900-1800",
+      "hrlimit": "4",
+      "rpparea1": "D",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:01.745374",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 6.515645098s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 6\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:03:55.538808"
+  },
+  {
+    "object_id": "4114",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": "09-083",
+      "days": "M-F",
+      "hours": "800-1600",
+      "hrlimit": "4",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited 09-083",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:05.936834",
+        "original_text": "Time limited 09-083",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 49.034198155s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 49\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:04:13.022123"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrlimit": "2",
+      "rpparea1": "Z",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:10.085330",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 31.568677666s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 31\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:04:30.486333"
+  },
+  {
+    "object_id": "1032",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": "11-117",
+      "days": "M-Su",
+      "hours": "0-0",
+      "hrlimit": "12",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited 11-117",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:14.224595",
+        "original_text": "Time limited 11-117",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 14.117550778s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 14\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:04:47.938860"
+  },
+  {
+    "object_id": "3628",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": "There is also a Saturday regulation with different hours.",
+      "days": "M-F",
+      "hours": "900-1900",
+      "hrlimit": "1",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited There is also a Saturday regulation with different hours.",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:18.382010",
+        "original_text": "Time limited There is also a Saturday regulation with different hours.",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 56.652495571s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 56\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:05:05.394820"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "0900-2000",
+      "hrlimit": "2",
+      "rpparea1": "S",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:22.531079",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 39.191134814s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 39\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:05:22.860796"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": null,
+      "hours": "800-1800",
+      "hrlimit": "4",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:26.661728",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 21.745394378s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 21\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:05:40.311904"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Sa",
+      "hours": "900-1800",
+      "hrlimit": "2",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:30.815073",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 4.237201156s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 4\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:05:57.815952"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Su",
+      "hours": "700-2100",
+      "hrlimit": "2",
+      "rpparea1": "J",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:34.969265",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 46.792375906s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 46\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:06:15.264342"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Su",
+      "hours": "900-1800",
+      "hrlimit": "0.330000013",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:39.124643",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 29.341683621s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 29\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:06:32.716507"
+  },
+  {
+    "object_id": "4136",
+    "original_fields": {
+      "regulation": "Limited No Parking",
+      "regdetails": "Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
+      "days": "M-F",
+      "hours": "1030-1930",
+      "hrlimit": null,
+      "rpparea1": null,
+      "exceptions": "Yes. SF Public Works vehicles are exempt."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Limited No Parking Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:43.279283",
+        "original_text": "Limited No Parking Regulation is due to the DPW Pit Stop program (https://sfpublicworks.wixsite.com/pitstop)",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 11.877501009s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 11\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:06:50.176721"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Government permit",
+      "regdetails": null,
+      "days": "M-Su",
+      "hours": "0-0",
+      "hrlimit": "0",
+      "rpparea1": null,
+      "exceptions": null
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Government permit None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:47.436982",
+        "original_text": "Government permit None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 54.40479874s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 54\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:07:07.649950"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "800-1500",
+      "hrlimit": "2",
+      "rpparea1": "T",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:51.582994",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 36.932859988s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 36\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:07:25.122768"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "900-2000",
+      "hrlimit": "2",
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:55.734266",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 19.468949539s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 19\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:07:42.582124"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-Sa",
+      "hours": "800-2200",
+      "hrlimit": "1",
+      "rpparea1": "EE",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:26:59.864536",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 2.013507217s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 2\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:08:00.039528"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "Time limited",
+      "regdetails": null,
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrlimit": "2",
+      "rpparea1": "W",
+      "exceptions": "Yes. RPP holders are exempt from time limits."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "Time limited None",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:27:03.994799",
+        "original_text": "Time limited None",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 44.546619367s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 44\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:08:17.504798"
+  },
+  {
+    "object_id": "N/A",
+    "original_fields": {
+      "regulation": "No parking any time",
+      "regdetails": "Placement doesn't fully make sense, but is according to resolution description.",
+      "days": null,
+      "hours": null,
+      "hrlimit": null,
+      "rpparea1": null,
+      "exceptions": "None. Regulation applies to all vehicles."
+    },
+    "worker_interpretation": {
+      "type": "unknown",
+      "display": {
+        "summary": "No parking any time Placement doesn't fully make sense, but is according to resolution description.",
+        "details": "Unable to fully interpret this restriction. Please check signage.",
+        "severity": "medium",
+        "icon": "info"
+      },
+      "logic": {},
+      "conditions": {},
+      "meta": {
+        "interpreted_at": "2025-11-30T21:27:08.129598",
+        "original_text": "No parking any time Placement doesn't fully make sense, but is according to resolution description.",
+        "fallback": true
+      }
+    },
+    "judge_evaluation": {
+      "score": 0.0,
+      "reasoning": "Evaluation error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 200, model: gemini-2.0-flash\nPlease retry in 27.063702808s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 200\n}\n, retry_delay {\n  seconds: 27\n}\n]",
+      "flagged": true
+    },
+    "evaluated_at": "2025-11-30T22:08:34.993279"
+  }
+]

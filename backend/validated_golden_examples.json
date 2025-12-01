@@ -1,0 +1,150 @@
+{
+  "total_validated": 222,
+  "total_examples": 12,
+  "examples": [
+    {
+      "regulation": "Time limited",
+      "days": "M-Sa",
+      "hours": "900-1800",
+      "hrs_begin": "900.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "",
+      "hrlimit": "4.0",
+      "golden_action": "Time-limited",
+      "golden_summary": "4hr Limit Monday - Saturday 9am - 6pm",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "Time limited",
+      "days": "M-Sa",
+      "hours": "700-1800",
+      "hrs_begin": "700.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "",
+      "hrlimit": "0.5",
+      "golden_action": "Time-limited",
+      "golden_summary": "30min Limit Monday - Saturday 7am - 6pm",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "Time Limited",
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrs_begin": "800.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "AA",
+      "hrlimit": "2.0",
+      "golden_action": "Time-limited",
+      "golden_summary": "2hr Limit Monday - Friday 8am - 6pm except residential permit",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "Time limited",
+      "days": "M-F",
+      "hours": "800-1800",
+      "hrs_begin": "800.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "O",
+      "hrlimit": "2.0",
+      "golden_action": "Time-limited",
+      "golden_summary": "2hr Limit Monday - Friday 8am - 6pm except residential permit",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "Time Limited",
+      "days": "M-Su",
+      "hours": "0800-2200",
+      "hrs_begin": "800.0",
+      "hrs_end": "2200.0",
+      "rpparea1": "U",
+      "hrlimit": "",
+      "golden_action": "Time-limited",
+      "golden_summary": "2hr Limit 8am - 10pm except residential permit",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "Time limited",
+      "days": "M-Su",
+      "hours": "900-1800",
+      "hrs_begin": "900.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "",
+      "hrlimit": "0.330000013",
+      "golden_action": "Time-limited",
+      "golden_summary": "15min Limit 9am - 6pm",
+      "golden_severity": "medium"
+    },
+    {
+      "regulation": "No parking any time",
+      "days": "",
+      "hours": "",
+      "hrs_begin": "0.0",
+      "hrs_end": "0.0",
+      "rpparea1": "0",
+      "hrlimit": "",
+      "golden_action": "Prohibited",
+      "golden_summary": "No parking information. Check street signs.",
+      "golden_severity": "critical"
+    },
+    {
+      "regulation": "No parking any time",
+      "days": "M-Su",
+      "hours": "",
+      "hrs_begin": "0.0",
+      "hrs_end": "0.0",
+      "rpparea1": "",
+      "hrlimit": "0.0",
+      "golden_action": "Prohibited",
+      "golden_summary": "No parking.",
+      "golden_severity": "critical"
+    },
+    {
+      "regulation": "Government permit",
+      "days": "",
+      "hours": "0-0",
+      "hrs_begin": "0.0",
+      "hrs_end": "0.0",
+      "rpparea1": "",
+      "hrlimit": "0.0",
+      "golden_action": "Permit-required",
+      "golden_summary": "No parking except government permit.",
+      "golden_severity": "high"
+    },
+    {
+      "regulation": "Government permit",
+      "days": "M-Su",
+      "hours": "0-0",
+      "hrs_begin": "0.0",
+      "hrs_end": "0.0",
+      "rpparea1": "",
+      "hrlimit": "0.0",
+      "golden_action": "Permit-required",
+      "golden_summary": "No parking except government permit.",
+      "golden_severity": "high"
+    },
+    {
+      "regulation": "Paid + Permit",
+      "days": "M-Sa",
+      "hours": "900-1800",
+      "hrs_begin": "900.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "X",
+      "hrlimit": "",
+      "golden_action": "Restricted",
+      "golden_summary": "2hr Limit Monday - Saturday 9am - 6pm except residential permit",
+      "golden_severity": "critical"
+    },
+    {
+      "regulation": "Paid + Permit",
+      "days": "M-Sa",
+      "hours": "900-1800",
+      "hrs_begin": "900.0",
+      "hrs_end": "1800.0",
+      "rpparea1": "Y",
+      "hrlimit": "",
+      "golden_action": "Restricted",
+      "golden_summary": "2hr Limit Monday - Saturday 9am - 6pm except residential permit",
+      "golden_severity": "critical"
+    }
+  ]
+}
