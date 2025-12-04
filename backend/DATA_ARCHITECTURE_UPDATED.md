@@ -1,10 +1,12 @@
-# Data Architecture: Updated Understanding (November 2024)
+# Data Architecture: Updated Understanding (December 2025)
 
 ## Executive Summary
 
 This document reflects our **updated understanding** of how San Francisco parking data is structured, based on investigation of the pep9-66vw (Blockface) and 3psu-pn9h (Active Streets) datasets.
 
 **Key Discovery**: The pep9-66vw dataset contains **side-specific geometries** where each CNN segment is represented by **two separate records** (one for each side of the street), each with its own unique GlobalID and parallel geometry.
+
+**⚠️ Data Quality Alert**: Investigation has revealed missing records in the Street Cleaning dataset. See [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md) for details.
 
 ---
 
@@ -234,7 +236,7 @@ interface StreetSegment {
 
 ## Parking Regulation Joins
 
-### Street Sweeping (cnn-sweeping-schedule)
+### Street Sweeping (yhqp-riqs)
 
 **Join Method**: Direct CNN + Side match
 
@@ -244,6 +246,12 @@ sweeping.cnn == segment.cnn AND sweeping.side == segment.side
 ```
 
 **Coverage**: High - most sweeping records have CNN and side
+
+**⚠️ Known Data Quality Issue**: Some street cleaning records are missing from the dataset despite existing physically.
+- Example: CNN 961000R (19th St, North side) - Missing Thursday 12AM-6AM schedule
+- Impact: Incomplete parking restriction information for users
+- See [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md#issue-1-missing-street-cleaning-records) for details
+- Workaround: Implement cardinal direction inference from geometry
 
 ### Parking Regulations (hi6h-neyh)
 
@@ -364,8 +372,35 @@ const sideLabel = segment.side === "L" ? "Left" : "Right";
 6. **Blockface is enhancement** - provides more precise boundaries when available
 7. **Side determination is geometric** - use cross-product calculation
 8. **All segments can function** - even without blockface geometry
+9. **⚠️ Data quality varies** - some source datasets have missing records (see [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md))
 
 ---
+
+## Data Quality
+
+### Known Issues
+
+The system has identified data quality issues in source datasets that affect completeness and accuracy:
+
+1. **Missing Street Cleaning Records** (HIGH severity)
+   - Some CNN segments missing cleaning schedules despite physical existence
+   - Example: CNN 961000R missing Thursday 12AM-6AM schedule
+   - Impact: Users won't see these restrictions
+   - See [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md) for full details
+
+2. **Missing Cardinal Directions** (MEDIUM severity)
+   - Segments without street cleaning lack cardinal direction metadata
+   - Affects display name generation
+   - Workaround: Implement geometric inference
+
+3. **Missing From/To Streets** (LOW severity)
+   - Segments without street cleaning lack boundary street names
+   - Workaround: Use Active Streets f_st/t_st fields
+
+### Investigation Tools
+
+- [`inspect_cnn_961000.py`](inspect_cnn_961000.py) - Template for investigating specific CNNs
+- [`cnn_961000_investigation/`](cnn_961000_investigation/) - Example investigation with findings
 
 ## References
 
@@ -373,8 +408,9 @@ const sideLabel = segment.side === "L" ? "Left" : "Right";
 - [`CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md`](backend/CNN_SEGMENT_IMPLEMENTATION_COMPLETE.md) - Implementation details
 - [`models.py`](backend/models.py) - Data model definitions
 - [`ingest_data_cnn_segments.py`](backend/ingest_data_cnn_segments.py) - Ingestion logic
+- [`DATA_QUALITY_ISSUES.md`](DATA_QUALITY_ISSUES.md) - Known data quality issues and workarounds
 
 ---
 
-**Last Updated**: November 28, 2024
-**Status**: Current understanding based on dataset investigation
+**Last Updated**: December 4, 2025
+**Status**: Current understanding based on dataset investigation + data quality findings

@@ -4,10 +4,13 @@ import { SimpleDurationPicker } from '@/components/SimpleDurationPicker';
 import { MapView } from '@/components/MapView';
 import { BlockfaceDetail } from '@/components/BlockfaceDetail';
 import { ErrorReportDialog } from '@/components/ErrorReportDialog';
+import { OutOfBoundsModal } from '@/components/OutOfBoundsModal';
+import { EmbeddedSearch } from '@/components/EmbeddedSearch';
 import { Blockface, LegalityResult } from '@/types/parking';
 import { Sparkles } from 'lucide-react';
 import { fetchSFMTABlockfaces } from '@/utils/sfmtaDataFetcher';
 import { showError } from '@/utils/toast';
+import { isInSanFrancisco, getDistanceToSF, SF_CENTER } from '@/utils/geoFence';
 import L from 'leaflet';
 
 const DEFAULT_CENTER: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - default fallback
@@ -23,6 +26,10 @@ const Index = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number]>(DEFAULT_CENTER);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [showOutOfBoundsModal, setShowOutOfBoundsModal] = useState(false);
+  const [distanceToSF, setDistanceToSF] = useState<number>(0);
+  const [searchedLocation, setSearchedLocation] = useState<[number, number] | null>(null);
+  const [searchedLocationName, setSearchedLocationName] = useState<string>('');
   
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -42,7 +49,16 @@ const Index = () => {
           
           // Only load initial data once when we get the first fix
           if (!hasInitialized) {
-            loadSFMTAData(userLoc[0], userLoc[1], 300); // ~2 block radius
+            // Check if user is in San Francisco
+            if (!isInSanFrancisco(userLoc[0], userLoc[1])) {
+              const distance = getDistanceToSF(userLoc[0], userLoc[1]);
+              setDistanceToSF(distance);
+              setShowOutOfBoundsModal(true);
+              // Load SF map in background
+              loadSFMTAData(SF_CENTER[0], SF_CENTER[1], 500);
+            } else {
+              loadSFMTAData(userLoc[0], userLoc[1], 300); // ~2 block radius
+            }
             setHasInitialized(true);
           }
         },
@@ -121,8 +137,21 @@ const Index = () => {
     setLegalityResult(null);
   };
 
+  const handleMapClick = () => {
+    // Close blockface detail when clicking empty map area
+    if (selectedBlockface) {
+      handleCloseDetail();
+    }
+  };
+
   const handleReportError = () => {
     setShowErrorDialog(true);
+  };
+
+  const handleLocationSelect = (coords: [number, number], name: string) => {
+    setSearchedLocation(coords);
+    setSearchedLocationName(name);
+    loadSFMTAData(coords[0], coords[1], 300);
   };
 
   // Calculate distance between two points
@@ -153,7 +182,7 @@ const Index = () => {
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-2 shadow-md flex-shrink-0 relative overflow-hidden z-20">
+      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-2 shadow-md flex-shrink-0 relative overflow-visible z-[100]">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
@@ -168,6 +197,7 @@ const Index = () => {
               </h1>
             </div>
           </div>
+          <EmbeddedSearch onLocationSelect={handleLocationSelect} />
         </div>
       </header>
 
@@ -201,10 +231,13 @@ const Index = () => {
           initialCenter={userLocation}
           userLocation={userLocation}
           onMapMove={handleMapMove}
+          searchedLocation={searchedLocation}
+          searchedLocationName={searchedLocationName}
+          onMapClick={handleMapClick}
         />
       </div>
 
-      {/* Floating Duration Picker - Replaces RadiusControl position */}
+      {/* Floating Duration Picker */}
       {!selectedBlockface && (
         <SimpleDurationPicker
           durationMinutes={durationMinutes}
@@ -228,6 +261,19 @@ const Index = () => {
         onOpenChange={setShowErrorDialog}
         blockface={selectedBlockface}
       />
+
+      {/* Out of Bounds Modal */}
+      {showOutOfBoundsModal && (
+        <OutOfBoundsModal
+          distanceKm={distanceToSF}
+          onViewSF={() => setShowOutOfBoundsModal(false)}
+          onSearchAddress={() => {
+            setShowOutOfBoundsModal(false);
+            // Search is now always visible in header
+          }}
+          onDismiss={() => setShowOutOfBoundsModal(false)}
+        />
+      )}
     </div>
   );
 };

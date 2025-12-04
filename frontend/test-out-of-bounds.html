@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Out of Bounds Modal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-6">
+        <h1 class="text-2xl font-bold mb-4">Out-of-Bounds Modal Test</h1>
+        
+        <div class="space-y-4">
+            <div>
+                <h2 class="font-semibold mb-2">Test Locations:</h2>
+                <button onclick="testLocation(37.8044, -122.2712, 'Oakland')" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2">
+                    Test Oakland (Near SF)
+                </button>
+                <button onclick="testLocation(37.3382, -121.8863, 'San Jose')" 
+                        class="bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2">
+                    Test San Jose (Far from SF)
+                </button>
+                <button onclick="testLocation(37.7749, -122.4194, 'SF Center')" 
+                        class="bg-green-500 text-white px-4 py-2 rounded mr-2 mb-2">
+                    Test SF Center (Inside)
+                </button>
+            </div>
+            
+            <div id="results" class="bg-gray-50 p-4 rounded">
+                <p class="text-gray-600">Click a button to test...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import the functions
+        const SF_BOUNDS = {
+            north: 37.8324,
+            south: 37.7034,
+            east: -122.3482,
+            west: -122.5155
+        };
+
+        const SF_CENTER = [37.7749, -122.4194];
+
+        function isInSanFrancisco(lat, lng) {
+            return lat >= SF_BOUNDS.south && 
+                   lat <= SF_BOUNDS.north &&
+                   lng >= SF_BOUNDS.west && 
+                   lng <= SF_BOUNDS.east;
+        }
+
+        function getDistanceToSF(lat, lng) {
+            const R = 6371; // Earth radius in km
+            const dLat = (SF_CENTER[0] - lat) * Math.PI / 180;
+            const dLng = (SF_CENTER[1] - lng) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat * Math.PI / 180) * Math.cos(SF_CENTER[0] * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        window.testLocation = function(lat, lng, name) {
+            const inSF = isInSanFrancisco(lat, lng);
+            const distance = getDistanceToSF(lat, lng);
+            const distanceMiles = (distance * 0.621371).toFixed(1);
+            
+            const results = document.getElementById('results');
+            results.innerHTML = `
+                <div class="space-y-2">
+                    <p class="font-bold text-lg">${name}</p>
+                    <p><span class="font-semibold">Coordinates:</span> ${lat}, ${lng}</p>
+                    <p><span class="font-semibold">In SF:</span> 
+                        <span class="${inSF ? 'text-green-600' : 'text-red-600'} font-bold">
+                            ${inSF ? '✓ YES' : '✗ NO'}
+                        </span>
+                    </p>
+                    <p><span class="font-semibold">Distance to SF:</span> ${distance.toFixed(2)} km (${distanceMiles} miles)</p>
+                    <p><span class="font-semibold">Modal would show:</span> 
+                        <span class="font-bold ${inSF ? 'text-green-600' : 'text-red-600'}">
+                            ${inSF ? 'No modal (user in SF)' : 'Out-of-bounds modal'}
+                        </span>
+                    </p>
+                    ${!inSF ? `
+                        <p class="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded">
+                            <span class="font-semibold">Message:</span> 
+                            ${distance < 5 ? "You're near San Francisco" : `You're ${distanceMiles} miles from SF`}
+                        </p>
+                    ` : ''}
+                </div>
+            `;
+        };
+    </script>
+</body>
+</html>

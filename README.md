@@ -1,7 +1,7 @@
 # Curby - San Francisco Parking Regulation Decoder
 
-**Status:** ✅ Beta Ready (December 2024)  
-**Coverage:** Mission & SOMA Neighborhoods  
+**Status:** ✅ Beta Ready (December 2025) - ⚠️ Known Data Quality Issues
+**Coverage:** Mission & SOMA Neighborhoods
 **Tech Stack:** React + TypeScript (Frontend) | FastAPI + Python (Backend) | MongoDB Atlas
 
 ---
@@ -124,10 +124,19 @@ Backend API runs at: `http://localhost:8000`
   - <1 second for 95% of queries
   - In-memory caching for regulations
 
+### ⚠️ Known Issues
+
+- **Data Quality**: Some street cleaning records missing from SFMTA dataset
+  - Example: CNN 961000R (19th St, North side) - Missing Thursday 12AM-6AM schedule
+  - Impact: Users may not see all street cleaning restrictions
+  - See [`backend/DATA_QUALITY_ISSUES.md`](backend/DATA_QUALITY_ISSUES.md) for details
+  - Validation tool available: [`backend/validate_street_cleaning_completeness.py`](backend/validate_street_cleaning_completeness.py)
+
 ### 🔄 In Progress
 
 - AI-powered regulation interpretation system (see [`UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](UNIQUE_REGULATIONS_EXTRACTION_PLAN.md))
 - Gemini 2.0 Flash integration for natural language processing (see [`GEMINI_FREE_TIER_STRATEGY.md`](GEMINI_FREE_TIER_STRATEGY.md))
+- Data quality validation and workarounds
 
 ### 📋 Planned Features
 
@@ -152,6 +161,12 @@ Backend API runs at: `http://localhost:8000`
 
 - **[`UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](UNIQUE_REGULATIONS_EXTRACTION_PLAN.md)** - AI interpretation system design
 - **[`GEMINI_FREE_TIER_STRATEGY.md`](GEMINI_FREE_TIER_STRATEGY.md)** - Cost-efficient LLM processing strategy
+
+### Data Quality
+
+- **[`backend/DATA_QUALITY_ISSUES.md`](backend/DATA_QUALITY_ISSUES.md)** - Known data quality issues and workarounds
+- **[`backend/cnn_961000_investigation/`](backend/cnn_961000_investigation/)** - Example investigation with findings
+- **[`backend/validate_street_cleaning_completeness.py`](backend/validate_street_cleaning_completeness.py)** - Validation tool
 
 ### Archive
 
@@ -241,6 +256,16 @@ See LICENSE file for details.
 
 ---
 
-**Last Updated:** December 1, 2024  
-**Version:** Beta 1.0  
-**Project Status:** Ready for Beta Testing
+## ⚠️ Important Notes
+
+### Data Quality Disclaimer
+
+This application relies on publicly available SFMTA datasets. Investigation has revealed that some street cleaning records are missing from the source data, which may result in incomplete parking restriction information. We are actively working with SFMTA to address these issues and have implemented validation tools to identify affected areas.
+
+For the most accurate parking information, always verify with posted street signs.
+
+---
+
+**Last Updated:** December 4, 2025
+**Version:** Beta 1.0
+**Project Status:** Ready for Beta Testing (with known data quality issues documented)

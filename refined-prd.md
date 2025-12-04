@@ -2,8 +2,8 @@
 title: Product Requirements Document - REFINED
 app: elegant-lynx-play
 created: 2025-11-25T07:06:20.848Z
-updated: 2025-12-04T09:27:00.000Z
-version: 9
+updated: 2025-12-04T11:03:00.000Z
+version: 10
 status: Beta Ready
 source: BA-PRD Agent Refinement
 ---
@@ -142,7 +142,32 @@ source: BA-PRD Agent Refinement
   - [x] "Add to Home Screen" prompt triggerable on supported devices.
   - [x] Viewport configuration prevents accidental zooming/scaling on mobile.
 
-**FR-011: Enhanced User Controls (Duration & Visuals)**
+**FR-011: Address & Location Search**
+- **Description:** Integrated search functionality allowing users to find locations by address, street name, intersection, or business name.
+- **Acceptance Criteria:**
+  - [x] **Search Bar:** Embedded in header (top-right), always visible, with transparent gradient styling matching app theme.
+  - [x] **Voice Input:** Microphone button embedded inside search bar for hands-free address entry using Web Speech API.
+  - [x] **Search Types Supported:**
+    - Street names: Returns ONE result per street at the midpoint (e.g., "Bryant St, San Francisco, CA")
+    - Specific addresses: Returns ONE result for the address (e.g., "2101 Bryant St")
+    - Intersections: "Bryant and 20th" format (e.g., "Bryant St & 20th St")
+    - Business names: Via Nominatim geocoding (e.g., "Penny Roma, 3000 20th St, San Francisco, CA")
+  - [x] **Search Results:**
+    - Debounced search (300ms) with dropdown below search bar
+    - Results show appropriate icons (📍 address, 🧭 intersection, 🏢 business)
+    - Click-outside to dismiss dropdown
+    - Auto-closes on selection
+  - [x] **Map Integration:**
+    - Red pin marker (📍) placed at searched location
+    - Popup with location name and "Get Directions" button
+    - Button opens Google Maps with navigation to location
+    - Map auto-centers on searched location
+  - [x] **Smart Map Interaction:**
+    - Clicking blockface overlay → Updates rules window with new blockface
+    - Clicking empty map area → Closes rules window, returns to slider view
+    - Rules window stays open when switching between blockfaces
+
+**FR-012: Enhanced User Controls (Duration & Visuals)**
 - **Description:** Provide intuitive controls for parking duration and refined map visuals.
 - **Acceptance Criteria:**
   - [x] **Duration Slider:** Replaces fixed buttons with a 0-24 hour slider.
@@ -207,9 +232,9 @@ source: BA-PRD Agent Refinement
 - **DF-005: Special Event Parking Intelligence:**
   - **Description:** Ingest and display temporary parking restrictions related to special events (parades, festivals, sports games).
   - **Reason for Deferral:** Requires integrating additional, often unstructured data sources; MVP focuses on standard recurring rules.
-- **DF-006: Voice Command Interface:**
-  - **Description:** Hands-free voice control to query parking status ("Can I park here?") and receive spoken responses.
-  - **Reason for Deferral:** High technical complexity (Speech-to-Text, Text-to-Speech); safety critical feature best built after core data validation.
+- **DF-006: Advanced Voice Command Interface:**
+  - **Description:** Full hands-free voice control to query parking status ("Can I park here?") and receive spoken responses.
+  - **Reason for Deferral:** High technical complexity (Text-to-Speech for responses); basic voice-to-text for search is implemented in FR-011.
 - **DF-007: Calendar & Navigation Integration:**
   - **Description:** Connect to user calendars to automatically check parking for upcoming appointments and suggest eligible blocks near the destination.
   - **Reason for Deferral:** Requires user authentication and calendar API integrations (Google/Apple); adds significant scope beyond the core "check here now" loop.
