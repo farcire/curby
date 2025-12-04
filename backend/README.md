@@ -1,7 +1,7 @@
 # Curby Backend - Parking Regulation System
 
-**Last Updated:** December 1, 2024
-**Status:** ✅ Beta Ready
+**Last Updated:** December 4, 2025
+**Status:** ✅ Beta Ready (⚠️ Known Data Quality Issues)
 
 ## Overview
 
@@ -45,6 +45,7 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 - ✅ **Frontend Integration**: Complete
 - ✅ **Performance**: <100ms for 95% of queries
 - 🔄 **AI Integration**: In progress (Gemini 2.0 Flash for regulation interpretation)
+- ⚠️ **Data Quality**: Known issues documented (see [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md))
 
 ## Data Sources
 
@@ -54,6 +55,7 @@ Migrating from blockface-based to **CNN-based street segment architecture** to a
 - **Parking Regulations** (hi6h-neyh): Regulations with geometry and RPP codes (`rpparea1` field) - **PRIMARY source for RPP zones**
 - **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side + cardinal directions (via `blockside` field)
   - ✅ **Fixed**: Cardinal directions now correctly ingested and displayed (Nov 2024)
+  - ⚠️ **Known Issue**: Some street cleaning records missing from dataset (see [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md#issue-1-missing-street-cleaning-records))
 - **Parcel Overlay** (9grn-xjpx): Administrative boundaries for conflict resolution (boundary cases only)
 - **Blockface Geometries** (pep9-66vw): Side-specific geometries (7.4% coverage)
 - **Meters** (8vzz-qzz9, 6cqg-dxku): Parking meter locations and schedules
@@ -257,6 +259,38 @@ python benchmark_api.py
 ```
 
 See [`BENCHMARK_LOG.md`](BENCHMARK_LOG.md) for historical performance data.
+
+## Data Quality
+
+### Known Issues
+
+The system has identified data quality issues in the source SFMTA datasets. See [`DATA_QUALITY_ISSUES.md`](DATA_QUALITY_ISSUES.md) for complete details.
+
+**Critical Issue**: Some street cleaning schedules are missing from the Socrata dataset despite existing physically. Example:
+- **CNN 961000R** (19th St, North side): Missing Thursday 12AM-6AM cleaning schedule
+- Impact: Users won't see this restriction, risking parking tickets
+- Status: Documented and reported to SFMTA
+
+### Data Quality Tools
+
+**Investigation Scripts**:
+- [`inspect_cnn_961000.py`](inspect_cnn_961000.py) - Investigate specific CNN data
+- Investigation reports in [`cnn_961000_investigation/`](cnn_961000_investigation/)
+
+**Validation Scripts** (Planned):
+- Missing street cleaning detector
+- Cardinal direction validator
+- Data completeness checker
+
+### Workarounds Implemented
+
+**None yet** - Planned workarounds:
+1. Cardinal direction inference from geometry
+2. Street limit fallback to Active Streets data
+3. Display name generation without street cleaning data
+4. User warnings for incomplete data
+
+See [`DATA_QUALITY_ISSUES.md`](DATA_QUALITY_ISSUES.md) for detailed action plans.
 
 ## Related Documentation
 

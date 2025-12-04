@@ -1,0 +1,44 @@
+[
+  {
+    "cnn": "961000",
+    "lf_fadd": "2701",
+    "lf_toadd": "2799",
+    "rt_fadd": "2700",
+    "rt_toadd": "2798",
+    "street": "19TH",
+    "st_type": "ST",
+    "f_st": "YORK ST",
+    "t_st": "BRYANT ST",
+    "f_node_cnn": "24009000",
+    "t_node_cnn": "24012000",
+    "accepted": true,
+    "active": true,
+    "classcode": "5",
+    "date_added": "1998-07-01T00:00:00.000",
+    "jurisdiction": "DPW",
+    "layer": "STREETS",
+    "nhood": "Inner Mission",
+    "oneway": "B",
+    "street_gc": "19TH",
+    "streetname": "19TH ST",
+    "streetname_gc": "19TH ST",
+    "zip_code": "94110",
+    "analysis_neighborhood": "Mission",
+    "supervisor_district": "9",
+    "line": {
+      "type": "LineString",
+      "coordinates": [
+        [
+          -122.409032825,
+          37.760543037
+        ],
+        [
+          -122.409997159,
+          37.760485264
+        ]
+      ]
+    },
+    "data_as_of": "2025-12-03T03:56:00.000",
+    "data_loaded_at": "2025-12-03T10:05:29.373"
+  }
+]

@@ -15,6 +15,9 @@ interface MapViewProps {
   userLocation?: [number, number]; // [lat, lng] - user's actual device location
   onMapMove?: (bounds: L.LatLngBounds) => void;
   onNavigateToUser?: () => void;
+  searchedLocation?: [number, number] | null; // [lat, lng] - searched address location
+  searchedLocationName?: string; // Display name for searched location
+  onMapClick?: () => void; // Called when user clicks empty map area (not a blockface)
 }
 
 interface BlockfaceWithResult {
@@ -31,11 +34,15 @@ export function MapView({
   userLocation,
   onMapMove,
   onNavigateToUser,
+  searchedLocation,
+  searchedLocationName,
+  onMapClick,
 }: MapViewProps) {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const layersRef = useRef<L.Polyline[]>([]);
   const userMarkerRef = useRef<L.Marker | null>(null);
+  const searchedMarkerRef = useRef<L.Marker | null>(null);
   const userHasInteractedRef = useRef(false);
 
   // Initialize map (only once)
@@ -75,6 +82,13 @@ export function MapView({
     });
     map.on('zoomstart', () => {
       userHasInteractedRef.current = true;
+    });
+
+    // Handle clicks on empty map areas (not blockfaces)
+    map.on('click', () => {
+      if (onMapClick) {
+        onMapClick();
+      }
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -148,6 +162,78 @@ export function MapView({
 
     userMarkerRef.current = userMarker;
   }, [userLocation]);
+
+  // Update searched location marker
+  useEffect(() => {
+    if (!mapRef.current || !searchedLocation) {
+      // Remove marker if searchedLocation is cleared
+      if (searchedMarkerRef.current && mapRef.current) {
+        mapRef.current.removeLayer(searchedMarkerRef.current);
+        searchedMarkerRef.current = null;
+      }
+      return;
+    }
+
+    // Remove existing marker if any
+    if (searchedMarkerRef.current) {
+      mapRef.current.removeLayer(searchedMarkerRef.current);
+    }
+
+    // Create red pin marker for searched location
+    const searchedMarker = L.marker(searchedLocation, {
+      icon: L.divIcon({
+        className: 'searched-location-marker',
+        html: '<div style="font-size: 30px;">📍</div>',
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
+      }),
+      zIndexOffset: 999, // Just below user marker
+    }).addTo(mapRef.current);
+
+    // Add popup with location name and Get Directions button
+    if (searchedLocationName) {
+      const popupContent = `
+        <div style="min-width: 180px; padding: 4px;">
+          <div style="font-weight: 400; margin-bottom: 12px; font-size: 15px; color: #1f2937;">${searchedLocationName}</div>
+          <button
+            onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${searchedLocation[0]},${searchedLocation[1]}', '_blank')"
+            style="
+              width: 100%;
+              padding: 10px 16px;
+              background: white;
+              color: #2563eb;
+              border: 1px solid #e5e7eb;
+              border-radius: 8px;
+              font-weight: 600;
+              font-size: 14px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              transition: all 0.2s;
+            "
+            onmouseover="this.style.backgroundColor='#f9fafb'; this.style.borderColor='#2563eb';"
+            onmouseout="this.style.backgroundColor='white'; this.style.borderColor='#e5e7eb';"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+            </svg>
+            Get Directions
+          </button>
+        </div>
+      `;
+      searchedMarker.bindPopup(popupContent, {
+        maxWidth: 250,
+        className: 'custom-popup'
+      }).openPopup();
+    }
+
+    // Center map on searched location
+    mapRef.current.setView(searchedLocation, 17, { animate: true });
+
+    searchedMarkerRef.current = searchedMarker;
+  }, [searchedLocation, searchedLocationName]);
 
   // Calculate distance between two points (Haversine formula)
   const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
@@ -247,7 +333,9 @@ export function MapView({
         }
       );
 
-      polyline.on('click', () => {
+      polyline.on('click', (e) => {
+        // Stop propagation so map click handler doesn't fire
+        L.DomEvent.stopPropagation(e);
         onBlockfaceClick(blockface, result);
       });
 

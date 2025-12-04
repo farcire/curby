@@ -7,4 +7,5 @@ pandas
 sodapy
 shapely
 requests
+httpx
 google-generativeai
