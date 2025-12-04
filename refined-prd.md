@@ -2,8 +2,8 @@
 title: Product Requirements Document - REFINED
 app: elegant-lynx-play
 created: 2025-11-25T07:06:20.848Z
-updated: 2025-12-01T01:49:00.000Z
-version: 8
+updated: 2025-12-04T09:27:00.000Z
+version: 9
 status: Beta Ready
 source: BA-PRD Agent Refinement
 ---
@@ -76,17 +76,24 @@ source: BA-PRD Agent Refinement
   - [x] The highest-precedence rule determines the result when multiple rules apply.
 
 **FR-004: Plain-Language Rule Explanations**
-- **Description:** Display clear, human-readable explanations of parking rules.
+- **Description:** Display clear, human-readable explanations of parking rules with consistent formatting.
 - **Acceptance Criteria:**
   - [x] Tapping a blockface displays a clear explanation of the current rules.
   - [x] The display includes **Location Context**:
     - **Street Name** with **Cardinal Direction** (e.g., "North", "East side") where available.
     - **Address Range** (e.g., "100-199") to confirm the specific block.
   - [x] The explanation explicitly includes:
-    - **Street Sweeping:** Day and time window (e.g., "Mon 8am-10am").
+    - **Street Sweeping:** Day and time window (e.g., "Street Cleaning 9am-11am Tue").
     - **Closures:** Any current or planned future permitted closures (date/time range).
     - **Duration:** Maximum allowed parking duration for the current time (for both metered and non-metered areas).
     - **Residential Permits:** For non-metered areas, specifics on which Residential Parking Permit (RPP) Area is required to exceed time limits.
+  - [x] **Display Format Standards** (Implemented Dec 2024):
+    - Time limits: `"1hr limit 8am-6pm Mon-Fri except Zone W"` (permit exceptions at end)
+    - Street cleaning: `"Street Cleaning 9am-11am Tue"` (abbreviated days)
+    - Metered parking: `"Metered ($3.50/hr) 9am-6pm Mon-Fri"` (rate in parentheses)
+    - Day abbreviations: 3-letter format (Mon, Tue, Wed, Thu, Fri, Sat, Sun)
+    - Time format: 12-hour with am/pm (e.g., "8am-6pm", no spaces)
+    - Permit zones: Always at end of rule description for clarity
 
 **FR-005: Data Ingestion ("Trust, then Verify")**
 - **Description:** The system will directly ingest and use data from the official SFMTA source for Mission & SOMA, using spatial joins for parking regulations.

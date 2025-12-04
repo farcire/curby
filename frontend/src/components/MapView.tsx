@@ -49,7 +49,7 @@ export function MapView({
       center: initialCenter,
       zoom: initialZoom,
       zoomControl: false,
-      minZoom: 13, // City-wide Context
+      minZoom: 15, // Limit to 3 zoom levels out (18, 17, 16, 15)
       maxZoom: 18, // Immediate Vicinity
       maxBounds: null, // Explicitly allow unrestricted panning
       maxBoundsViscosity: 0,
@@ -228,9 +228,12 @@ export function MapView({
         statusEmoji = '🤔 ';
       }
 
+      // Helper to clean street names (remove leading zeros)
+      const cleanName = (name: string) => name.replace(/\b0+(\d)/g, '$1');
+      
       // Format label: "Street Name (Side/Cardinal, Start-End)"
       const sideText = blockface.cardinalDirection || blockface.side;
-      let label = `${statusEmoji} ${blockface.streetName} (${sideText}`;
+      let label = `${statusEmoji} ${cleanName(blockface.streetName)} (${sideText}`;
       if (blockface.fromAddress && blockface.toAddress) {
         label += `, ${blockface.fromAddress}-${blockface.toAddress}`;
       }
