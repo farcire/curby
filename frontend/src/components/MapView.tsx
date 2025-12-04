@@ -194,7 +194,7 @@ export function MapView({
     if (searchedLocationName) {
       const popupContent = `
         <div style="min-width: 180px; padding: 4px;">
-          <div style="font-weight: 400; margin-bottom: 12px; font-size: 15px; color: #1f2937;">${searchedLocationName}</div>
+          <div style="font-weight: 400; margin-bottom: 12px; font-size: 14px; color: #4b5563;">${searchedLocationName}</div>
           <button
             onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${searchedLocation[0]},${searchedLocation[1]}', '_blank')"
             style="
