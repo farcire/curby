@@ -1,5 +1,6 @@
 import { ParkingRule, LegalityResult, LegalityStatus, Blockface } from '@/types/parking';
 import { addMinutes, getDay, format } from 'date-fns';
+import { evaluateRPPZone } from './rppEvaluator';
 
 /**
  * Evaluates parking legality for a blockface at a specific time and duration
@@ -152,11 +153,26 @@ function generateLegalityResult(
       break;
 
     case 'rpp-zone':
-      // RPP zones are illegal for non-residents during enforcement hours
-      status = 'illegal';
+      // Evaluate RPP zone for visitor parking eligibility
       const zone = primaryRule.metadata?.permitZone || 'Unknown';
-      explanation = `Don't park here! Residential Permit Zone ${zone} - permit required. Non-residents will be ticketed.`;
-      warnings.push('Visitors may have limited time - check signs carefully');
+      const rppEval = evaluateRPPZone(
+        primaryRule.description,
+        zone,
+        durationMinutes
+      );
+      
+      if (!rppEval.canPark) {
+        status = 'illegal';
+        explanation = `Don't park here! ${rppEval.reason}`;
+      } else {
+        status = 'legal';
+        explanation = `You can park here! ${rppEval.reason}`;
+      }
+      
+      // Add warning about visitor parking limits
+      if (rppEval.visitorLimitMinutes) {
+        warnings.push(`Visitor parking limited to ${rppEval.visitorLimitMinutes / 60} hours`);
+      }
       break;
 
     default:

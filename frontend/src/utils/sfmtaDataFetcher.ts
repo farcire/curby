@@ -7,25 +7,23 @@ const BACKEND_API = `${API_BASE_URL}/api/v1/blockfaces`;
  * Utility functions for formatting days and times
  */
 
-// Convert abbreviated day names to full names
+// Convert day abbreviations to standard 3-letter format (Mon, Tue, Wed, etc.)
 function formatDayName(dayStr: string): string {
   const dayMap: { [key: string]: string } = {
-    'Mon': 'Monday',
-    'Tue': 'Tuesday',
-    'Tues': 'Tuesday',
-    'Wed': 'Wednesday',
-    'Thu': 'Thursday',
-    'Thurs': 'Thursday',
-    'Fri': 'Friday',
-    'Sat': 'Saturday',
-    'Sun': 'Sunday',
-    'M': 'Monday',
-    'Tu': 'Tuesday',
-    'W': 'Wednesday',
-    'Th': 'Thursday',
-    'F': 'Friday',
-    'Sa': 'Saturday',
-    'Su': 'Sunday',
+    'M': 'Mon',
+    'Tu': 'Tue',
+    'W': 'Wed',
+    'Th': 'Thu',
+    'F': 'Fri',
+    'Sa': 'Sat',
+    'Su': 'Sun',
+    'Monday': 'Mon',
+    'Tuesday': 'Tue',
+    'Wednesday': 'Wed',
+    'Thursday': 'Thu',
+    'Friday': 'Fri',
+    'Saturday': 'Sat',
+    'Sunday': 'Sun',
   };
   
   // Handle ranges like "M-F" or "Mon-Fri"
@@ -174,6 +172,11 @@ function transformBackendBlockface(backendData: any): Blockface {
 
 /**
  * Helper to transform a single backend rule to frontend structure
+ * 
+ * Time Field Strategy:
+ * - For parking regulations: Validates fromTime/toTime against hours field if both present
+ * - For street sweeping: Uses startTime/endTime directly
+ * - Falls back to hours field if fromTime/toTime are missing or invalid (00:00)
  */
 function transformBackendRule(rule: any, blockfaceId: string, index: number): ParkingRule | null {
   // Map day string to daysOfWeek array
@@ -234,25 +237,99 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
   const formatTime = (t: string | undefined | null): string => {
     if (!t) return '00:00';
     
+    const tStr = String(t).trim();
+    
+    // Handle "8am", "6pm" format - convert to 24-hour
+    const ampmMatch = tStr.match(/^(\d{1,2}):?(\d{2})?\s*(am|pm)$/i);
+    if (ampmMatch) {
+      let hour = parseInt(ampmMatch[1]);
+      const min = ampmMatch[2] || '00';
+      const period = ampmMatch[3].toLowerCase();
+      
+      if (period === 'pm' && hour !== 12) hour += 12;
+      if (period === 'am' && hour === 12) hour = 0;
+      
+      return `${hour.toString().padStart(2, '0')}:${min}`;
+    }
+    
     // Handle "900" or "1800" format
-    if (t.length >= 3 && /^\d+$/.test(t)) {
-      const hour = t.slice(0, -2).padStart(2, '0');
-      const min = t.slice(-2);
+    if (tStr.length >= 3 && /^\d+$/.test(tStr)) {
+      const hour = tStr.slice(0, -2).padStart(2, '0');
+      const min = tStr.slice(-2);
       return `${hour}:${min}`;
     }
 
     // Handle simple hour integers (0, 6, 12)
-    const hour = parseInt(t, 10);
-    if (!isNaN(hour) && t.length <= 2) {
+    const hour = parseInt(tStr, 10);
+    if (!isNaN(hour) && tStr.length <= 2) {
       return `${hour.toString().padStart(2, '0')}:00`;
     }
     
-    return t; // Return as is if it's already formatted or complex
+    // If already in HH:MM format, return as is
+    if (/^\d{1,2}:\d{2}$/.test(tStr)) {
+      return tStr;
+    }
+    
+    return '00:00'; // Default fallback
+  };
+
+  // Parse hours field if fromTime/toTime are missing or invalid
+  const parseHoursField = (hoursStr: string): { start: string, end: string } | null => {
+    if (!hoursStr) return null;
+    
+    // Match patterns like "8am-6pm", "9:00 AM-5:00 PM", etc.
+    const match = hoursStr.match(/(\d{1,2}):?(\d{2})?\s*(am|pm)?-(\d{1,2}):?(\d{2})?\s*(am|pm)?/i);
+    if (!match) return null;
+    
+    let startHour = parseInt(match[1]);
+    const startMin = match[2] || '00';
+    const startPeriod = (match[3] || '').toLowerCase();
+    
+    let endHour = parseInt(match[4]);
+    const endMin = match[5] || '00';
+    const endPeriod = (match[6] || '').toLowerCase();
+    
+    // Convert to 24-hour format
+    if (startPeriod === 'pm' && startHour !== 12) startHour += 12;
+    if (startPeriod === 'am' && startHour === 12) startHour = 0;
+    if (endPeriod === 'pm' && endHour !== 12) endHour += 12;
+    if (endPeriod === 'am' && endHour === 12) endHour = 0;
+    
+    return {
+      start: `${startHour.toString().padStart(2, '0')}:${startMin}`,
+      end: `${endHour.toString().padStart(2, '0')}:${endMin}`
+    };
   };
 
   // Handle both street sweeping (startTime/endTime) and parking regulations (fromTime/toTime)
-  const startTime = formatTime(rule.startTime || rule.fromTime);
-  const endTime = formatTime(rule.endTime || rule.toTime);
+  // For parking regulations: validate fromTime/toTime against hours field if both present
+  // For street sweeping: use startTime/endTime directly
+  let startTime = formatTime(rule.startTime || rule.fromTime);
+  let endTime = formatTime(rule.endTime || rule.toTime);
+  
+  // Only validate for parking regulations (not street sweeping)
+  if (rule.type === 'parking-regulation') {
+    const hasValidTimes = startTime !== '00:00' || endTime !== '00:00';
+    const hasHoursField = !!rule.hours;
+    
+    if (hasValidTimes && hasHoursField) {
+      // Both fields present - validate they match
+      const parsedHours = parseHoursField(rule.hours);
+      if (parsedHours) {
+        const timesMatch = startTime === parsedHours.start && endTime === parsedHours.end;
+        if (!timesMatch) {
+          console.warn(`Time mismatch for rule: fromTime/toTime (${startTime}-${endTime}) != hours (${parsedHours.start}-${parsedHours.end}). Using fromTime/toTime.`);
+        }
+      }
+    } else if (!hasValidTimes && hasHoursField) {
+      // Only hours field is populated - use it
+      const parsed = parseHoursField(rule.hours);
+      if (parsed) {
+        startTime = parsed.start;
+        endTime = parsed.end;
+      }
+    }
+  }
 
   // Map rule type
   let type: any = rule.type;
@@ -287,6 +364,7 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
         type = 'time-limit';
         precedence = 60;
         metadata.timeLimit = rule.timeLimit ? parseInt(rule.timeLimit) * 60 : 120; // Convert hours to minutes
+        metadata.permitZone = rule.permitArea; // Store permit zone for time-limit rules
       } else if (rule.permitArea || regText.includes('permit') || regText.includes('residential')) {
         type = 'rpp-zone';
         precedence = 70;
@@ -312,46 +390,22 @@ function transformBackendRule(rule: any, blockfaceId: string, index: number): Pa
       }
   }
 
-  // Build a better description with proper formatting
-  let description = rule.description || rule.details || '';
+  // Build description - DO NOT include time/days as ruleFormatter.ts will add them
+  // Only include the base description text
+  let description = '';
   
-  // If no description or it's generic, build one from the data
-  if (!description || description === type) {
-    // Format the day field to full day names
-    const formattedDay = dayField ? formatDayName(dayField) : '';
-    // Format the time range
-    const formattedTimeRange = formatTimeRange(startTime, endTime);
-    
-    if (type === 'time-limit' && metadata.timeLimit) {
-      const hours = metadata.timeLimit / 60;
-      description = `${hours} hr time limit ${formattedDay} ${formattedTimeRange}`;
-      if (metadata.permitZone) {
-        description += `, permit holder ${metadata.permitZone} exempt`;
-      }
-    } else if (type === 'rpp-zone' && metadata.permitZone) {
-      description = `Residential Permit Zone ${metadata.permitZone}`;
-    } else if (type === 'street-sweeping') {
-      description = `Street Cleaning ${formattedDay} ${formattedTimeRange}`;
-    } else {
-      description = `${type} ${formattedDay} ${formattedTimeRange}`;
+  if (type === 'time-limit' && metadata.timeLimit) {
+    const hours = metadata.timeLimit / 60;
+    description = `${hours}hr limit`;
+    if (metadata.permitZone) {
+      description += ` except Zone ${metadata.permitZone}`;
     }
+  } else if (type === 'rpp-zone' && metadata.permitZone) {
+    description = `Residential Permit Zone ${metadata.permitZone}`;
+  } else if (type === 'street-sweeping') {
+    description = `Street Cleaning`;
   } else {
-    // If we have a description, expand abbreviated days to full names
-    description = description
-      .replace(/\bMon\b/g, 'Monday')
-      .replace(/\bTues?\b/g, 'Tuesday')
-      .replace(/\bWed\b/g, 'Wednesday')
-      .replace(/\bThurs?\b/g, 'Thursday')
-      .replace(/\bFri\b/g, 'Friday')
-      .replace(/\bSat\b/g, 'Saturday')
-      .replace(/\bSun\b/g, 'Sunday');
-    
-    // Format time ranges in the description (e.g., "9-11" -> "9am-11am")
-    description = description.replace(/\b(\d{1,2})-(\d{1,2})\b/g, (match, start, end) => {
-      const startFormatted = formatTime12Hour(`${start.padStart(2, '0')}:00`);
-      const endFormatted = formatTime12Hour(`${end.padStart(2, '0')}:00`);
-      return `${startFormatted}-${endFormatted}`;
-    });
+    description = type;
   }
   
   return {
