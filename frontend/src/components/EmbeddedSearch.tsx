@@ -106,7 +106,7 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
   
   const handleSelect = (result: SearchResult) => {
     onLocationSelect(
-      result.coordinates, // Already in [lat, lng] format
+      [result.coordinates[1], result.coordinates[0]], // Convert from [lng, lat] to [lat, lng]
       result.displayName
     );
     setQuery('');
