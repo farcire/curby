@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any, Dict
+from datetime import datetime
 
 class Schedule(BaseModel):
     beginTime: Optional[str] = None
@@ -12,6 +13,53 @@ class Geometry(BaseModel):
     type: str
     coordinates: List[List[float]]
 
+class RegulationConditions(BaseModel):
+    """Structured conditions for a parking regulation"""
+    days: List[str] = []  # e.g., ['Monday', 'Tuesday', 'Wednesday']
+    hours: str = ""  # e.g., '9AM-6PM'
+    time_limit_minutes: Optional[int] = None  # e.g., 120 for 2 hours
+    exceptions: List[str] = []  # e.g., ['RPP exempt', 'Holidays']
+
+class RegulationInterpretation(BaseModel):
+    """AI-interpreted parking regulation in plain language"""
+    action: str  # 'allowed', 'prohibited', 'time-limited', 'restricted', 'permit-required'
+    summary: str  # Plain English summary
+    severity: str  # 'critical', 'high', 'medium', 'low'
+    conditions: RegulationConditions
+    details: str = ""  # Additional context
+    confidence_score: Optional[float] = None  # Judge's confidence score (0.0-1.0)
+    judge_verified: bool = False  # Whether judge approved this interpretation
+    notes: str = ""  # Any additional notes
+
+class SourceRegulationFields(BaseModel):
+    """Raw fields from the parking regulations dataset"""
+    regulation: Optional[str] = None
+    days: Optional[str] = None
+    hours: Optional[str] = None
+    hrs_begin: Optional[str] = None
+    hrs_end: Optional[str] = None
+    regdetails: Optional[str] = None
+    rpparea1: Optional[str] = None
+    exceptions: Optional[str] = None
+    from_time: Optional[str] = None
+    to_time: Optional[str] = None
+    hrlimit: Optional[str] = None
+
+class ParkingRule(BaseModel):
+    """A parking rule with optional AI interpretation"""
+    type: str  # 'parking-regulation', 'street-sweeping', 'meter', etc.
+    source_text: Optional[str] = None  # Original regulation text
+    source_fields: Optional[SourceRegulationFields] = None  # Raw source data
+    
+    # AI-interpreted data (optional, populated from cache)
+    interpreted: Optional[RegulationInterpretation] = None
+    interpretation_ref: Optional[str] = None  # Reference to cached interpretation by unique_id
+    
+    # Legacy fields for backward compatibility
+    description: Optional[str] = None
+    timeRanges: List[Dict] = []
+    metadata: Dict[str, Any] = {}
+
 class Blockface(BaseModel):
     id: str
     cnn: Optional[str] = None
@@ -20,7 +68,7 @@ class Blockface(BaseModel):
     toStreet: Optional[str] = None
     side: Optional[str] = None
     geometry: Geometry
-    rules: List[Any] = []
+    rules: List[ParkingRule] = []
     schedules: List[Schedule] = []
 
 class StreetSegment(BaseModel):

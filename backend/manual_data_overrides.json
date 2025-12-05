@@ -1,0 +1,39 @@
+{
+  "description": "Manual data corrections for missing or incorrect SFMTA data. These overrides are applied during ingestion to augment the official datasets.",
+  "version": "1.0.0",
+  "last_updated": "2025-12-05",
+  "notes": [
+    "Pattern identified: Some CNNs have street cleaning data for only L or R side, missing the opposite side",
+    "19th St has same CNN for both L (2701-2799) and R (2700-2798) sides",
+    "When one side has data but opposite is missing, it likely needs manual verification"
+  ],
+  "overrides": [
+    {
+      "id": "19th-st-r-2700-2798",
+      "type": "street_sweeping",
+      "reason": "Missing from SFMTA street cleaning schedules dataset - physically verified on-site. CNN has L side data but R side is missing.",
+      "verified_date": "2025-12-04",
+      "verified_by": "User",
+      "match_criteria": {
+        "street_name_regex": "19TH.*ST",
+        "side": "R",
+        "from_address": "2700",
+        "to_address": "2798",
+        "cnn": null
+      },
+      "data": {
+        "type": "street-sweeping",
+        "day": "Thursday",
+        "startTime": "12:00 AM",
+        "endTime": "6:00 AM",
+        "blockside": "North",
+        "weekday": "Thursday",
+        "fromhour": "12:00 AM",
+        "tohour": "6:00 AM",
+        "cnnrightleft": "R",
+        "limits": null
+      },
+      "notes": "This CNN also serves 19th St L 2701-2799 which has street cleaning data. R side was missing and manually verified."
+    }
+  ]
+}
