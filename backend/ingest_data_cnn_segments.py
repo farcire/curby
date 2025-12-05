@@ -14,6 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from display_utils import generate_display_messages, format_restriction_description
 from deterministic_parser import _parse_days, parse_time_to_minutes
+from apply_manual_overrides import apply_manual_overrides_to_segments
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
@@ -51,6 +52,8 @@ def get_side_of_street(centerline_geo: Dict, blockface_geo: Dict) -> str:
     """
     Determines if the blockface geometry is on the Left or Right side of the centerline.
     Returns 'L', 'R', or None if indeterminate.
+    
+    Uses multiple sample points along the blockface for robust side determination.
     """
     try:
         cl_shape = shape(centerline_geo)
@@ -58,35 +61,56 @@ def get_side_of_street(centerline_geo: Dict, blockface_geo: Dict) -> str:
         
         if not isinstance(cl_shape, LineString) or not isinstance(bf_shape, LineString):
             return None
+        
+        # Sample multiple points along the blockface for voting
+        sample_positions = [0.25, 0.5, 0.75]
+        votes = {'L': 0, 'R': 0}
+        
+        for position in sample_positions:
+            # Get point on blockface
+            bf_point = bf_shape.interpolate(position, normalized=True)
             
-        # Get midpoint of blockface
-        bf_mid = bf_shape.interpolate(0.5, normalized=True)
+            # Project onto centerline
+            projected_dist = cl_shape.project(bf_point)
+            projected_point = cl_shape.interpolate(projected_dist)
+            
+            # Get tangent vector at projected point
+            # Use a small delta to calculate direction
+            delta = min(0.0001, cl_shape.length * 0.01)  # Adaptive delta
+            
+            if projected_dist + delta > cl_shape.length:
+                # Near end, look backward
+                p1 = cl_shape.interpolate(projected_dist - delta)
+                p2 = projected_point
+            else:
+                # Look forward
+                p1 = projected_point
+                p2 = cl_shape.interpolate(projected_dist + delta)
+            
+            # Tangent vector along centerline
+            tangent = (p2.x - p1.x, p2.y - p1.y)
+            
+            # Vector from centerline to blockface point
+            to_bf = (bf_point.x - projected_point.x, bf_point.y - projected_point.y)
+            
+            # Cross product: positive = left, negative = right
+            # This is the 2D cross product (z-component of 3D cross product)
+            cross = tangent[0] * to_bf[1] - tangent[1] * to_bf[0]
+            
+            if abs(cross) > 1e-10:  # Avoid numerical noise
+                if cross > 0:
+                    votes['L'] += 1
+                else:
+                    votes['R'] += 1
         
-        # Project midpoint onto centerline
-        projected_dist = cl_shape.project(bf_mid)
-        projected_point = cl_shape.interpolate(projected_dist)
+        # Return side with most votes
+        if votes['L'] == 0 and votes['R'] == 0:
+            return None
         
-        # Get a point slightly further along the centerline to determine tangent vector
-        delta = 0.001
-        if projected_dist + delta > cl_shape.length:
-             p1 = cl_shape.interpolate(projected_dist - delta)
-             p2 = projected_point
-        else:
-             p1 = projected_point
-             p2 = cl_shape.interpolate(projected_dist + delta)
-             
-        # Vector along centerline (tangent)
-        cl_vec = (p2.x - p1.x, p2.y - p1.y)
-        
-        # Vector from centerline to blockface point
-        to_bf_vec = (bf_mid.x - projected_point.x, bf_mid.y - projected_point.y)
-        
-        # Cross product (2D): A x B = Ax*By - Ay*Bx
-        cross_product = cl_vec[0] * to_bf_vec[1] - cl_vec[1] * to_bf_vec[0]
-        
-        return 'L' if cross_product > 0 else 'R'
+        return 'L' if votes['L'] > votes['R'] else 'R'
         
     except Exception as e:
+        print(f"Error in get_side_of_street: {e}")
         return None
 
 def match_regulation_to_segment(regulation_geo: Dict, 
@@ -360,11 +384,27 @@ async def main():
     if not mongodb_uri:
         raise ValueError("MONGODB_URI not found in .env file.")
 
-    client = motor.motor_asyncio.AsyncIOMotorClient(mongodb_uri)
+    # Create client with longer timeout settings
+    client = motor.motor_asyncio.AsyncIOMotorClient(
+        mongodb_uri,
+        serverSelectionTimeoutMS=60000,  # 60 seconds
+        connectTimeoutMS=60000,  # 60 seconds
+        socketTimeoutMS=60000  # 60 seconds
+    )
     try:
         db = client.get_default_database()
     except Exception:
         db = client["curby"]
+    
+    # Test connection
+    try:
+        await db.command('ping')
+        print("✓ Successfully connected to MongoDB")
+    except Exception as e:
+        print(f"ERROR: Failed to connect to MongoDB: {e}")
+        print("Please check your network connection and MongoDB Atlas settings.")
+        client.close()
+        return
 
     # Store metadata for enrichment
     streets_metadata = {}
@@ -437,31 +477,55 @@ async def main():
         print(f"  - {len(streets_df)} CNNs × 2 sides = {len(all_segments)} segments")
 
     # ==========================================
-    # STEP 2: Add Blockface Geometries (Optional Enhancement)
+    # STEP 2: Add Blockface Geometries (Direct CNN Matching)
     # ==========================================
     print("\n=== STEP 2: Adding Blockface Geometries (where available) ===")
     geo_df = fetch_data_as_dataframe(BLOCKFACE_GEOMETRY_ID, app_token)
     
     blockface_count = 0
     if not geo_df.empty:
+        # Group blockfaces by CNN for efficient lookup
+        blockfaces_by_cnn = {}
         for _, row in geo_df.iterrows():
             cnn = row.get("cnn_id")
             bf_geo = row.get("shape")
             
-            if not cnn or not bf_geo or cnn not in streets_metadata:
+            if not cnn or not bf_geo:
+                continue
+                
+            if cnn not in blockfaces_by_cnn:
+                blockfaces_by_cnn[cnn] = []
+            blockfaces_by_cnn[cnn].append(bf_geo)
+        
+        # Assign blockfaces to segments
+        # For each CNN, assign geometries to L and R sides in order
+        for cnn, geometries in blockfaces_by_cnn.items():
+            if cnn not in streets_metadata:
                 continue
             
-            # Determine which side this blockface is on
+            # Find the L and R segments for this CNN
+            left_segment = None
+            right_segment = None
+            for segment in all_segments:
+                if segment["cnn"] == cnn:
+                    if segment["side"] == "L":
+                        left_segment = segment
+                    elif segment["side"] == "R":
+                        right_segment = segment
+            
+            # Assign geometries based on geometric analysis
             centerline_geo = streets_metadata[cnn].get("centerlineGeometry")
-            if centerline_geo:
-                side = get_side_of_street(centerline_geo, bf_geo)
-                
-                # Find matching segment and add blockface geometry
-                for segment in all_segments:
-                    if segment["cnn"] == cnn and segment["side"] == side:
-                        segment["blockfaceGeometry"] = bf_geo
+            if centerline_geo and len(geometries) > 0:
+                for bf_geo in geometries:
+                    # Determine which side this blockface is on using geometry
+                    side = get_side_of_street(centerline_geo, bf_geo)
+                    
+                    if side == "L" and left_segment and not left_segment.get("blockfaceGeometry"):
+                        left_segment["blockfaceGeometry"] = bf_geo
                         blockface_count += 1
-                        break
+                    elif side == "R" and right_segment and not right_segment.get("blockfaceGeometry"):
+                        right_segment["blockfaceGeometry"] = bf_geo
+                        blockface_count += 1
     
     print(f"✓ Added {blockface_count} blockface geometries to segments")
 
@@ -609,6 +673,12 @@ async def main():
     
     print(f"✓ Matched {matched_meters} parking meters")
 
+    # ==========================================
+    # STEP 5.4: Apply Manual Data Overrides
+    # ==========================================
+    print("\n=== STEP 5.4: Applying Manual Data Overrides ===")
+    override_stats = apply_manual_overrides_to_segments(all_segments)
+    
     # ==========================================
     # STEP 5.5: Finalize Segments (Display Strings & Cardinal)
     # ==========================================
