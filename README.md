@@ -115,9 +115,11 @@ Backend API runs at: `http://localhost:8000`
   - PWA with offline app shell
   - Three-tier zoom system
   - Dynamic viewport-based data loading
-  - Duration slider (1-24h with emoji feedback)
+  - Refined duration slider (1-24h with dynamic emoji indicators)
+  - Free parking filter toggle (show all or free-only spots)
   - Unrestricted city-wide exploration
   - User location marker with return button
+  - Optimized pill UI with balanced spacing and clear visual hierarchy
 
 - **Performance**
   - <100ms response time for standard queries
@@ -266,6 +268,6 @@ For the most accurate parking information, always verify with posted street sign
 
 ---
 
-**Last Updated:** December 4, 2025
+**Last Updated:** December 5, 2025
 **Version:** Beta 1.0
 **Project Status:** Ready for Beta Testing (with known data quality issues documented)

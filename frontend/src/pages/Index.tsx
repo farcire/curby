@@ -15,6 +15,11 @@ import L from 'leaflet';
 
 const DEFAULT_CENTER: [number, number] = [37.76272, -122.40920]; // 20th & Bryant - default fallback
 
+interface ParkingFilters {
+  metered: boolean;
+  nonMetered: boolean;
+}
+
 const Index = () => {
   const [durationMinutes, setDurationMinutes] = useState(180); // Default to 3 hours
   const [selectedTime, setSelectedTime] = useState(new Date());
@@ -30,6 +35,7 @@ const Index = () => {
   const [distanceToSF, setDistanceToSF] = useState<number>(0);
   const [searchedLocation, setSearchedLocation] = useState<[number, number] | null>(null);
   const [searchedLocationName, setSearchedLocationName] = useState<string>('');
+  const [showFreeOnly, setShowFreeOnly] = useState(false);
   
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -178,17 +184,25 @@ const Index = () => {
     return [centerLat, centerLng];
   };
 
+  // Filter blockfaces based on free parking toggle
+  const filteredBlockfaces = showFreeOnly
+    ? blockfaces.filter(blockface => {
+        // Show only spots without meters
+        const hasMeters = blockface.rules.some(rule => rule.type === 'meter');
+        return !hasMeters;
+      })
+    : blockfaces;
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
       {/* Header */}
-      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-2 shadow-md flex-shrink-0 relative overflow-visible z-[100]">
+      <header className="bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white p-4 shadow-md flex-shrink-0 relative overflow-visible z-[100]">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full -translate-x-16 -translate-y-16"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full translate-x-20 translate-y-20"></div>
         </div>
-        <div className="relative flex items-center justify-between">
-          <div className="flex items-center gap-2">
+        <div className="relative flex items-center justify-between gap-6">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Logo size="sm" />
             <div>
               <h1 className="text-lg font-bold flex items-center gap-1.5 leading-none">
@@ -197,7 +211,9 @@ const Index = () => {
               </h1>
             </div>
           </div>
-          <EmbeddedSearch onLocationSelect={handleLocationSelect} />
+          <div className="flex-1 max-w-md ml-auto">
+            <EmbeddedSearch onLocationSelect={handleLocationSelect} />
+          </div>
         </div>
       </header>
 
@@ -227,7 +243,7 @@ const Index = () => {
           checkTime={selectedTime}
           durationMinutes={durationMinutes}
           onBlockfaceClick={handleBlockfaceClick}
-          blockfaces={blockfaces}
+          blockfaces={filteredBlockfaces}
           initialCenter={userLocation}
           userLocation={userLocation}
           onMapMove={handleMapMove}
@@ -242,6 +258,8 @@ const Index = () => {
         <SimpleDurationPicker
           durationMinutes={durationMinutes}
           onDurationChange={setDurationMinutes}
+          showFreeOnly={showFreeOnly}
+          onToggleFreeOnly={() => setShowFreeOnly(!showFreeOnly)}
         />
       )}
 

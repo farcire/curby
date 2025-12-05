@@ -106,7 +106,7 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
   
   const handleSelect = (result: SearchResult) => {
     onLocationSelect(
-      [result.coordinates[1], result.coordinates[0]], // lat, lng
+      result.coordinates, // Already in [lat, lng] format
       result.displayName
     );
     setQuery('');
@@ -114,7 +114,7 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
   };
 
   return (
-    <div ref={searchRef} className="relative w-80">
+    <div ref={searchRef} className="relative w-full max-w-md">
       {/* Search Input */}
       <div className="relative">
         <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white" />
@@ -124,7 +124,7 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query.length >= 2 && setShowResults(true)}
-          className="w-full pl-9 pr-10 py-1.5 bg-white/40 backdrop-blur-md border-2 border-white/60 rounded-md text-white placeholder-white/90 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/50 shadow-lg"
+          className="w-full pl-9 pr-10 py-1 bg-white/40 backdrop-blur-md border-2 border-white/60 rounded-md text-white placeholder-white/90 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/50 shadow-lg"
         />
         {/* Voice Input Button - Inside search bar */}
         <button
@@ -169,11 +169,19 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
               iconColor = 'text-green-600';
             }
             
-            // Clean display name - remove cardinal directions for streets
-            let displayName = result.displayName;
-            if (result.type === 'street') {
+            // Format display based on type
+            let line1 = result.name;
+            let line2 = result.displayName;
+            
+            if (result.type === 'business') {
+              // Line 1: Business name
+              line1 = result.name;
+              // Line 2: Full address (Street number, Street Name, San Francisco, CA)
+              line2 = result.displayName;
+            } else if (result.type === 'street') {
               // Just show the street name without cardinal direction
-              displayName = result.name;
+              line1 = result.name;
+              line2 = result.displayName;
             }
             
             return (
@@ -184,8 +192,8 @@ export function EmbeddedSearch({ onLocationSelect }: EmbeddedSearchProps) {
               >
                 <Icon className={`h-4 w-4 ${iconColor} flex-shrink-0 mt-0.5`} />
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-gray-900 text-sm truncate">{result.name}</div>
-                  <div className="text-xs text-gray-500 truncate">{displayName}</div>
+                  <div className="font-medium text-gray-900 text-sm truncate">{line1}</div>
+                  <div className="text-xs text-gray-500 truncate">{line2}</div>
                 </div>
               </button>
             );
