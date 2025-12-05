@@ -192,11 +192,13 @@ export function MapView({
 
     // Add popup with location name and Get Directions button
     if (searchedLocationName) {
+      const lat = searchedLocation[0];
+      const lng = searchedLocation[1];
       const popupContent = `
         <div style="min-width: 180px; padding: 4px;">
           <div style="font-weight: 400; margin-bottom: 12px; font-size: 14px; color: #4b5563;">${searchedLocationName}</div>
           <button
-            onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${searchedLocation[0]},${searchedLocation[1]}', '_blank')"
+            onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}', '_blank')"
             style="
               width: 100%;
               padding: 10px 16px;
@@ -229,8 +231,16 @@ export function MapView({
       }).openPopup();
     }
 
-    // Center map on searched location
+    // Center map on searched location and force tile reload
     mapRef.current.setView(searchedLocation, 17, { animate: true });
+    
+    // Force Leaflet to recalculate map size and reload tiles
+    // This is critical for production builds where timing can differ
+    setTimeout(() => {
+      if (mapRef.current) {
+        mapRef.current.invalidateSize();
+      }
+    }, 100);
 
     searchedMarkerRef.current = searchedMarker;
   }, [searchedLocation, searchedLocationName]);
