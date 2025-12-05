@@ -132,6 +132,12 @@ Backend API runs at: `http://localhost:8000`
   - Example: CNN 961000R (19th St, North side) - Missing Thursday 12AM-6AM schedule
   - Impact: Users may not see all street cleaning restrictions
   - See [`backend/DATA_QUALITY_ISSUES.md`](backend/DATA_QUALITY_ISSUES.md) for details
+- **Oversized Vehicle Regulations**: Systematic misinterpretation of oversized vehicle parking regulations
+  - Example: CNN 868000 (18th St North, 2700-2798) - Displaying as "time-limit" instead of "No oversize vehicles"
+  - Impact: Incorrect display of parking restrictions, but does NOT affect parking eligibility
+  - Note: Assumes users have standard vehicles, so these restrictions are informational only
+  - See [`backend/OVERSIZED_VEHICLE_FIX_SUMMARY.md`](backend/OVERSIZED_VEHICLE_FIX_SUMMARY.md) for details
+  - Investigation: [`backend/18TH_ST_NORTH_PARKING_INVESTIGATION.md`](backend/18TH_ST_NORTH_PARKING_INVESTIGATION.md)
   - Validation tool available: [`backend/validate_street_cleaning_completeness.py`](backend/validate_street_cleaning_completeness.py)
 
 ### 🔄 In Progress
