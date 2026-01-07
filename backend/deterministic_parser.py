@@ -1,6 +1,12 @@
 """
 Deterministic Parser for Parking Restrictions
 
+DEPRECATED: This module is being phased out in favor of regulation_normalizer.py
+which provides centralized, consistent day/time parsing across all datasets.
+
+Legacy functions (_parse_days, parse_time_to_minutes) are kept for backward compatibility
+but should not be used in new code. Use regulation_normalizer.normalize_regulation() instead.
+
 Handles parsing of standard, deterministic patterns for:
 1. Parking Meters (using priority logic)
 2. Street Sweeping Schedules
@@ -8,6 +14,7 @@ Handles parsing of standard, deterministic patterns for:
 
 from typing import Dict, Any, List, Optional
 import re
+import warnings
 
 def parse_meter(record: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -114,10 +121,23 @@ def parse_cleaning(record: Dict[str, Any]) -> Dict[str, Any]:
 
 def _parse_days(day_str: str) -> List[int]:
     """
+    DEPRECATED: Use regulation_normalizer.DayParser instead.
+    
     Parse day string into list of integers (0=Mon, 1=Tue... 6=Sun).
     Standardizing on Python weekday() convention for consistency.
+    
+    This function is kept for backward compatibility only.
     """
+    warnings.warn(
+        "_parse_days is deprecated. Use regulation_normalizer.DayParser instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
     if not day_str:
+        return []
+    
+    # Handle non-string values (e.g., float/NaN from pandas)
+    if not isinstance(day_str, str):
         return []
         
     day_str = day_str.strip().upper()
@@ -191,8 +211,17 @@ def _parse_time(time_str: str) -> str:
 
 def parse_time_to_minutes(time_str: Optional[str]) -> Optional[int]:
     """
+    DEPRECATED: Use regulation_normalizer.TimeParser instead.
+    
     Convert time string to minutes from midnight (0-1439).
+    
+    This function is kept for backward compatibility only.
     """
+    warnings.warn(
+        "parse_time_to_minutes is deprecated. Use regulation_normalizer.TimeParser instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
     if not time_str:
         return None
         
@@ -236,7 +265,18 @@ def parse_time_to_minutes(time_str: Optional[str]) -> Optional[int]:
         return None
 
 def _parse_duration(limit_str: Optional[str]) -> int:
-    """Parse duration string (e.g. '60 minutes') into int minutes."""
+    """
+    DEPRECATED: Use regulation_normalizer.parse_duration() instead.
+    
+    Parse duration string (e.g. '60 minutes') into int minutes.
+    
+    This function is kept for backward compatibility only.
+    """
+    warnings.warn(
+        "_parse_duration is deprecated. Use regulation_normalizer.parse_duration() instead.",
+        DeprecationWarning,
+        stacklevel=2
+    )
     if not limit_str:
         return 0
     try:

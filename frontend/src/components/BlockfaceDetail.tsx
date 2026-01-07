@@ -1,8 +1,7 @@
 import { Blockface, LegalityResult } from '@/types/parking';
-import { format, addDays, getDay } from 'date-fns';
-import { X, Clock, MapPin, AlertCircle, Navigation } from 'lucide-react';
+import { X, MapPin, AlertCircle, Navigation } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatRulesForDisplay } from '@/utils/ruleFormatter';
+import { format } from 'date-fns';
 
 interface BlockfaceDetailProps {
   blockface: Blockface;
@@ -19,6 +18,17 @@ function cleanStreetName(street: string | undefined): string {
 }
 
 export function BlockfaceDetail({ blockface, legalityResult, onReportError, onClose }: BlockfaceDetailProps) {
+  // Add error boundary logging
+  console.log('BlockfaceDetail rendering:', {
+    blockface: blockface?.id,
+    hasRules: blockface?.rules?.length,
+    hasInterpretation: !!blockface?.interpretation,
+    hasRulesDisplay: blockface?.interpretation?.rules_display?.length,
+    rulesDisplay: blockface?.interpretation?.rules_display,
+    hasStreetName: !!blockface?.streetName,
+    legalityStatus: legalityResult?.status
+  });
+
   const getStatusConfig = () => {
     switch (legalityResult.status) {
       case 'legal':
@@ -43,54 +53,33 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
   };
 
 
-  // Calculate next restriction
-  const getNextRestriction = () => {
-    const now = new Date();
-    const currentDay = getDay(now);
-    
-    const upcomingRestrictions = blockface.rules
-      .filter(rule => rule.type === 'street-sweeping' || rule.type === 'no-parking' || rule.type === 'tow-away')
-      .flatMap(rule => {
-        return rule.timeRanges.map(range => {
-          const daysUntil = range.daysOfWeek.map(day => {
-            let diff = day - currentDay;
-            if (diff <= 0) diff += 7;
-            return { day, diff };
-          }).sort((a, b) => a.diff - b.diff);
-
-          if (daysUntil.length === 0) return null;
-
-          const nextOccurrence = addDays(now, daysUntil[0].diff);
-          const [hours, minutes] = range.startTime.split(':').map(Number);
-          nextOccurrence.setHours(hours, minutes, 0, 0);
-
-          return {
-            rule,
-            date: nextOccurrence,
-            timeRange: range,
-          };
-        }).filter(Boolean);
-      })
-      .filter(Boolean)
-      .sort((a, b) => a!.date.getTime() - b!.date.getTime());
-
-    return upcomingRestrictions[0] || null;
-  };
-
-  const nextRestriction = getNextRestriction();
-
-  const getDayName = (date: Date) => {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return days[getDay(date)];
-  };
-
-  // Check if permit is required
-  const hasPermitRequirement = blockface.rules.some(rule => rule.type === 'rpp-zone');
-
   const status = getStatusConfig();
 
-  // Format rules for display
-  const formattedRules = formatRulesForDisplay(blockface.rules);
+  // Format location text from raw MongoDB fields
+  const locationText = blockface.fromAddress && blockface.toAddress
+    ? `${cleanStreetName(blockface.streetName)} (${blockface.cardinalDirection || blockface.side}, ${blockface.fromAddress}-${blockface.toAddress})`
+    : `${cleanStreetName(blockface.streetName)} (${blockface.cardinalDirection || blockface.side})`;
+
+  // Format cross streets with arrow
+  const crossStreetsText = blockface.fromStreet && blockface.toStreet
+    ? `${cleanStreetName(blockface.fromStreet)} → ${cleanStreetName(blockface.toStreet)}`
+    : null;
+
+  // Use pre-computed rules_display array from interpretation layer in MongoDB
+  // This contains formatted display strings like "3hr limit Weekdays 8am-6pm except permit"
+  const formattedRules = (blockface.interpretation?.rules_display && blockface.interpretation.rules_display.length > 0)
+                         ? blockface.interpretation.rules_display
+                         : (blockface.rules || [])
+                           .map((rule: any) => rule.display_text || rule.displayText || rule.description)
+                           .filter(desc => desc);
+
+  // TODO: Calculate next restriction from rules
+  const nextRestriction = null;
+
+  // Helper to get day name
+  const getDayName = (date: Date): string => {
+    return format(date, 'EEEE');
+  };
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-50 flex justify-center p-3 pointer-events-none">
@@ -114,19 +103,13 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
           {/* Location */}
           <div className="flex items-center gap-2 text-sm text-gray-700">
             <MapPin className="h-4 w-4 text-purple-600 flex-shrink-0" />
-            <span className="font-semibold">{cleanStreetName(blockface.streetName)}</span>
-            <span className="text-gray-500">
-              ({blockface.cardinalDirection || blockface.side}
-              {blockface.fromAddress && blockface.toAddress ? `, ${blockface.fromAddress}-${blockface.toAddress}` : ''})
-            </span>
+            <span className="font-medium">{locationText}</span>
           </div>
           
-          {/* Limits (if available) */}
-          {(blockface.fromStreet || blockface.toStreet) && (
-            <div className="text-sm text-gray-500 flex items-center gap-1">
-              {blockface.fromStreet && blockface.toStreet
-                ? `${cleanStreetName(blockface.fromStreet)} → ${cleanStreetName(blockface.toStreet)}`
-                : cleanStreetName(blockface.fromStreet || blockface.toStreet)}
+          {/* Cross Streets (if available) */}
+          {crossStreetsText && (
+            <div className="text-sm text-gray-500">
+              {crossStreetsText}
             </div>
           )}
 
@@ -135,12 +118,32 @@ export function BlockfaceDetail({ blockface, legalityResult, onReportError, onCl
             <h3 className="text-xs font-bold text-gray-700 mb-1 uppercase">Rules:</h3>
             {formattedRules.length > 0 ? (
               <ul className="space-y-1">
-                {formattedRules.map((ruleText, idx) => (
-                  <li key={idx} className="text-sm text-gray-600 pl-3 relative">
-                    <span className="absolute left-0 text-purple-600">•</span>
-                    {ruleText}
-                  </li>
-                ))}
+                {formattedRules.map((ruleText, idx) => {
+                  // Check if this is a special event message that needs hyperlink
+                  const specialEventMatch = ruleText.match(/(.*Schedule and Rates may apply\. See )(schedule)(\.)/);
+                  
+                  return (
+                    <li key={idx} className="text-sm text-gray-600 pl-3 relative">
+                      <span className="absolute left-0 text-purple-600">•</span>
+                      {specialEventMatch ? (
+                        <>
+                          {specialEventMatch[1]}
+                          <a
+                            href="https://www.sfmta.com/notices/current-special-event-parking-regulations-schedule"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 hover:text-blue-700 underline"
+                          >
+                            schedule
+                          </a>
+                          {specialEventMatch[3]}
+                        </>
+                      ) : (
+                        ruleText
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-sm text-gray-600">No parking rules available</p>

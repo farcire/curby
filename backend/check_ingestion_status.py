@@ -1,59 +1,76 @@
 #!/usr/bin/env python3
+"""
+Quick status checker for ingestion progress
+Run this in a separate terminal while ingestion is running
+"""
 import os
 import asyncio
 from dotenv import load_dotenv
 import motor.motor_asyncio
+from datetime import datetime
 
-async def check_db():
+async def check_status():
     load_dotenv()
-    client = motor.motor_asyncio.AsyncIOMotorClient(os.getenv('MONGODB_URI'))
+    mongodb_uri = os.getenv('MONGODB_URI')
+    
+    if not mongodb_uri:
+        print('ERROR: MONGODB_URI not found in .env')
+        return
+    
+    client = motor.motor_asyncio.AsyncIOMotorClient(
+        mongodb_uri,
+        serverSelectionTimeoutMS=5000
+    )
+    
     try:
         db = client.get_default_database()
     except:
         db = client['curby']
     
-    # Check what collections exist and their counts
-    collections = await db.list_collection_names()
-    print('Current database collections:')
-    for coll in collections:
-        count = await db[coll].count_documents({})
-        print(f'  {coll}: {count:,} documents')
+    print(f"\n{'='*60}")
+    print(f"INGESTION STATUS CHECK - {datetime.now().strftime('%H:%M:%S')}")
+    print(f"{'='*60}\n")
     
-    # Check if street_segments exists (the new collection)
-    if 'street_segments' in collections:
-        count = await db.street_segments.count_documents({})
-        print(f'\n✓ NEW street_segments collection found with {count:,} segments')
+    try:
+        # Quick ping
+        await db.command('ping')
+        print("✓ MongoDB connected")
         
-        # Sample a few
-        sample = await db.street_segments.find_one({})
-        if sample:
-            print(f'\nSample segment:')
-            print(f'  CNN: {sample.get("cnn")}')
-            print(f'  Side: {sample.get("side")}')
-            print(f'  Street: {sample.get("streetName")}')
-            print(f'  Rules: {len(sample.get("rules", []))}')
-            print(f'  Schedules: {len(sample.get("schedules", []))}')
+        # Count segments
+        total = await db.street_segments.count_documents({})
+        print(f"✓ Street segments: {total:,}")
+        
+        if total > 0:
+            # Count with data
+            with_meters = await db.street_segments.count_documents({
+                'meters': {'$exists': True, '$ne': []}
+            })
+            with_rules = await db.street_segments.count_documents({
+                'rules': {'$exists': True, '$ne': []}
+            })
+            with_sweeping = await db.street_segments.count_documents({
+                'rules.type': 'street-sweeping'
+            })
             
-        # Count segments with data
-        with_sweeping = 0
-        with_parking = 0
-        with_meters = 0
-        async for seg in db.street_segments.find({}):
-            if any(r.get("type") == "street-sweeping" for r in seg.get("rules", [])):
-                with_sweeping += 1
-            if any(r.get("type") == "parking-regulation" for r in seg.get("rules", [])):
-                with_parking += 1
-            if seg.get("schedules"):
-                with_meters += 1
+            print(f"  - With meters: {with_meters:,}")
+            print(f"  - With rules: {with_rules:,}")
+            print(f"  - With street sweeping: {with_sweeping:,}")
+            
+            # Progress estimate (target ~35,000)
+            progress = (total / 35000) * 100
+            print(f"\n  Progress: ~{progress:.1f}% (target: 35,000 segments)")
+            
+            if total >= 35000:
+                print("\n  ✓ INGESTION APPEARS COMPLETE!")
+        else:
+            print("\n  ⏳ Ingestion in progress... (no segments yet)")
         
-        print(f'\nSegment enrichment:')
-        print(f'  With street sweeping: {with_sweeping:,}')
-        print(f'  With parking regulations: {with_parking:,}')
-        print(f'  With meters: {with_meters:,}')
-    else:
-        print('\n⚠️  street_segments collection not yet created - ingestion still in progress')
+    except Exception as e:
+        print(f"✗ Error: {e}")
+    finally:
+        client.close()
     
-    client.close()
+    print(f"\n{'='*60}\n")
 
 if __name__ == "__main__":
-    asyncio.run(check_db())
+    asyncio.run(check_status())

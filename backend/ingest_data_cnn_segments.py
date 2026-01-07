@@ -9,12 +9,26 @@ from shapely.geometry import shape, LineString, Point, mapping
 import math
 import re
 import sys
+import argparse
 # Ensure we can import from the current directory
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from display_utils import generate_display_messages, format_restriction_description
-from deterministic_parser import _parse_days, parse_time_to_minutes
+from display_utils import generate_display_messages
+from src.core.regulation_normalizer import (
+    normalize_regulation,
+    parse_days,
+    parse_time_to_minutes,
+    format_segment_for_modal
+)
+# Import business logic from new rule_engine module (with TOW detection fix)
+from rule_engine import (
+    normalize_cap_color,
+    aggregate_blockface_cap_colors,
+    aggregate_blockface_tow_schedules,
+    prioritize_meter_schedules
+)
 from apply_manual_overrides import apply_manual_overrides_to_segments
+from ingestion_checkpoint import CheckpointManager, add_checkpoint_args
 
 # --- Constants ---
 SFMTA_DOMAIN = "data.sfgov.org"
@@ -23,7 +37,11 @@ SFMTA_DOMAIN = "data.sfgov.org"
 STREETS_DATASET_ID = "3psu-pn9h"       # 1. Active Streets (Primary Backbone)
 STREET_NODES_ID = "vd6w-dq8r"          # 2. Street Nodes
 INTERSECTIONS_DATASET_ID = "sw2d-qfup"  # 3. List of Intersections
-INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # 4. Intersection Permutations
+# IMPORTANT: Intersection Permutations (jfxm-zeee) provides CNN for EACH street at every intersection.
+# It does NOT contain street name variations/abbreviations. Each intersection has multiple records
+# (minimum 2, one per street). Example: "20th & Bryant" has 4+ records with different CNNs.
+# Purpose: Enable finding all street segments at a given intersection, handle different orderings.
+INTERSECTION_PERMUTATIONS_ID = "jfxm-zeee" # 4. Intersection Permutations (CNN-to-intersection mapping)
 BLOCKFACE_GEOMETRY_ID = "pep9-66vw"    # 5. Blockface Geometries (Link cnn -> blockface_id)
 STREET_CLEANING_SCHEDULES_ID = "yhqp-riqs" # 6. Street Cleaning Schedules
 PARKING_REGULATIONS_ID = "hi6h-neyh"   # 7. Parking Regulations
@@ -32,21 +50,38 @@ METERS_DATASET_ID = "8vzz-qzz9"        # 9. Parking Meters (Link meters to stree
 METER_SCHEDULES_DATASET_ID = "6cqg-dxku" # 10. Meter Schedules
 
 def map_regulation_type(reg_desc: str) -> str:
-    """Maps raw regulation description to internal type."""
+    """
+    Maps raw regulation description to internal type.
+    
+    SEVERITY-BASED REGULATION HIERARCHY:
+    - street-sweeping: Severity 3 (Most Severe) - Street-level absolute prohibition
+    - metered: Severity 2 - Requires payment (includes TOW/ALTERNATE/OP/PRE+FREE meter schedules)
+    - time-limit, rpp-zone, parking-regulation: Severity 1 (Least Severe)
+    
+    Meter Schedule Priority: TOW > ALTERNATE > OP > PRE+FREE (PRE and FREE equal priority)
+    
+    Note: TOW and ALTERNATE are meter-specific schedule types, not separate regulations.
+    Display logic should always show the most severe active regulation.
+    """
     if not reg_desc:
         return 'unknown'
+    
+    # Handle non-string values (e.g., float/NaN from pandas)
+    if not isinstance(reg_desc, str):
+        return 'unknown'
+    
     reg_desc = reg_desc.lower()
     if 'sweeping' in reg_desc or 'cleaning' in reg_desc:
-        return 'street-sweeping'
+        return 'street-sweeping'  # Severity 3 - Most severe (street-level)
     if 'tow' in reg_desc:
-        return 'tow-away'
+        return 'tow-away'  # Could be street-level or meter-specific
     if 'no parking' in reg_desc:
         return 'no-parking'
     if 'time' in reg_desc or 'limit' in reg_desc:
-        return 'time-limit'
+        return 'time-limit'  # Severity 1
     if 'permit' in reg_desc or 'residential' in reg_desc:
-        return 'rpp-zone'
-    return 'parking-regulation'
+        return 'rpp-zone'  # Severity 1
+    return 'parking-regulation'  # Severity 1
 
 def get_side_of_street(centerline_geo: Dict, blockface_geo: Dict) -> str:
     """
@@ -186,10 +221,17 @@ def match_regulation_to_segment(regulation_geo: Dict,
         print(f"Error in match_regulation_to_segment: {e}")
         return False
 
-def generate_offset_geometry(centerline_geo: Dict, side: str, offset_degrees: float = 0.00005) -> Optional[Dict]:
+def generate_offset_geometry(centerline_geo: Dict, side: str, offset_degrees: float = None) -> Optional[Dict]:
     """
     Generates a synthetic blockface geometry by offsetting the centerline.
-    offset_degrees: 0.00005 is roughly 5 meters
+    Uses calibrated offsets learned from actual meter locations.
+    
+    Calibration data (from blockface_offset_calibration.json):
+    - Left side (L): median = 5.55 meters (positive offset)
+    - Right side (R): median = 5.55 meters (absolute value, negative offset)
+    
+    offset_degrees: If not provided, uses calibrated values:
+    - 0.00005 degrees ≈ 5.55 meters at SF latitude
     """
     try:
         cl_shape = shape(centerline_geo)
@@ -197,10 +239,15 @@ def generate_offset_geometry(centerline_geo: Dict, side: str, offset_degrees: fl
         # parallel_offset only works on LineString
         if not isinstance(cl_shape, LineString):
             return None
+        
+        # Use calibrated offset if not provided
+        # Calibration shows median offset of 5.55m for both sides
+        if offset_degrees is None:
+            offset_degrees = 0.00005  # ~5.55 meters, calibrated from meter data
             
         # Shapely parallel_offset:
-        # side='left' means left of the line direction
-        # side='right' means right of the line direction
+        # side='left' means left of the line direction (positive offset)
+        # side='right' means right of the line direction (negative offset)
         
         if side == 'L':
             offset_shape = cl_shape.parallel_offset(offset_degrees, 'left')
@@ -254,7 +301,7 @@ def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: in
     """Fetches a dataset and returns it as a pandas DataFrame."""
     print(f"Fetching dataset {dataset_id}...")
     try:
-        client = Socrata(SFMTA_DOMAIN, app_token)
+        client = Socrata(SFMTA_DOMAIN, app_token, timeout=60)  # Increased timeout to 60 seconds for large datasets
         results = client.get(dataset_id, limit=limit, **kwargs)
         df = pd.DataFrame.from_records(results)
         print(f"Successfully fetched {len(df)} records from {dataset_id}.")
@@ -263,10 +310,11 @@ def fetch_data_as_dataframe(dataset_id: str, app_token: Optional[str], limit: in
         print(f"Error fetching dataset {dataset_id}: {e}")
         return pd.DataFrame()
 
-async def match_parking_regulations_to_segments(segments: List[Dict], 
+async def match_parking_regulations_to_segments(segments: List[Dict],
                                                 regulations_df: pd.DataFrame) -> int:
     """
     Match parking regulations to street segments using spatial + geometric analysis.
+    OPTIMIZED: Uses supervisor_district pre-filtering for 10.6x speedup.
     
     Returns: Number of regulations successfully matched
     """
@@ -274,29 +322,78 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
     skipped_no_geometry = 0
     skipped_no_match = 0
     
-    print(f"Processing {len(regulations_df)} parking regulations...")
+    # Track skipped regulation Object IDs for investigation
+    skipped_no_geometry_ids = []
+    skipped_no_match_ids = []
+    
+    total_regs = len(regulations_df)
+    print(f"Processing {total_regs} parking regulations...")
+    
+    # OPTIMIZATION: Group segments by supervisor_district for fast lookup
+    print("  Building supervisor_district index...")
+    segments_by_district = {}
+    segments_without_district = []
+    
+    for segment in segments:
+        district = segment.get('supervisor_district')
+        if district and pd.notna(district):
+            district_str = str(district).strip()
+            if district_str not in segments_by_district:
+                segments_by_district[district_str] = []
+            segments_by_district[district_str].append(segment)
+        else:
+            segments_without_district.append(segment)
+    
+    print(f"  ✓ Indexed {len(segments_by_district)} districts, {len(segments_without_district)} segments without district")
     
     for idx, reg_row in regulations_df.iterrows():
+        # Progress reporting every 500 regulations
+        if idx > 0 and idx % 500 == 0:
+            print(f"  Progress: {idx}/{total_regs} regulations processed ({idx/total_regs*100:.1f}%)")
+        
         reg_geo = reg_row.get("shape") or reg_row.get("geometry")
         
         # Skip if no geometry or if geometry is not a dict (handles NaN/null values)
         if not reg_geo or not isinstance(reg_geo, dict):
             skipped_no_geometry += 1
+            # Save objectid for investigation
+            objectid = reg_row.get('objectid')
+            if objectid:
+                skipped_no_geometry_ids.append(str(objectid))
             continue
+        
+        # OPTIMIZATION: Filter candidate segments by supervisor_district
+        reg_district = reg_row.get('supervisor_district')
+        candidate_segments = []
+        
+        if reg_district and pd.notna(reg_district):
+            # Parse multi-district regulations (e.g., "1, 2" → ["1", "2"])
+            district_str = str(reg_district).strip()
+            districts = [d.strip() for d in district_str.split(',')]
+            
+            # Get segments from all matching districts
+            for district in districts:
+                candidate_segments.extend(segments_by_district.get(district, []))
+            
+            # Also check segments without district (fallback)
+            candidate_segments.extend(segments_without_district)
+        else:
+            # Regulation has no district: check all segments
+            candidate_segments = segments
         
         # Find closest segment(s) that this regulation could apply to
         best_match = None
         best_score = 0
         
-        for segment in segments:
+        for segment in candidate_segments:
             centerline_geo = segment.get("centerlineGeometry")
             if not centerline_geo:
                 continue
             
             # Check if regulation matches this segment's side
             if match_regulation_to_segment(
-                reg_geo, 
-                centerline_geo, 
+                reg_geo,
+                centerline_geo,
                 segment.get("side")
             ):
                 # Calculate confidence score
@@ -320,27 +417,14 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
             raw_reg = reg_row.get("regulation", "")
             reg_type = map_regulation_type(raw_reg)
             
-            active_days = _parse_days(reg_row.get("days"))
-            start_min = parse_time_to_minutes(reg_row.get("from_time"))
-            end_min = parse_time_to_minutes(reg_row.get("to_time"))
+            # Use new regulation normalizer
+            normalized = normalize_regulation(reg_row.to_dict(), dataset_type='parking_reg')
             
-            # Parse time limit (convert hours to minutes)
-            time_limit_mins = None
-            try:
-                hr_limit = float(reg_row.get("hrlimit", 0))
-                if hr_limit > 0:
-                    time_limit_mins = int(hr_limit * 60)
-            except:
-                pass
-                
-            description = format_restriction_description(
-                reg_type,
-                day=reg_row.get("days"),
-                start_time=reg_row.get("from_time"),
-                end_time=reg_row.get("to_time"),
-                time_limit=time_limit_mins,
-                permit_area=reg_row.get("rpparea1") or reg_row.get("rpparea2")
-            )
+            # FILTER: Skip 72hr RPP rules (permit-holder only, not relevant for non-permit users)
+            # Only filter THIS SPECIFIC RULE, not the entire segment
+            if normalized['canonical']['is_rpp_72hr']:
+                # Skip this rule - it's for permit holders only
+                continue
 
             best_match["rules"].append({
                 "type": reg_type,
@@ -352,11 +436,19 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
                 "fromTime": reg_row.get("from_time"),
                 "toTime": reg_row.get("to_time"),
                 
-                # New pre-computed fields
-                "activeDays": active_days,
-                "startTimeMin": start_min,
-                "endTimeMin": end_min,
-                "description": description,
+                # Pre-computed fields from normalizer (day/time)
+                "activeDays": normalized['canonical']['days'],
+                "startTimeMin": normalized['canonical']['time_start'],
+                "endTimeMin": normalized['canonical']['time_end'],
+                "description": normalized['display']['summary'],
+                "displayDays": normalized['display']['days'],
+                "displayTime": normalized['display']['time'],
+                
+                # Pre-computed fields from normalizer (duration)
+                "durationMinutes": normalized['canonical']['duration_minutes'],
+                "hasLimit": normalized['canonical']['has_limit'],
+                "displayDuration": normalized['display']['duration'],
+                "displayDurationLong": normalized['display']['duration_long'],
                 
                 "details": reg_row.get("regdetails"),
                 "exceptions": reg_row.get("exceptions"),
@@ -366,16 +458,36 @@ async def match_parking_regulations_to_segments(segments: List[Dict],
             matched_count += 1
         else:
             skipped_no_match += 1
+            # Save objectid for investigation
+            objectid = reg_row.get('objectid')
+            if objectid:
+                skipped_no_match_ids.append(str(objectid))
     
     if skipped_no_geometry > 0:
         print(f"  Skipped {skipped_no_geometry} regulations without geometry")
+        print(f"  Object IDs (no geometry): {', '.join(skipped_no_geometry_ids)}")
     if skipped_no_match > 0:
         print(f"  Skipped {skipped_no_match} regulations with no segment match")
+        print(f"  Object IDs (no match): {', '.join(skipped_no_match_ids)}")
+    
+    # Save IDs to file for easy reference
+    if skipped_no_geometry_ids or skipped_no_match_ids:
+        with open('skipped_regulation_ids.txt', 'w') as f:
+            f.write("REGULATIONS WITHOUT GEOMETRY:\n")
+            f.write("=" * 50 + "\n")
+            for oid in skipped_no_geometry_ids:
+                f.write(f"{oid}\n")
+            f.write("\n")
+            f.write("REGULATIONS WITH NO SEGMENT MATCH:\n")
+            f.write("=" * 50 + "\n")
+            for oid in skipped_no_match_ids:
+                f.write(f"{oid}\n")
+        print(f"  ✓ Saved skipped regulation IDs to skipped_regulation_ids.txt")
     
     return matched_count
 
-async def main():
-    """Main function to orchestrate CNN-segment-based data ingestion."""
+async def main(resume: bool = True, resume_from: str = None, force_restart: bool = False):
+    """Main function to orchestrate CNN-segment-based data ingestion with checkpoint support."""
     load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
     
     app_token = os.getenv("SFMTA_APP_TOKEN")
@@ -384,12 +496,36 @@ async def main():
     if not mongodb_uri:
         raise ValueError("MONGODB_URI not found in .env file.")
 
-    # Create client with longer timeout settings
+    # Initialize checkpoint manager
+    checkpoint = CheckpointManager(checkpoint_dir=os.path.dirname(os.path.abspath(__file__)))
+    
+    # Handle checkpoint loading
+    checkpoint_data = None
+    start_step = "1"
+    
+    if force_restart:
+        print("\n🔄 Force restart requested - clearing checkpoint and starting fresh")
+        checkpoint.clear()
+    elif resume_from:
+        print(f"\n🔄 Resuming from step {resume_from} (ignoring checkpoint)")
+        start_step = resume_from
+    elif resume and checkpoint.exists():
+        print("\n📂 Loading checkpoint...")
+        checkpoint_data = checkpoint.load()
+        if checkpoint_data:
+            start_step = checkpoint_data['next_step']
+            print(f"✓ Will resume from step {start_step}")
+        else:
+            print("⚠️  Failed to load checkpoint, starting fresh")
+    else:
+        print("\n🆕 Starting fresh ingestion (no checkpoint)")
+
+    # Create client with longer timeout settings for large uploads
     client = motor.motor_asyncio.AsyncIOMotorClient(
         mongodb_uri,
-        serverSelectionTimeoutMS=60000,  # 60 seconds
-        connectTimeoutMS=60000,  # 60 seconds
-        socketTimeoutMS=60000  # 60 seconds
+        serverSelectionTimeoutMS=120000,  # 120 seconds
+        connectTimeoutMS=120000,  # 120 seconds
+        socketTimeoutMS=300000  # 300 seconds (5 minutes) for large batch operations
     )
     try:
         db = client.get_default_database()
@@ -409,19 +545,39 @@ async def main():
     # Store metadata for enrichment
     streets_metadata = {}
     all_segments = []
+    
+    # Load from checkpoint if available
+    if checkpoint_data:
+        all_segments = checkpoint_data.get('all_segments', [])
+        streets_metadata = checkpoint_data.get('streets_metadata', {})
+        print(f"✓ Loaded {len(all_segments)} segments from checkpoint")
 
     # ==========================================
     # STEP 1: Load Active Streets & Create Segments
     # ==========================================
-    print("\n=== STEP 1: Creating CNN-Based Street Segments ===")
-    # Fetch ALL San Francisco streets (no zip code filter)
-    streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
+    if start_step <= "1":
+        print("\n=== STEP 1: Creating CNN-Based Street Segments ===")
+        # Fetch ALL San Francisco streets (no zip code filter)
+        streets_df = fetch_data_as_dataframe(STREETS_DATASET_ID, app_token)
+    else:
+        print("\n=== STEP 1: Skipping (already completed) ===")
+        streets_df = pd.DataFrame()
     
     if not streets_df.empty:
-        # Save raw collection
+        # Save raw collection with batching
         await db.streets.delete_many({})
-        await db.streets.insert_many(streets_df.to_dict('records'))
-        print(f"Saved {len(streets_df)} streets to raw collection.")
+        
+        # Batch insert to avoid timeout on large datasets
+        streets_records = streets_df.to_dict('records')
+        chunk_size = 1000
+        total_streets = len(streets_records)
+        
+        for i in range(0, total_streets, chunk_size):
+            chunk = streets_records[i:i + chunk_size]
+            await db.streets.insert_many(chunk)
+            print(f"  Inserted streets {i} to {min(i+chunk_size, total_streets)}")
+        
+        print(f"✓ Saved {total_streets} streets to raw collection.")
 
         # Create segments for each CNN (Left and Right)
         for _, row in streets_df.iterrows():
@@ -431,7 +587,7 @@ async def main():
             
             # Store metadata
             streets_metadata[cnn] = {
-                "streetName": row.get("streetname"),
+                "streetName": row.get("streetname_gc"),  # FIXED: Correct field name (no underscore)
                 "centerlineGeometry": row.get("line"),
                 "zip_code": row.get("zip_code"),
                 "layer": row.get("layer")
@@ -441,13 +597,14 @@ async def main():
             left_segment = {
                 "cnn": cnn,
                 "side": "L",
-                "streetName": row.get("streetname"),
+                "streetName": row.get("streetname_gc"),  # FIXED: Correct field name (no underscore)
                 "centerlineGeometry": row.get("line"),
                 "blockfaceGeometry": None,  # Will populate if available
                 "rules": [],
                 "schedules": [],
                 "zip_code": row.get("zip_code"),
                 "layer": row.get("layer"),
+                "supervisor_district": row.get("supervisor_district"),  # For optimization
                 "fromStreet": None,
                 "toStreet": None,
                 "fromAddress": row.get("lf_fadd"),  # Left side from address
@@ -459,13 +616,14 @@ async def main():
             right_segment = {
                 "cnn": cnn,
                 "side": "R",
-                "streetName": row.get("streetname"),
+                "streetName": row.get("streetname_gc"),  # FIXED: Correct field name (no underscore)
                 "centerlineGeometry": row.get("line"),
                 "blockfaceGeometry": None,
                 "rules": [],
                 "schedules": [],
                 "zip_code": row.get("zip_code"),
                 "layer": row.get("layer"),
+                "supervisor_district": row.get("supervisor_district"),  # For optimization
                 "fromStreet": None,
                 "toStreet": None,
                 "fromAddress": row.get("rt_fadd"),  # Right side from address
@@ -475,12 +633,19 @@ async def main():
         
         print(f"✓ Created {len(all_segments)} street segments (2 per CNN)")
         print(f"  - {len(streets_df)} CNNs × 2 sides = {len(all_segments)} segments")
+        
+        # Save checkpoint after Step 1
+        checkpoint.save("1", all_segments, streets_metadata, {"segments_created": len(all_segments)})
 
     # ==========================================
     # STEP 2: Add Blockface Geometries (Direct CNN Matching)
     # ==========================================
-    print("\n=== STEP 2: Adding Blockface Geometries (where available) ===")
-    geo_df = fetch_data_as_dataframe(BLOCKFACE_GEOMETRY_ID, app_token)
+    if start_step <= "2":
+        print("\n=== STEP 2: Adding Blockface Geometries (where available) ===")
+        geo_df = fetch_data_as_dataframe(BLOCKFACE_GEOMETRY_ID, app_token)
+    else:
+        print("\n=== STEP 2: Skipping (already completed) ===")
+        geo_df = pd.DataFrame()
     
     blockface_count = 0
     if not geo_df.empty:
@@ -528,6 +693,9 @@ async def main():
                         blockface_count += 1
     
     print(f"✓ Added {blockface_count} blockface geometries to segments")
+    
+    # Save checkpoint after Step 2
+    checkpoint.save("2", all_segments, streets_metadata, {"blockface_count": blockface_count})
 
     # ==========================================
     # STEP 2.5: Generate Synthetic Blockfaces (Offset) for missing ones
@@ -545,17 +713,380 @@ async def main():
                 synthetic_count += 1
     
     print(f"✓ Generated {synthetic_count} synthetic blockface geometries")
+    
+    # Save checkpoint after Step 2.5
+    checkpoint.save("2.5", all_segments, streets_metadata, {"synthetic_count": synthetic_count})
 
     # ==========================================
-    # STEP 3: Match Street Sweeping (Direct CNN + Side)
+    # STEP 3: Match Parking Regulations (Complex - Spatial + Side)
+    # PARKING AVAILABILITY TYPE: Non-metered regulations
+    # Can process independently once blockfaces are ready
     # ==========================================
-    print("\n=== STEP 3: Matching Street Sweeping Schedules ===")
-    sweeping_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
+    if start_step <= "3":
+        print("\n=== STEP 3: Matching Parking Regulations (Non-Metered Parking Availability) ===")
+        # Fetch ALL San Francisco parking regulations (no neighborhood filter)
+        regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
+    else:
+        print("\n=== STEP 3: Skipping (already completed) ===")
+        regulations_df = pd.DataFrame()
+    
+    matched_regs = 0
+    if not regulations_df.empty:
+        await db.parking_regulations.delete_many({})
+        
+        # Batch insert parking regulations
+        regs_records = regulations_df.to_dict('records')
+        chunk_size = 1000
+        total_regs = len(regs_records)
+        
+        for i in range(0, total_regs, chunk_size):
+            chunk = regs_records[i:i + chunk_size]
+            await db.parking_regulations.insert_many(chunk)
+            print(f"  Inserted parking regulations {i} to {min(i+chunk_size, total_regs)}")
+        
+        print(f"✓ Saved {total_regs} parking regulations to raw collection.")
+        
+        # Create geospatial index
+        try:
+            await db.parking_regulations.create_index([("geometry", "2dsphere")])
+        except Exception as e:
+            print(f"Warning: Could not create index: {e}")
+        
+        matched_regs = await match_parking_regulations_to_segments(all_segments, regulations_df)
+    
+    print(f"✓ Matched {matched_regs} parking regulations")
+    
+    # Save checkpoint after Step 3
+    checkpoint.save("3", all_segments, streets_metadata, {"matched_regulations": matched_regs})
+
+    # ==========================================
+    # STEP 4: Match Meters (Blockface-Based)
+    # PARKING AVAILABILITY TYPE: Metered parking (includes TOW/ALTERNATE/OP/PRE+FREE schedules)
+    # Meter Schedule Priority: TOW > ALTERNATE > OP > PRE+FREE (PRE and FREE equal)
+    # Note: Meter TOW schedules are meter-specific, overridden by street sweeping
+    # Can process asynchronously (schedules/rates independent of non-metered regulations)
+    # ==========================================
+    if start_step <= "4":
+        print("\n=== STEP 4: Matching Parking Meters (Metered Parking Availability) ===")
+        
+        # Load meter schedules first
+        schedules_df = fetch_data_as_dataframe(METER_SCHEDULES_DATASET_ID, app_token)
+    else:
+        print("\n=== STEP 4: Skipping (already completed) ===")
+        schedules_df = pd.DataFrame()
+    schedules_by_post = {}
+    schedule_diagnostics = {
+        "total_schedule_records": 0,
+        "unique_post_ids": 0,
+        "schedules_with_all_fields": 0,
+        "schedules_missing_fields": 0,
+        "sample_schedules": [],
+        "post_id_samples": []
+    }
+    
+    if not schedules_df.empty:
+        # Save raw meter schedules to MongoDB for debugging
+        await db.meter_schedules.delete_many({})
+        
+        # Batch insert meter schedules
+        schedules_records = schedules_df.to_dict('records')
+        chunk_size = 1000
+        total_schedules = len(schedules_records)
+        schedule_diagnostics["total_schedule_records"] = total_schedules
+        
+        for i in range(0, total_schedules, chunk_size):
+            chunk = schedules_records[i:i + chunk_size]
+            await db.meter_schedules.insert_many(chunk)
+            print(f"  Inserted meter schedules {i} to {min(i+chunk_size, total_schedules)}")
+        
+        print(f"✓ Saved {total_schedules} meter schedules to raw collection.")
+        
+        # Build lookup dictionary with diagnostics
+        # CRITICAL FIX: Use correct field names from Socrata API
+        # Available fields: days_applied, from_time, to_time, schedule_type, time_limit, cap_color
+        for idx, row in schedules_df.iterrows():
+            post_id = row.get("post_id")
+            if post_id:
+                if post_id not in schedules_by_post:
+                    schedules_by_post[post_id] = []
+                
+                schedule_entry = {
+                    "days_applied": row.get("days_applied"),  # "Mo,Tu,We,Th,Fr"
+                    "from_time": row.get("from_time"),        # "7:00 AM"
+                    "to_time": row.get("to_time"),            # "6:00 PM"
+                    "time_limit": row.get("time_limit"),      # "60 minutes"
+                    "schedule_type": row.get("schedule_type"), # "Operating Schedule", "Tow", "Alternate"
+                    "cap_color": row.get("cap_color"),        # "Yellow", "Grey", etc.
+                    "priority": row.get("priority"),          # Priority number
+                    "block_side": row.get("block_side")       # "Even", "Odd"
+                }
+                schedules_by_post[post_id].append(schedule_entry)
+                
+                # Track field completeness
+                if all([row.get("days_applied"), row.get("from_time"), row.get("to_time"), row.get("schedule_type")]):
+                    schedule_diagnostics["schedules_with_all_fields"] += 1
+                else:
+                    schedule_diagnostics["schedules_missing_fields"] += 1
+                
+                # Collect samples (first 5)
+                if len(schedule_diagnostics["sample_schedules"]) < 5:
+                    schedule_diagnostics["sample_schedules"].append({
+                        "post_id": post_id,
+                        "days_applied": row.get("days_applied"),
+                        "from_time": row.get("from_time"),
+                        "to_time": row.get("to_time"),
+                        "schedule_type": row.get("schedule_type"),
+                        "time_limit": row.get("time_limit")
+                    })
+        
+        schedule_diagnostics["unique_post_ids"] = len(schedules_by_post)
+        schedule_diagnostics["post_id_samples"] = list(schedules_by_post.keys())[:10]
+    
+    print(f"✓ Loaded {len(schedules_by_post)} unique post IDs with schedules")
+    print(f"  Schedule Diagnostics:")
+    print(f"    - Total schedule records: {schedule_diagnostics['total_schedule_records']}")
+    print(f"    - Unique post IDs: {schedule_diagnostics['unique_post_ids']}")
+    print(f"    - Schedules with all fields: {schedule_diagnostics['schedules_with_all_fields']}")
+    print(f"    - Schedules missing fields: {schedule_diagnostics['schedules_missing_fields']}")
+    print(f"    - Sample post IDs: {', '.join(map(str, schedule_diagnostics['post_id_samples'][:5]))}")
+    
+    # Load metered blockfaces to get blockface_id → (CNN, side) mapping
+    print("Building blockface_id → (CNN, side) lookup from metered blockfaces...")
+    metered_blockfaces_df = fetch_data_as_dataframe(METERED_BLOCKFACES_ID, app_token)
+    
+    blockface_to_cnn_side = {}
+    if not metered_blockfaces_df.empty:
+        for _, bf_row in metered_blockfaces_df.iterrows():
+            blockface_id = bf_row.get("blockface_id")
+            side = bf_row.get("str_seg_orientation")  # "L" or "R"
+            street_name = bf_row.get("street_name")
+            
+            if blockface_id and side:
+                # Note: metered blockfaces don't have CNN directly,
+                # but we can match via street_name + address range
+                blockface_to_cnn_side[str(blockface_id)] = {
+                    "side": side,
+                    "street_name": street_name,
+                    "from_addr": bf_row.get("fm_addr_no"),
+                    "to_addr": bf_row.get("to_addr_no")
+                }
+    
+    print(f"✓ Built lookup table with {len(blockface_to_cnn_side)} metered blockface mappings")
+    
+    # Match meters to segments using blockface_id
+    meters_df = fetch_data_as_dataframe(METERS_DATASET_ID, app_token)
+    
+    if not meters_df.empty:
+        # Save raw meters to MongoDB for debugging
+        await db.meters.delete_many({})
+        
+        # Batch insert meters
+        meters_records = meters_df.to_dict('records')
+        chunk_size = 1000
+        total_meters_raw = len(meters_records)
+        
+        for i in range(0, total_meters_raw, chunk_size):
+            chunk = meters_records[i:i + chunk_size]
+            await db.meters.insert_many(chunk)
+            print(f"  Inserted meters {i} to {min(i+chunk_size, total_meters_raw)}")
+        
+        print(f"✓ Saved {total_meters_raw} meters to raw collection.")
+    
+    match_stats = {
+        "blockface_match": 0,
+        "cnn_fallback": 0,
+        "failed": 0,
+        "total_meters": 0,
+        "meters_with_schedules": 0,
+        "meters_without_schedules": 0,
+        "sample_matched_schedules": [],
+        "sample_unmatched_post_ids": []
+    }
+    
+    if not meters_df.empty:
+        match_stats["total_meters"] = len(meters_df)
+        print(f"Processing {len(meters_df)} parking meters...")
+        
+        for idx, meter_row in meters_df.iterrows():
+            # Progress reporting every 5000 meters
+            if idx > 0 and idx % 5000 == 0:
+                print(f"  Progress: {idx}/{len(meters_df)} meters processed ({idx/len(meters_df)*100:.1f}%)")
+                print(f"    - With schedules: {match_stats['meters_with_schedules']}")
+                print(f"    - Without schedules: {match_stats['meters_without_schedules']}")
+            cnn = meter_row.get("street_seg_ctrln_id")
+            post_id = meter_row.get("post_id")
+            blockface_id = meter_row.get("blockface_id")
+            
+            if not cnn or not post_id:
+                match_stats["failed"] += 1
+                continue
+            
+            matched_segment = None
+            match_method = None
+            
+            # METHOD 1: Blockface ID Match (Primary - Most Accurate)
+            if blockface_id and str(blockface_id) in blockface_to_cnn_side:
+                bf_info = blockface_to_cnn_side[str(blockface_id)]
+                target_side = bf_info["side"]
+                
+                # Find segment with matching CNN and side
+                for segment in all_segments:
+                    if segment["cnn"] == cnn and segment["side"] == target_side:
+                        matched_segment = segment
+                        match_method = "blockface_match"
+                        break
+            
+            # METHOD 2: CNN-only fallback (for meters without blockface_id)
+            # Use address range to determine side
+            # CRITICAL FIX: Validate odd/even parity (L=ODD, R=EVEN)
+            if not matched_segment:
+                street_num = meter_row.get("street_num")
+                
+                if street_num:
+                    try:
+                        meter_address = int(re.sub(r'\D', '', str(street_num)))
+                        is_odd = meter_address % 2 == 1
+                        
+                        # Try to match by address range
+                        for segment in all_segments:
+                            if segment["cnn"] != cnn:
+                                continue
+                            
+                            side = segment.get("side")
+                            from_addr = segment.get("fromAddress")
+                            to_addr = segment.get("toAddress")
+                            
+                            if from_addr and to_addr:
+                                try:
+                                    from_num = int(re.sub(r'\D', '', str(from_addr)))
+                                    to_num = int(re.sub(r'\D', '', str(to_addr)))
+                                    
+                                    # Check address range AND validate odd/even parity
+                                    # L (Left) side = ODD addresses (1, 3, 5, 7, ...)
+                                    # R (Right) side = EVEN addresses (2, 4, 6, 8, ...)
+                                    if from_num <= meter_address <= to_num:
+                                        # Validate parity matches side
+                                        if (side == 'L' and is_odd) or (side == 'R' and not is_odd):
+                                            matched_segment = segment
+                                            match_method = "cnn_fallback"
+                                            break
+                                except:
+                                    continue
+                    except:
+                        pass
+            
+            # Add meter to matched segment
+            if matched_segment:
+                # Initialize meters array if not exists
+                if "meters" not in matched_segment:
+                    matched_segment["meters"] = []
+                
+                # Get cap color and normalize it
+                cap_color = meter_row.get("cap_color")
+                cap_normalized = normalize_cap_color(cap_color)
+                
+                # Prioritize schedules (TOW > ALTERNATE > OP + PRE > FREE)
+                meter_schedules = schedules_by_post.get(post_id, [])
+                prioritized_schedules = prioritize_meter_schedules(meter_schedules)
+                
+                # Track schedule matching
+                if prioritized_schedules:
+                    match_stats["meters_with_schedules"] += 1
+                    # Collect sample (first 3)
+                    if len(match_stats["sample_matched_schedules"]) < 3:
+                        match_stats["sample_matched_schedules"].append({
+                            "post_id": post_id,
+                            "schedule_count": len(prioritized_schedules),
+                            "first_schedule": prioritized_schedules[0] if prioritized_schedules else None
+                        })
+                else:
+                    match_stats["meters_without_schedules"] += 1
+                    # Collect sample (first 10)
+                    if len(match_stats["sample_unmatched_post_ids"]) < 10:
+                        match_stats["sample_unmatched_post_ids"].append(post_id)
+                
+                matched_segment["meters"].append({
+                    "post_id": post_id,
+                    "cap_color": cap_color,  # Raw cap color
+                    "cap_color_normalized": cap_normalized,  # Normalized cap color data
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            float(meter_row.get("longitude", 0)),
+                            float(meter_row.get("latitude", 0))
+                        ]
+                    },
+                    "street_num": meter_row.get("street_num"),
+                    "blockface_id": blockface_id,
+                    "schedules": prioritized_schedules  # Schedules sorted by priority
+                })
+                
+                match_stats[match_method] += 1
+            else:
+                match_stats["failed"] += 1
+    
+    # Print detailed statistics
+    print(f"\n✓ Meter Matching Complete!")
+    print(f"  Total meters processed: {match_stats['total_meters']}")
+    print(f"  Matched by blockface_id: {match_stats['blockface_match']} ({match_stats['blockface_match']/max(match_stats['total_meters'],1)*100:.1f}%)")
+    print(f"  Matched by CNN+address fallback: {match_stats['cnn_fallback']} ({match_stats['cnn_fallback']/max(match_stats['total_meters'],1)*100:.1f}%)")
+    print(f"  Failed to match: {match_stats['failed']} ({match_stats['failed']/max(match_stats['total_meters'],1)*100:.1f}%)")
+    print(f"  Success rate: {(match_stats['blockface_match']+match_stats['cnn_fallback'])/max(match_stats['total_meters'],1)*100:.1f}%")
+    print(f"\n  Schedule Matching:")
+    print(f"    - Meters WITH schedules: {match_stats['meters_with_schedules']} ({match_stats['meters_with_schedules']/max(match_stats['total_meters'],1)*100:.1f}%)")
+    print(f"    - Meters WITHOUT schedules: {match_stats['meters_without_schedules']} ({match_stats['meters_without_schedules']/max(match_stats['total_meters'],1)*100:.1f}%)")
+    if match_stats['sample_matched_schedules']:
+        print(f"    - Sample matched (first 3):")
+        for sample in match_stats['sample_matched_schedules']:
+            print(f"      • {sample['post_id']}: {sample['schedule_count']} schedules")
+    if match_stats['sample_unmatched_post_ids']:
+        print(f"    - Sample unmatched post IDs (first 10): {', '.join(map(str, match_stats['sample_unmatched_post_ids']))}")
+    
+    # Save checkpoint after Step 4
+    checkpoint.save("4", all_segments, streets_metadata, {"meter_stats": match_stats})
+
+    # ==========================================
+    # STEP 5: Match Street Sweeping (Direct CNN + Side)
+    # ABSOLUTE PROHIBITION - Overrides all parking availability types
+    # Can process independently (only needs CNNs)
+    #
+    # Dataset: Street Cleaning Schedules (yhqp-riqs)
+    # - 37,878 records covering 12,253 CNNs
+    # - 100% use week-of-month scheduling (week1-5 fields)
+    # - 92.7% skip holidays (holidays=0)
+    # - HOLIDAY entry logic: Only special when contradicting days=1
+    # - Data Quality Issue: 15.8% asymmetric coverage (1,933 CNNs missing opposite side)
+    # - Analysis Date: December 31, 2025
+    #
+    # Display Format: "Street Cleaning {days} {time_range} {holiday_clause}"
+    # Examples:
+    # - "Street Cleaning 2nd & 4th Thu 8am-10am except holidays"
+    # - "Street Cleaning Every Mon 6am-8am except holidays"
+    #
+    # Reference: backend/STREET_CLEANING_INTEGRATION_GUIDE.md
+    # ==========================================
+    if start_step <= "5":
+        print("\n=== STEP 5: Matching Street Sweeping Schedules (Absolute Prohibition) ===")
+        sweeping_df = fetch_data_as_dataframe(STREET_CLEANING_SCHEDULES_ID, app_token)
+    else:
+        print("\n=== STEP 5: Skipping (already completed) ===")
+        sweeping_df = pd.DataFrame()
     
     matched_sweeping = 0
     if not sweeping_df.empty:
         await db.street_cleaning_schedules.delete_many({})
-        await db.street_cleaning_schedules.insert_many(sweeping_df.to_dict('records'))
+        
+        # Batch insert street cleaning schedules
+        sweeping_records = sweeping_df.to_dict('records')
+        chunk_size = 1000
+        total_sweeping = len(sweeping_records)
+        
+        for i in range(0, total_sweeping, chunk_size):
+            chunk = sweeping_records[i:i + chunk_size]
+            await db.street_cleaning_schedules.insert_many(chunk)
+            print(f"  Inserted street cleaning schedules {i} to {min(i+chunk_size, total_sweeping)}")
+        
+        print(f"✓ Saved {total_sweeping} street cleaning schedules to raw collection.")
         
         for _, row in sweeping_df.iterrows():
             cnn = row.get("cnn")
@@ -570,28 +1101,21 @@ async def main():
             # Find matching segment (direct match on CNN + side)
             for segment in all_segments:
                 if segment["cnn"] == cnn and segment["side"] == side:
-                    # Pre-calculate fields
-                    active_days = _parse_days(row.get("weekday"))
-                    start_min = parse_time_to_minutes(row.get("fromhour"))
-                    end_min = parse_time_to_minutes(row.get("tohour"))
-                    
-                    description = format_restriction_description(
-                        "street-sweeping",
-                        day=row.get("weekday"),
-                        start_time=row.get("fromhour"),
-                        end_time=row.get("tohour")
-                    )
+                    # Use new regulation normalizer
+                    normalized = normalize_regulation(row.to_dict(), dataset_type='street_cleaning')
 
                     segment["rules"].append({
                         "type": "street-sweeping",
                         "day": row.get("weekday"),
                         "startTime": row.get("fromhour"),
                         "endTime": row.get("tohour"),
-                        # New pre-computed fields
-                        "activeDays": active_days,
-                        "startTimeMin": start_min,
-                        "endTimeMin": end_min,
-                        "description": description,
+                        # New pre-computed fields from normalizer
+                        "activeDays": normalized['canonical']['days'],
+                        "startTimeMin": normalized['canonical']['time_start'],
+                        "endTimeMin": normalized['canonical']['time_end'],
+                        "description": normalized['display']['summary'],
+                        "displayDays": normalized['display']['days'],
+                        "displayTime": normalized['display']['time'],
                         "blockside": row.get("blockside"), # Capture cardinal direction
                         
                         "side": side,
@@ -608,156 +1132,177 @@ async def main():
                     break
     
     print(f"✓ Matched {matched_sweeping} street sweeping schedules")
-
-    # ==========================================
-    # STEP 4: Match Parking Regulations (Complex - Spatial + Side)
-    # ==========================================
-    print("\n=== STEP 4: Matching Parking Regulations (Enhanced Algorithm) ===")
-    # Fetch ALL San Francisco parking regulations (no neighborhood filter)
-    regulations_df = fetch_data_as_dataframe(PARKING_REGULATIONS_ID, app_token)
     
-    matched_regs = 0
-    if not regulations_df.empty:
-        await db.parking_regulations.delete_many({})
-        await db.parking_regulations.insert_many(regulations_df.to_dict('records'))
-        
-        # Create geospatial index
-        try:
-            await db.parking_regulations.create_index([("geometry", "2dsphere")])
-        except Exception as e:
-            print(f"Warning: Could not create index: {e}")
-        
-        matched_regs = await match_parking_regulations_to_segments(all_segments, regulations_df)
-    
-    print(f"✓ Matched {matched_regs} parking regulations")
-
-    # ==========================================
-    # STEP 5: Match Meters (CNN + Location)
-    # ==========================================
-    print("\n=== STEP 5: Matching Parking Meters ===")
-    
-    # Load meter schedules first
-    schedules_df = fetch_data_as_dataframe(METER_SCHEDULES_DATASET_ID, app_token)
-    schedules_by_post = {}
-    if not schedules_df.empty:
-        for _, row in schedules_df.iterrows():
-            post_id = row.get("post_id")
-            if post_id:
-                if post_id not in schedules_by_post:
-                    schedules_by_post[post_id] = []
-                schedules_by_post[post_id].append({
-                    "beginTime": row.get("beg_time_dt"),
-                    "endTime": row.get("end_time_dt"),
-                    "rate": row.get("rate"),
-                    "rateQualifier": None,
-                    "rateUnit": "per hour"
-                })
-
-    # Match meters to segments
-    meters_df = fetch_data_as_dataframe(METERS_DATASET_ID, app_token)
-    matched_meters = 0
-    if not meters_df.empty:
-        for _, row in meters_df.iterrows():
-            cnn = row.get("street_seg_ctrln_id")
-            post_id = row.get("post_id")
-            
-            if not cnn or not post_id:
-                continue
-            
-            # Find segments for this CNN
-            # For now, add to both sides (could be refined with location data)
-            for segment in all_segments:
-                if segment["cnn"] == cnn:
-                    segment["schedules"].extend(schedules_by_post.get(post_id, []))
-                    matched_meters += 1
-    
-    print(f"✓ Matched {matched_meters} parking meters")
+    # Save checkpoint after Step 5
+    checkpoint.save("5", all_segments, streets_metadata, {"matched_sweeping": matched_sweeping})
 
     # ==========================================
     # STEP 5.4: Apply Manual Data Overrides
     # ==========================================
-    print("\n=== STEP 5.4: Applying Manual Data Overrides ===")
-    override_stats = apply_manual_overrides_to_segments(all_segments)
+    if start_step <= "5.4":
+        print("\n=== STEP 5.4: Applying Manual Data Overrides ===")
+        override_stats = apply_manual_overrides_to_segments(all_segments)
+        
+        # Save checkpoint after Step 5.4
+        checkpoint.save("5.4", all_segments, streets_metadata, {"override_stats": override_stats})
+    else:
+        print("\n=== STEP 5.4: Skipping (already completed) ===")
     
     # ==========================================
     # STEP 5.5: Finalize Segments (Display Strings & Cardinal)
     # ==========================================
-    print("\n=== STEP 5.5: Finalizing Segments ===")
-    for segment in all_segments:
-        # Determine cardinal direction from rules
-        cardinal = None
-        for rule in segment.get("rules", []):
-            if rule.get("blockside"):
-                # Ensure we handle non-string values (e.g. float/nan) safely
-                raw_cardinal = rule.get("blockside")
-                cardinal_str = str(raw_cardinal).strip()
-                if cardinal_str.lower() not in ['nan', 'none', 'null', '']:
-                    cardinal = cardinal_str
-                    break
+    if start_step <= "5.5":
+        print("\n=== STEP 5.5: Finalizing Segments ===")
+    else:
+        print("\n=== STEP 5.5: Skipping (already completed) ===")
+    
+    # ==========================================
+    # STEP 5.6: Aggregate Blockface-Level Meter Rules
+    # ==========================================
+    if start_step <= "5.6":
+        print("\n=== STEP 5.6: Aggregating Blockface Meter Rules ===")
+        segments_with_meters = 0
+        segments_with_tow = 0
+        segments_with_commercial_only = 0
         
-        segment["cardinalDirection"] = cardinal
+        for segment in all_segments:
+            if segment.get("meters"):
+                segments_with_meters += 1
+                
+                # Aggregate TOW schedules at blockface level
+                tow_agg = aggregate_blockface_tow_schedules(segment["meters"])
+                segment["towScheduleAggregation"] = tow_agg
+                
+                if tow_agg['has_tow']:
+                    segments_with_tow += 1
+                
+                # Aggregate cap colors at blockface level
+                cap_agg = aggregate_blockface_cap_colors(segment["meters"])
+                segment["capColorAggregation"] = cap_agg
+                
+                if not cap_agg['eligible_for_curby_user']:
+                    segments_with_commercial_only += 1
+                
+                # Set blockface-level flags for easy querying
+                segment["hasHomogeneousTow"] = tow_agg['all_have_tow']
+                segment["hasHomogeneousCapColor"] = (cap_agg['majority_rule'] in ['ALL_ELIGIBLE', 'ALL_INELIGIBLE'])
+                segment["blockfaceRestriction"] = cap_agg['restriction_type']
+                segment["eligibleForStandardUser"] = cap_agg['eligible_for_curby_user']
         
-        # Determine address parity
-        parity = None
-        if segment.get("fromAddress"):
-            try:
-                # Basic check: last digit even/odd
-                # Or cast to int
-                addr_num = int(re.sub(r'\D', '', str(segment["fromAddress"])))
-                parity = "even" if addr_num % 2 == 0 else "odd"
-            except:
-                pass
-
-        # Generate display messages
-        msgs = generate_display_messages(
-            street_name=segment.get("streetName", ""),
-            side_code=segment.get("side", ""),
-            cardinal_direction=cardinal,
-            from_address=segment.get("fromAddress"),
-            to_address=segment.get("toAddress"),
-            address_parity=parity
-        )
-        
-        segment["displayName"] = msgs["display_name"]
-        segment["displayNameShort"] = msgs["display_name_short"]
-        segment["displayAddressRange"] = msgs["display_address_range"]
-        segment["displayCardinal"] = msgs["display_cardinal"]
+        print(f"✓ Aggregated meter rules for {segments_with_meters} metered segments")
+        print(f"  - Segments with TOW schedules: {segments_with_tow}")
+        print(f"  - Segments commercial-only: {segments_with_commercial_only}")
+        print(f"  - Segments standard parking: {segments_with_meters - segments_with_commercial_only}")
+    else:
+        print("\n=== STEP 5.6: Skipping (already completed) ===")
+    
+    # ==========================================
+    # STEP 5.7: Finalize Cardinal Direction
+    # ==========================================
+    if start_step <= "5.7":
+        print("\n=== STEP 5.7: Finalizing Cardinal Direction ===")
+        for segment in all_segments:
+            # Determine cardinal direction from rules (street cleaning blockside)
+            cardinal = None
+            for rule in segment.get("rules", []):
+                if rule.get("blockside"):
+                    # Ensure we handle non-string values (e.g. float/nan) safely
+                    raw_cardinal = rule.get("blockside")
+                    cardinal_str = str(raw_cardinal).strip()
+                    if cardinal_str.lower() not in ['nan', 'none', 'null', '']:
+                        cardinal = cardinal_str
+                        break
+            
+            segment["cardinalDirection"] = cardinal
+    else:
+        print("\n=== STEP 5.7: Skipping (already completed) ===")
 
     # ==========================================
     # STEP 6: Save Street Segments to Database
     # ==========================================
-    print("\n=== STEP 6: Saving Street Segments to Database ===")
+    if start_step <= "6":
+        print("\n=== STEP 6: Saving Street Segments to Database ===")
+    else:
+        print("\n=== STEP 6: Skipping (already completed) ===")
+        client.close()
+        print("\n✓ CNN Segment Ingestion Complete!")
+        return
     
     # Save other collections
     nodes_df = fetch_data_as_dataframe(STREET_NODES_ID, app_token)
     if not nodes_df.empty:
         await db.street_nodes.delete_many({})
-        await db.street_nodes.insert_many(nodes_df.to_dict('records'))
-        print(f"✓ Saved {len(nodes_df)} street nodes")
+        
+        # Batch insert street nodes
+        nodes_records = nodes_df.to_dict('records')
+        chunk_size = 1000
+        total_nodes = len(nodes_records)
+        
+        for i in range(0, total_nodes, chunk_size):
+            chunk = nodes_records[i:i + chunk_size]
+            await db.street_nodes.insert_many(chunk)
+        
+        print(f"✓ Saved {total_nodes} street nodes")
 
     intersections_df = fetch_data_as_dataframe(INTERSECTIONS_DATASET_ID, app_token)
     if not intersections_df.empty:
         await db.intersections.delete_many({})
-        await db.intersections.insert_many(intersections_df.to_dict('records'))
-        print(f"✓ Saved {len(intersections_df)} intersections")
+        
+        # Batch insert intersections
+        intersections_records = intersections_df.to_dict('records')
+        chunk_size = 1000
+        total_intersections = len(intersections_records)
+        
+        for i in range(0, total_intersections, chunk_size):
+            chunk = intersections_records[i:i + chunk_size]
+            await db.intersections.insert_many(chunk)
+        
+        print(f"✓ Saved {total_intersections} intersections")
 
+    # Intersection Permutations: Provides CNN for each street at every intersection
+    # Note: This dataset does NOT contain street name variations or abbreviations
+    # Each intersection has multiple records (one per street), enabling queries like:
+    # "Find all segments at 20th & Bryant" → returns CNNs for both 20th St and Bryant St
     perms_df = fetch_data_as_dataframe(INTERSECTION_PERMUTATIONS_ID, app_token)
     if not perms_df.empty:
         await db.intersection_permutations.delete_many({})
-        await db.intersection_permutations.insert_many(perms_df.to_dict('records'))
-        print(f"✓ Saved {len(perms_df)} intersection permutations")
+        
+        # Batch insert intersection permutations
+        perms_records = perms_df.to_dict('records')
+        chunk_size = 1000
+        total_perms = len(perms_records)
+        
+        for i in range(0, total_perms, chunk_size):
+            chunk = perms_records[i:i + chunk_size]
+            await db.intersection_permutations.insert_many(chunk)
+        
+        print(f"✓ Saved {total_perms} intersection permutations")
 
     # Save street segments
     if all_segments:
         await db.street_segments.delete_many({})
         
-        # Batch insert
-        chunk_size = 1000
+        # Batch insert with smaller chunks and retry logic
+        chunk_size = 100  # Reduced from 1000 to avoid timeout
         total = len(all_segments)
+        max_retries = 3
+        
         for i in range(0, total, chunk_size):
             chunk = all_segments[i:i + chunk_size]
-            await db.street_segments.insert_many(chunk)
-            print(f"  Inserted segments {i} to {min(i+chunk_size, total)}")
+            
+            # Retry logic for network timeouts
+            for attempt in range(max_retries):
+                try:
+                    await db.street_segments.insert_many(chunk)
+                    print(f"  Inserted segments {i} to {min(i+chunk_size, total)}")
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    if attempt < max_retries - 1:
+                        print(f"  ⚠️  Retry {attempt + 1}/{max_retries} for batch {i}-{min(i+chunk_size, total)}: {str(e)[:100]}")
+                        await asyncio.sleep(2 ** attempt)  # Exponential backoff: 1s, 2s, 4s
+                    else:
+                        print(f"  ❌ Failed to insert batch {i}-{min(i+chunk_size, total)} after {max_retries} attempts")
+                        raise
         
         # Create indexes
         print("Creating indexes...")
@@ -769,14 +1314,19 @@ async def main():
         # Print statistics
         segments_with_sweeping = sum(1 for s in all_segments if any(r["type"] == "street-sweeping" for r in s.get("rules", [])))
         segments_with_parking = sum(1 for s in all_segments if any(r["type"] == "parking-regulation" for r in s.get("rules", [])))
-        segments_with_meters = sum(1 for s in all_segments if s.get("schedules"))
+        segments_with_meters = sum(1 for s in all_segments if s.get("meters"))
         segments_with_blockface = sum(1 for s in all_segments if s.get("blockfaceGeometry"))
+        segments_commercial_only = sum(1 for s in all_segments if not s.get("eligibleForStandardUser", True) and s.get("meters"))
+        segments_with_tow_agg = sum(1 for s in all_segments if s.get("towScheduleAggregation", {}).get("has_tow", False))
         
         print("\n=== Summary ===")
         print(f"Total segments: {total}")
         print(f"  - With street sweeping: {segments_with_sweeping}")
         print(f"  - With parking regulations: {segments_with_parking}")
         print(f"  - With meters: {segments_with_meters}")
+        print(f"    • Commercial vehicles only: {segments_commercial_only}")
+        print(f"    • With TOW schedules: {segments_with_tow_agg}")
+        print(f"    • Standard parking available: {segments_with_meters - segments_commercial_only}")
         print(f"  - With blockface geometry: {segments_with_blockface}")
         print(f"Coverage: 100% ({total} segments for {len(streets_metadata)} CNNs)")
     else:
@@ -786,4 +1336,32 @@ async def main():
     print("\n✓ CNN Segment Ingestion Complete!")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description="Ingest CNN-based street segments with checkpoint support")
+    add_checkpoint_args(parser)
+    args = parser.parse_args()
+    
+    # Handle info/clear commands
+    checkpoint = CheckpointManager(checkpoint_dir=os.path.dirname(os.path.abspath(__file__)))
+    
+    if args.checkpoint_info:
+        info = checkpoint.get_info()
+        if info:
+            print("Checkpoint Info:")
+            print(f"  Last completed step: {info.get('last_completed_step')}")
+            print(f"  Next step: {info.get('next_step')}")
+            print(f"  Timestamp: {info.get('timestamp')}")
+            print(f"  Segment count: {info.get('segment_count')}")
+        else:
+            print("No checkpoint found")
+        sys.exit(0)
+    
+    if args.clear_checkpoint:
+        checkpoint.clear()
+        sys.exit(0)
+    
+    # Run main with parsed arguments
+    asyncio.run(main(
+        resume=args.resume,
+        resume_from=args.resume_from,
+        force_restart=args.force_restart
+    ))

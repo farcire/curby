@@ -2,12 +2,13 @@
 Display Message Utilities
 
 Provides normalization and formatting functions for user-friendly display
-of parking information including street names, cardinal directions, days of week,
-and address ranges.
+of parking information including street names, cardinal directions, and address ranges.
+
+IMPORTANT: Day/time normalization has been moved to regulation_normalizer.py
+For all day/time parsing and formatting, use the regulation_normalizer module instead.
 """
 
 from typing import Optional, Dict
-import re
 
 
 # ============================================================================
@@ -88,6 +89,10 @@ def normalize_cardinal_direction(direction: Optional[str]) -> Optional[str]:
     if not direction:
         return None
     
+    # Handle non-string values (e.g., float/NaN from pandas)
+    if not isinstance(direction, str):
+        return None
+    
     direction_map = {
         'N': 'North',
         'S': 'South',
@@ -109,115 +114,6 @@ def normalize_cardinal_direction(direction: Optional[str]) -> Optional[str]:
     
     direction_upper = direction.strip().upper()
     return direction_map.get(direction_upper, direction)
-
-
-# ============================================================================
-# DAY OF WEEK NORMALIZATION
-# ============================================================================
-
-def normalize_day_of_week(day: Optional[str]) -> Optional[str]:
-    """
-    Normalize day of week to full name.
-    
-    Examples:
-        "Th" → "Thursday"
-        "Thurs" → "Thursday"
-        "Mon" → "Monday"
-        "TUES" → "Tuesday"
-    """
-    if not day:
-        return None
-    
-    day_clean = day.strip().upper()
-    
-    day_map = {
-        # Monday
-        'M': 'Monday',
-        'MON': 'Monday',
-        'MONDAY': 'Monday',
-        
-        # Tuesday
-        'TU': 'Tuesday',
-        'TUE': 'Tuesday',
-        'TUES': 'Tuesday',
-        'TUESDAY': 'Tuesday',
-        
-        # Wednesday
-        'W': 'Wednesday',
-        'WED': 'Wednesday',
-        'WEDNESDAY': 'Wednesday',
-        
-        # Thursday
-        'TH': 'Thursday',
-        'THU': 'Thursday',
-        'THUR': 'Thursday',
-        'THURS': 'Thursday',
-        'THURSDAY': 'Thursday',
-        
-        # Friday
-        'F': 'Friday',
-        'FRI': 'Friday',
-        'FRIDAY': 'Friday',
-        
-        # Saturday
-        'SA': 'Saturday',
-        'SAT': 'Saturday',
-        'SATURDAY': 'Saturday',
-        
-        # Sunday
-        'SU': 'Sunday',
-        'SUN': 'Sunday',
-        'SUNDAY': 'Sunday'
-    }
-    
-    return day_map.get(day_clean, day)
-
-
-def normalize_day_range(day_range: Optional[str]) -> Optional[str]:
-    """
-    Normalize day ranges like "Mon-Fri" to "Monday-Friday".
-    
-    Examples:
-        "Mon-Fri" → "Monday-Friday"
-        "Th-Sat" → "Thursday-Saturday"
-        "M-F" → "Monday-Friday"
-    """
-    if not day_range:
-        return None
-    
-    # Handle various dash types
-    for dash in ['-', '–', '—']:
-        if dash in day_range:
-            parts = day_range.split(dash)
-            if len(parts) == 2:
-                start_day = normalize_day_of_week(parts[0])
-                end_day = normalize_day_of_week(parts[1])
-                if start_day and end_day:
-                    return f"{start_day}-{end_day}"
-    
-    # Single day
-    return normalize_day_of_week(day_range)
-
-
-def normalize_day_list(day_list: Optional[str]) -> Optional[str]:
-    """
-    Normalize comma-separated day lists.
-    
-    Examples:
-        "Mon, Wed, Fri" → "Monday, Wednesday, Friday"
-        "Th, Sat" → "Thursday, Saturday"
-    """
-    if not day_list:
-        return None
-    
-    days = [d.strip() for d in day_list.split(',')]
-    normalized_days = [normalize_day_of_week(d) for d in days if d]
-    normalized_days = [d for d in normalized_days if d]
-    
-    if normalized_days:
-        return ', '.join(normalized_days)
-    
-    return day_list
 
 
 # ============================================================================
@@ -315,129 +211,43 @@ def generate_display_messages(
 
 
 # ============================================================================
-# TIME FORMATTING
-# ============================================================================
-
-def convert_24hr_to_12hr(time_str: Optional[str]) -> Optional[str]:
-    """
-    Convert 24-hour time format to 12-hour format with AM/PM.
-    
-    Examples:
-        "0" → "12:00 AM"
-        "6" → "6:00 AM"
-        "12" → "12:00 PM"
-        "18" → "6:00 PM"
-        "0-6" → "12:00 AM-6:00 AM"
-        "8:00 AM" → "8:00 AM" (already formatted)
-    """
-    if not time_str:
-        return None
-        
-    # Handle already formatted strings
-    if 'AM' in str(time_str).upper() or 'PM' in str(time_str).upper():
-        return time_str
-    
-    # If it already contains AM/PM, return as is
-    if 'AM' in time_str.upper() or 'PM' in time_str.upper():
-        return time_str
-    
-    # Handle range (e.g., "0-6")
-    if '-' in time_str:
-        parts = time_str.split('-')
-        if len(parts) == 2:
-            start = convert_24hr_to_12hr(parts[0].strip())
-            end = convert_24hr_to_12hr(parts[1].strip())
-            if start and end:
-                return f"{start}-{end}"
-    
-    # Parse the time
-    try:
-        # Remove any non-digit characters except colon
-        clean_time = re.sub(r'[^\d:]', '', str(time_str))
-        
-        # Handle formats like "0", "6", "18"
-        if ':' not in clean_time and len(clean_time) < 3:
-            hour = int(clean_time)
-            minute = 0
-        elif ':' in clean_time:
-            # Handle formats like "08:30", "18:45"
-            parts = clean_time.split(':')
-            hour = int(parts[0])
-            minute = int(parts[1]) if len(parts) > 1 else 0
-        elif len(clean_time) >= 3:
-             # Handle formats like "0900", "1830"
-            val = int(clean_time)
-            hour = val // 100
-            minute = val % 100
-        else:
-            return time_str
-        
-        # Convert to 12-hour format
-        if hour == 0:
-            hour_12 = 12
-            period = 'AM'
-        elif hour < 12:
-            hour_12 = hour
-            period = 'AM'
-        elif hour == 12:
-            hour_12 = 12
-            period = 'PM'
-        else:
-            hour_12 = hour - 12
-            period = 'PM'
-        
-        # Format with minutes
-        if minute == 0:
-            return f"{hour_12}:00 {period}"
-        else:
-            return f"{hour_12}:{minute:02d} {period}"
-            
-    except (ValueError, IndexError, TypeError):
-        # If parsing fails, return original
-        return time_str
-
-
-# ============================================================================
-# RESTRICTION FORMATTING
+# RESTRICTION FORMATTING (DEPRECATED - Use regulation_normalizer.py)
 # ============================================================================
 
 def format_restriction_description(
     restriction_type: str,
-    day: Optional[str] = None,
-    start_time: Optional[str] = None,
-    end_time: Optional[str] = None,
+    display_days: Optional[str] = None,
+    display_time: Optional[str] = None,
     time_limit: Optional[int] = None,
     permit_area: Optional[str] = None
 ) -> str:
     """
     Format a parking restriction for user-friendly display.
     
+    DEPRECATED: This function now expects pre-formatted display strings from regulation_normalizer.
+    Use regulation_normalizer.normalize_regulation() to get display_days and display_time.
+    
     Examples:
-        ("street-sweeping", "Th", "8:00 AM", "10:00 AM") 
+        ("street-sweeping", "Thursday", "8:00 AM-10:00 AM") 
             → "Street Cleaning Thursday 8:00 AM-10:00 AM"
         
-        ("time-limit", None, "9:00 AM", "6:00 PM", 120) 
+        ("time-limit", None, "9:00 AM-6:00 PM", 120) 
             → "2 Hour Limit 9:00 AM-6:00 PM"
         
-        ("rpp-zone", None, None, None, None, "W") 
+        ("rpp-zone", None, None, None, "W") 
             → "Permit Required (Area W)"
     """
-    # Normalize day if provided
-    normalized_day = normalize_day_of_week(day) if day else None
-    
     # Format based on restriction type
     if restriction_type == "street-sweeping":
-        day_str = normalized_day or "Unknown Day"
-        # Convert times to 12-hour format
-        if start_time and end_time:
-            start_12hr = convert_24hr_to_12hr(start_time)
-            end_12hr = convert_24hr_to_12hr(end_time)
-            time_str = f"{start_12hr}-{end_12hr}"
-        else:
-            time_str = ""
+        day_str = display_days or "Unknown Day"
+        time_str = display_time or ""
         return f"Street Cleaning {day_str} {time_str}".strip()
     
     elif restriction_type == "time-limit":
+        # DEPRECATED: This manual formatting should not be used.
+        # Duration display strings should be pre-computed by regulation_normalizer
+        # and passed in as displayDuration or displayDurationLong fields.
+        # This code is kept for backward compatibility only.
         if time_limit:
             hours = time_limit // 60
             minutes = time_limit % 60
@@ -450,13 +260,7 @@ def format_restriction_description(
         else:
             limit_str = "Time Limit"
         
-        # Convert times to 12-hour format
-        if start_time and end_time:
-            start_12hr = convert_24hr_to_12hr(start_time)
-            end_12hr = convert_24hr_to_12hr(end_time)
-            time_str = f"{start_12hr}-{end_12hr}"
-        else:
-            time_str = ""
+        time_str = display_time or ""
         return f"{limit_str} {time_str}".strip()
     
     elif restriction_type == "rpp-zone" or restriction_type == "permit":
@@ -465,24 +269,12 @@ def format_restriction_description(
         return "Permit Required"
     
     elif restriction_type == "no-parking":
-        # Convert times to 12-hour format
-        if start_time and end_time:
-            start_12hr = convert_24hr_to_12hr(start_time)
-            end_12hr = convert_24hr_to_12hr(end_time)
-            time_str = f"{start_12hr}-{end_12hr}"
-        else:
-            time_str = ""
-        day_str = normalized_day or ""
+        time_str = display_time or ""
+        day_str = display_days or ""
         return f"No Parking {day_str} {time_str}".strip()
     
     elif restriction_type == "tow-away":
-        # Convert times to 12-hour format
-        if start_time and end_time:
-            start_12hr = convert_24hr_to_12hr(start_time)
-            end_12hr = convert_24hr_to_12hr(end_time)
-            time_str = f"{start_12hr}-{end_12hr}"
-        else:
-            time_str = ""
+        time_str = display_time or ""
         return f"Tow-Away Zone {time_str}".strip()
     
     else:

@@ -56,40 +56,69 @@ def bearing_to_cardinal(bearing: float) -> str:
         return "N"
 
 
-def calculate_perpendicular_offset_side(centerline_coords: List[List[float]], 
+def calculate_perpendicular_offset_side(centerline_coords: List[List[float]],
                                        blockface_coords: List[List[float]]) -> str:
     """
     Determine if blockface is on the left or right side of the centerline.
+    Uses multi-point voting for robust side determination (matches ingestion logic).
     Returns: "L" or "R" or "UNKNOWN"
     """
     if not centerline_coords or len(centerline_coords) < 2:
         return "UNKNOWN"
-    if not blockface_coords or len(blockface_coords) < 1:
+    if not blockface_coords or len(blockface_coords) < 2:
         return "UNKNOWN"
     
-    # Use first segment of centerline to determine direction
-    c1 = centerline_coords[0]
-    c2 = centerline_coords[1] if len(centerline_coords) > 1 else centerline_coords[0]
+    # Sample multiple points along the blockface for voting (matches ingestion script)
+    sample_positions = [0.25, 0.5, 0.75]
+    votes = {'L': 0, 'R': 0}
     
-    # Use first point of blockface
-    b = blockface_coords[0]
+    for position in sample_positions:
+        # Get point on blockface at this position
+        idx = int(position * (len(blockface_coords) - 1))
+        b = blockface_coords[idx]
+        
+        # Find closest point on centerline to project onto
+        min_dist = float('inf')
+        closest_idx = 0
+        for i, c in enumerate(centerline_coords):
+            dist = math.sqrt((c[0] - b[0])**2 + (c[1] - b[1])**2)
+            if dist < min_dist:
+                min_dist = dist
+                closest_idx = i
+        
+        # Get tangent vector at closest point
+        if closest_idx == 0:
+            c1 = centerline_coords[0]
+            c2 = centerline_coords[1]
+        elif closest_idx == len(centerline_coords) - 1:
+            c1 = centerline_coords[-2]
+            c2 = centerline_coords[-1]
+        else:
+            c1 = centerline_coords[closest_idx]
+            c2 = centerline_coords[closest_idx + 1]
+        
+        # Tangent vector along centerline
+        dx = c2[0] - c1[0]
+        dy = c2[1] - c1[1]
+        
+        # Vector from centerline to blockface point
+        bx = b[0] - c1[0]
+        by = b[1] - c1[1]
+        
+        # Cross product (positive = left, negative = right)
+        cross = dx * by - dy * bx
+        
+        if abs(cross) > 1e-10:  # Avoid numerical noise
+            if cross > 0:
+                votes['L'] += 1
+            else:
+                votes['R'] += 1
     
-    # Calculate cross product to determine which side
-    # Vector from c1 to c2
-    dx = c2[0] - c1[0]
-    dy = c2[1] - c1[1]
-    
-    # Vector from c1 to blockface point
-    bx = b[0] - c1[0]
-    by = b[1] - c1[1]
-    
-    # Cross product (positive = left, negative = right)
-    cross = dx * by - dy * bx
-    
-    if abs(cross) < 1e-10:  # Too close to centerline
+    # Return side with most votes
+    if votes['L'] == 0 and votes['R'] == 0:
         return "UNKNOWN"
     
-    return "L" if cross > 0 else "R"
+    return 'L' if votes['L'] > votes['R'] else 'R'
 
 
 async def detect_issues():

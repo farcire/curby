@@ -6,8 +6,7 @@ import json
 import os
 import re
 from typing import List, Dict, Any, Optional
-from deterministic_parser import _parse_days, parse_time_to_minutes
-from display_utils import format_restriction_description
+from src.core.regulation_normalizer import normalize_regulation
 
 def load_manual_overrides(filepath: str = None) -> Dict:
     """Load manual data overrides from JSON file"""
@@ -40,7 +39,14 @@ def match_segment_to_override(segment: Dict, override: Dict) -> bool:
     # Match street name (regex)
     street_regex = criteria.get('street_name_regex')
     if street_regex:
-        if not re.search(street_regex, segment.get('streetName', ''), re.IGNORECASE):
+        street_name = segment.get('streetName')
+        # Handle None/null/non-string values
+        if street_name is None:
+            street_name = ''
+        elif not isinstance(street_name, str):
+            street_name = str(street_name)
+        
+        if not re.search(street_regex, street_name, re.IGNORECASE):
             return False
     
     # Match side
@@ -79,28 +85,22 @@ def apply_street_sweeping_override(segment: Dict, override: Dict) -> bool:
     """
     data = override.get('data', {})
     
-    # Pre-calculate fields
-    active_days = _parse_days(data.get('weekday'))
-    start_min = parse_time_to_minutes(data.get('fromhour'))
-    end_min = parse_time_to_minutes(data.get('tohour'))
+    # Use new regulation normalizer
+    normalized = normalize_regulation(data, dataset_type='manual')
     
-    description = format_restriction_description(
-        "street-sweeping",
-        day=data.get('weekday'),
-        start_time=data.get('fromhour'),
-        end_time=data.get('tohour')
-    )
-    
-    # Create rule
+    # Create rule with normalized data
     rule = {
         "type": data.get('type', 'street-sweeping'),
         "day": data.get('day'),
         "startTime": data.get('startTime'),
         "endTime": data.get('endTime'),
-        "activeDays": active_days,
-        "startTimeMin": start_min,
-        "endTimeMin": end_min,
-        "description": description,
+        # New pre-computed fields from normalizer
+        "activeDays": normalized['canonical']['days'],
+        "startTimeMin": normalized['canonical']['time_start'],
+        "endTimeMin": normalized['canonical']['time_end'],
+        "description": normalized['display']['summary'],
+        "displayDays": normalized['display']['days'],
+        "displayTime": normalized['display']['time'],
         "blockside": data.get('blockside'),
         "side": data.get('cnnrightleft'),
         "limits": data.get('limits'),

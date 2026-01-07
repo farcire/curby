@@ -162,6 +162,7 @@ function transformBackendBlockface(backendData: any): Blockface {
     streetName: streetName,
     side: parseSide(backendData.side),
     rules: rules,
+    interpretation: backendData.interpretation, // Pass through entire interpretation object with rules_display
     fromStreet: backendData.fromStreet,
     toStreet: backendData.toStreet,
     fromAddress: backendData.fromAddress,

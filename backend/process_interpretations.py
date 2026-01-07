@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import motor.motor_asyncio
 from restriction_interpreter import RestrictionInterpreter
 from datetime import datetime
+from regulation_normalizer import parse_duration
 
 # Load environment variables
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
@@ -85,14 +86,10 @@ async def process_unique_regulations():
             # Clean up NaN/None
             clean_pattern = {k: (v if str(v).lower() != 'nan' else None) for k, v in pattern.items()}
             
-            # Extract time limit
+            # Extract time limit using standardized duration parser
             hr_limit = clean_pattern.get('hrlimit')
-            time_limit_minutes = None
-            try:
-                if hr_limit and float(hr_limit) > 0:
-                    time_limit_minutes = int(float(hr_limit) * 60)
-            except:
-                pass
+            permit_area = clean_pattern.get('rpparea1')
+            time_limit_minutes = parse_duration(hr_limit, unit_hint='hours', permit_area=permit_area)
 
             interpretation = interpreter.interpret_restriction(
                 regulation_text=f"{clean_pattern.get('regulation', '')} {clean_pattern.get('regdetails', '')}".strip(),

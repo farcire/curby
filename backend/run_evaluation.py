@@ -66,8 +66,10 @@ def run_evaluation():
             # But main input is regulation_text
             # Extract structured fields
             hr_limit = original_data.get('hrlimit')
+            # Use standardized duration parser
+            from regulation_normalizer import parse_duration
             try:
-                time_limit_minutes = int(float(hr_limit) * 60) if hr_limit and str(hr_limit).lower() != 'nan' and float(hr_limit) > 0 else None
+                time_limit_minutes = parse_duration(hr_limit, unit_hint='hours') if hr_limit and str(hr_limit).lower() != 'nan' else None
             except (ValueError, TypeError):
                 time_limit_minutes = None
 
