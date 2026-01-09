@@ -4,13 +4,19 @@ venv/
 env/
 __pycache__/
 *.pyc
-*.pyo
 
-# Data files  
+# Environment files
+.env
+backend/.env
+backend/src/api/.env
+frontend/.env
+
+# Data files
 backend/*.json
 backend/*.csv
 backend/*.pkl
 backend/*.pkl.gz
+unique_regulations.json
 
 # Logs
 *.log
@@ -18,7 +24,6 @@ logs/
 
 # IDE
 .DS_Store
-.vscode/*
 
 # Database
 backend/database_backups/
@@ -26,7 +31,3 @@ backend/database_backups/
 # Build
 frontend/dist/
 frontend/node_modules/
-
-# Temp
-*.tmp
-temp/
