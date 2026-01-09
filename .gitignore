@@ -1,77 +1,41 @@
 # Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-*.egg-info/
-dist/
-build/
-
-# Virtual Environments
 .venv/
 venv/
-ENV/
 env/
+__pycache__/
+*.pyc
+*.pyo
 
-# Environment Variables
-.env
-.env.local
-.env.*.local
-backend/.env
+cd ..
+cat > .gitignore << 'EOF'
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
 
-# IDEs
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Node
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Frontend Build
-frontend/dist/
-frontend/build/
-frontend/.cache/
+# Data files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+*.csv
+*.pkl
+*.pkl.gz
 
 # Logs
 *.log
-logs/
-*.log.*
+
+# IDE
+.DS_Store
+.vscode/*
+!.vscode/settings.json
 
 # Database
-*.db
-*.sqlite
-*.sqlite3
+database_backups/
 
-# Temporary files
-*.tmp
-*.temp
-.cache/
-
-# Test coverage
-coverage/
-.nyc_output/
-*.lcov
-
-# Misc
-response.json
-unique_regulations.jsonbackend/database_backups/
-backend/cnn_master_reference.json
-backend/cnn_master_reference.json.backup_before_rates
-backend/DO_NOT_USE_cnn_master_with_blockfaces.json
-backend/cnn_master_with_blockfaces_CORRECTED.json
+# Build
+frontend/dist/
+frontend/node_modules/
