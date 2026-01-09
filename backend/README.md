@@ -1,313 +1,71 @@
-# Curby Backend - Parking Regulation System
+# Parking Regulation API - Backend
 
-**Last Updated:** December 4, 2025
-**Status:** ✅ Beta Ready (⚠️ Known Data Quality Issues)
+**Production API for San Francisco parking regulations, street sweeping, and meter data.**
 
-## Overview
-
-Backend system for managing San Francisco parking regulations, street sweeping schedules, and meter data using CNN-based street segments. Provides REST API for real-time parking eligibility queries with <100ms response time.
-
-## Recent Investigation & Architecture Change
-
-### Summary of Investigation (Nov 2024)
-
-**Problem Identified**: Parking regulations were not being joined to blockfaces during data ingestion.
-
-**Root Causes Found**:
-1. Parking regulations lack CNN fields → Required spatial join instead of direct CNN matching
-2. Function call bug in side determination (line 324)
-3. Incorrect field mapping for regulation data
-4. **Critical**: Only 7.4% of streets have blockface geometries from pep9-66vw dataset
-
-**Fixes Implemented**:
-- ✅ Spatial join for parking regulations using geometric distance matching
-- ✅ Fixed `get_side_of_street()` function call
-- ✅ Corrected field mappings (hrlimit, rpparea1, regulation, etc.)
-- ✅ Result: 136 parking regulations successfully attached
-
-**Architecture Decision**: 
-Migrating from blockface-based to **CNN-based street segment architecture** to achieve 100% coverage.
-
-### Key Documents
-
-1. **[INVESTIGATION_SUMMARY.md](INVESTIGATION_SUMMARY.md)** - Complete investigation findings
-2. **[ARCHITECTURE_COMPARISON.md](ARCHITECTURE_COMPARISON.md)** - Synthetic vs CNN-based comparison
-3. **[CNN_SEGMENT_IMPLEMENTATION_PLAN.md](CNN_SEGMENT_IMPLEMENTATION_PLAN.md)** - Implementation roadmap
-4. **[GEOSPATIAL_JOIN_ANALYSIS.md](GEOSPATIAL_JOIN_ANALYSIS.md)** - Spatial join technical details
-
-## Current Status
-
-- ✅ **Technical Fixes**: Complete
-- ✅ **Architecture Planning**: Complete
-- ✅ **CNN Segment Implementation**: Complete (34,292 segments)
-- ✅ **Database**: Fully populated with Mission District data
-- ✅ **API**: Production-ready with geospatial queries
-- ✅ **Frontend Integration**: Complete
-- ✅ **Performance**: <100ms for 95% of queries
-- 🔄 **AI Integration**: In progress (Gemini 2.0 Flash for regulation interpretation)
-- ⚠️ **Data Quality**: Known issues documented (see [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md))
-
-## Data Sources
-
-- **Active Streets** (3psu-pn9h): Street centerlines with CNN identifiers **+ Address Ranges** (lf_fadd, lf_toadd, rt_fadd, rt_toadd)
-  - ✅ **Address ranges now stored in StreetSegment model** (fromAddress, toAddress fields)
-  - Enables direct address-based queries and conflict resolution
-- **Parking Regulations** (hi6h-neyh): Regulations with geometry and RPP codes (`rpparea1` field) - **PRIMARY source for RPP zones**
-- **Street Cleaning** (yhqp-riqs): Sweeping schedules by CNN + side + cardinal directions (via `blockside` field)
-  - ✅ **Fixed**: Cardinal directions now correctly ingested and displayed (Nov 2024)
-  - ⚠️ **Known Issue**: Some street cleaning records missing from dataset (see [DATA_QUALITY_ISSUES.md](DATA_QUALITY_ISSUES.md#issue-1-missing-street-cleaning-records))
-- **Parcel Overlay** (9grn-xjpx): Administrative boundaries for conflict resolution (boundary cases only)
-- **Blockface Geometries** (pep9-66vw): Side-specific geometries (7.4% coverage)
-- **Meters** (8vzz-qzz9, 6cqg-dxku): Parking meter locations and schedules
-
-## Architecture
-
-### Current (Blockface-Based)
-```
-Blockface {
-    cnn: String
-    side: "L" | "R"
-    geometry: LineString  // Only 7.4% have this
-    rules: [...]
-}
-```
-
-**Problem**: Only 148 of 2,007 CNNs have blockface geometries
-
-### New (CNN-Based Street Segments)
-```
-StreetSegment {
-    cnn: String           // Primary identifier
-    side: "L" | "R"       // Which side of street
-    streetName: String
-    fromStreet: String    // Block boundaries
-    toStreet: String
-    fromAddress: String   // Starting address (e.g., "3401")
-    toAddress: String     // Ending address (e.g., "3449")
-    centerlineGeometry: LineString  // Always available
-    blockfaceGeometry: LineString | null  // Optional
-    rules: [...]
-}
-```
-
-**Benefits**:
-- 100% coverage (4,014 segments = 2,007 CNNs × 2 sides)
-- Address ranges stored for each side
-- Enables address-based RPP matching and queries
-
-## Installation
-
+## Quick Start
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Run the API
+./run.sh
 
-# Set up environment
-cp .env.example .env
-# Edit .env with your MongoDB URI and SFMTA API token
-
-# Run ingestion
-bash run_ingestion.sh
+# Test it works
+curl http://localhost:8000/healthz
 ```
 
-## Quick Start - Run Migration
-
-### Execute CNN Segment Migration
-```bash
-cd backend
-./run_cnn_segment_migration.sh
+## Project Structure
 ```
-
-Or manually:
-```bash
-python3 ingest_data_cnn_segments.py  # Step 1: Ingest
-python3 validate_cnn_segments.py     # Step 2: Validate
+backend/
+├── src/                   # Production code (3 files, 2,871 lines)
+│   ├── api/              
+│   │   ├── main.py       # FastAPI server (419 lines)
+│   │   └── models.py     # Pydantic models (117 lines)
+│   └── core/
+│       └── regulation_normalizer.py  # Business logic (2,335 lines)
+├── scripts/               # Utility scripts (174 files)
+│   ├── analysis/         # Data analysis (31 files)
+│   ├── ingestion/        # Data loading (16 files)
+│   ├── maintenance/      # DB operations (33 files)
+│   └── utilities/        # Testing & validation (94 files)
+├── config/
+│   ├── .env             # Environment variables
+│   └── requirements.txt # Dependencies
+├── docs/                 # Documentation
+│   └── PROJECT_HISTORY.md  # Full project history
+└── tests/                # Tests
 ```
-
-### Expected Results
-- ✅ 34,324 street segments created (2 per CNN for 17,162 Active Streets)
-- ✅ 100% coverage achieved (All Active Streets)
-- ✅ 22,573 segments with street cleaning data (65.8% of segments)
-  - **Note**: This reflects 100% of the data provided in the cleaning dataset.
-  - The missing ~34% corresponds to streets not present in the official `yhqp-riqs` source (likely private/non-swept streets).
-- ✅ 6,965 segments with parking regulations
-- ✅ 4,090 segments with parking meters
 
 ## API Endpoints
 
-### Current
-- `GET /api/blockfaces` - Get blockfaces with rules
-- `GET /api/blockfaces/{id}` - Get specific blockface
+- GET /healthz - Health check
+- GET /api/v1/blockfaces - Get parking segments by location
+- GET /api/v1/search - Search addresses/intersections  
+- POST /api/v1/error-reports - Submit error reports
 
-### New (CNN Segments - To Be Implemented)
-- `GET /api/segments` - Get street segments with rules
-- `GET /api/segments/{cnn}/{side}` - Get specific segment
+Performance: <100ms response time for 95% of queries
 
-## Testing & Validation
+## Configuration
 
-### CNN Segment Validation
-```bash
-# Comprehensive validation (recommended after migration)
-python3 validate_cnn_segments.py
-```
+Create config/.env:
 
-### Legacy Testing Scripts
-```bash
-# Quick database check
-python quick_check.py
-
-# Validate CNN mappings
-python verify_cnn_mappings.py
-
-# Check for missing blockfaces
-python check_missing_blockfaces.py
-```
+MONGODB_URI=mongodb://localhost:27017/parking_db
+CORS_ORIGINS=http://localhost:5173,http://localhost:5174
 
 ## Development
 
-### Benchmarking
-- **`benchmark_api.py`**: Run performance tests against the local API.
-- **`BENCHMARK_LOG.md`**: Historical log of performance metrics.
+Install:
+pip install -r config/requirements.txt
 
-### Key Files
-- **`ingest_data_cnn_segments.py`** - New CNN-based ingestion (522 lines)
-- **`ingest_data.py`** - Current ingestion with **address-based RPP matching**
-- **`models.py`** - Data models (includes StreetSegment)
-- **`main.py`** - FastAPI application
-- **`validate_cnn_segments.py`** - Validation script (226 lines)
-- **`run_cnn_segment_migration.sh`** - Migration runner
-- **`RPP_IMPLEMENTATION_PLAN.md`** - Four-method RPP validation strategy
+Run API:
+./run.sh
 
-### CNN Segment Ingestion Flow
-1. **Load Active Streets** → Create 2 segments per CNN (L & R) + **Store address ranges** (fromAddress, toAddress)
-2. **Add Blockface Geometries** → Optional enhancement where available
-3. **Match Street Sweeping** → Direct CNN + side match + capture cardinal directions
-4. **Match Parking Regulations** → Spatial join with distance analysis (<10m = clear, 10-50m = boundary)
-   - Extract RPP zones from regulation's `rpparea1` field
-   - Assign to CNN L and/or CNN R based on distance
-   - Use Parcel Overlay for boundary conflict resolution
-5. **Match Meters** → CNN + location inference
-6. **Save to MongoDB** → With proper indexes
+Run a script:
+python scripts/ingestion/build_cnn_master.py
 
-**Address Range Storage (Implemented Nov 2024):**
-- Left segments: `fromAddress` = `lf_fadd`, `toAddress` = `lf_toadd`
-- Right segments: `fromAddress` = `rt_fadd`, `toAddress` = `rt_toadd`
-- Example: CNN 799000 Left side stores "3401" to "3449"
+## Documentation
 
-### Key Features
-- **Spatial join for regulations**: Distance-based CNN L/R assignment with boundary resolution
-- **RPP from regulations**: RPP zones come directly from regulation records (`rpparea1`)
-- **Address ranges for queries**: Enable address-based lookups and conflict resolution
-- **Direct street cleaning join**: 100% coverage via CNN + Side fields
-- **Cardinal directions**: User-friendly display (N, S, E, W, etc.)
-- **100% coverage**: Every CNN gets L & R segments
-- **Dual geometries**: Centerline (required) + blockface (optional)
+See docs/PROJECT_HISTORY.md for complete project context, investigation findings, and architecture decisions.
 
-## Implementation Status
+## Next Steps
 
-### ✅ Phase 1: Core Implementation (COMPLETE)
-- [x] StreetSegment data model
-- [x] Segment generation logic (2 per CNN)
-- [x] Enhanced parking regulation matching
-- [x] Complete ingestion rewrite
-- [x] Validation script
-- [x] Migration tools
-
-### ✅ Phase 2: API Implementation (COMPLETE)
-- [x] `/api/v1/blockfaces` endpoint with geospatial queries
-- [x] `/api/v1/error-reports` endpoint
-- [x] Runtime spatial joins for regulations
-- [x] Performance optimization (<100ms response time)
-
-### ✅ Phase 3: Frontend Integration (COMPLETE)
-- [x] Update data types
-- [x] Modify API calls
-- [x] Update map visualization
-- [x] Navigation & Zoom Overhaul (Vicinity, Walking, Neighborhood)
-- [x] PWA support with offline capabilities
-
-### 🔄 Phase 4: AI Integration (IN PROGRESS)
-- [ ] Extract unique regulation combinations (~500)
-- [ ] Process through Gemini 2.0 Flash (Worker → Judge pipeline)
-- [ ] Create interpretation cache for instant lookups
-- [ ] Integrate with API endpoints
-
-See archived documentation in [`archive/old_docs/`](archive/old_docs/) for historical implementation details.
-
-## Performance Benchmarks
-
-- **Standard queries** (300m radius): <100ms
-- **Medium queries** (1000m radius): <1s
-- **Data coverage**: 34,292 street segments
-- **Mission District**: 100% coverage
-- **Database size**: ~50MB (compressed)
-
-## Monitoring & Debugging
-
-### Check Ingestion Status
-```bash
-python check_ingestion_status.py
-```
-
-### Validate Data
-```bash
-python validate_cnn_segments.py
-```
-
-### API Benchmarking
-```bash
-python benchmark_api.py
-```
-
-See [`BENCHMARK_LOG.md`](BENCHMARK_LOG.md) for historical performance data.
-
-## Data Quality
-
-### Known Issues
-
-The system has identified data quality issues in the source SFMTA datasets. See [`DATA_QUALITY_ISSUES.md`](DATA_QUALITY_ISSUES.md) for complete details.
-
-**Critical Issue**: Some street cleaning schedules are missing from the Socrata dataset despite existing physically. Example:
-- **CNN 961000R** (19th St, North side): Missing Thursday 12AM-6AM cleaning schedule
-- Impact: Users won't see this restriction, risking parking tickets
-- Status: Documented and reported to SFMTA
-
-### Data Quality Tools
-
-**Investigation Scripts**:
-- [`inspect_cnn_961000.py`](inspect_cnn_961000.py) - Investigate specific CNN data
-- Investigation reports in [`cnn_961000_investigation/`](cnn_961000_investigation/)
-
-**Validation Scripts** (Planned):
-- Missing street cleaning detector
-- Cardinal direction validator
-- Data completeness checker
-
-### Workarounds Implemented
-
-**None yet** - Planned workarounds:
-1. Cardinal direction inference from geometry
-2. Street limit fallback to Active Streets data
-3. Display name generation without street cleaning data
-4. User warnings for incomplete data
-
-See [`DATA_QUALITY_ISSUES.md`](DATA_QUALITY_ISSUES.md) for detailed action plans.
-
-## Related Documentation
-
-- [`../README.md`](../README.md) - Main project overview
-- [`../refined-prd.md`](../refined-prd.md) - Product Requirements Document
-- [`../Backend-dev-plan.md`](../Backend-dev-plan.md) - Development plan
-- [`../UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](../UNIQUE_REGULATIONS_EXTRACTION_PLAN.md) - AI interpretation system
-- [`../GEMINI_FREE_TIER_STRATEGY.md`](../GEMINI_FREE_TIER_STRATEGY.md) - Cost-efficient LLM strategy
-
-## Contributing
-
-When making changes:
-1. Update relevant documentation
-2. Run validation scripts
-3. Check test coverage
-4. Update this README if architecture changes
-
-## License
-
-See main project LICENSE
+- Document recurring vs one-time scripts
+- Move one-time analysis scripts to archive/
+- Add tests in tests/

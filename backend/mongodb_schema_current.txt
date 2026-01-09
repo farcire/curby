@@ -1,0 +1,100 @@
+================================================================================
+MONGODB STREET_SEGMENTS SCHEMA
+================================================================================
+
+Sample Document: CNN 2615000 Side L
+Total Fields: 33
+Top-Level Categories: 18
+
+================================================================================
+
+## BLOCKFACEGEOMETRY
+--------------------------------------------------------------------------------
+  blockfaceGeometry                                  object              
+  blockfaceGeometry.type                             str                  = LineString
+  blockfaceGeometry.coordinates                      array[list]          = [-122.44179444211963, 37.780124882867135]
+
+## CARDINALDIRECTION
+--------------------------------------------------------------------------------
+  cardinalDirection                                  str                  = West
+
+## CENTERLINEGEOMETRY
+--------------------------------------------------------------------------------
+  centerlineGeometry                                 object              
+  centerlineGeometry.type                            str                  = LineString
+  centerlineGeometry.coordinates                     array[list]          = [-122.441738808, 37.780129615]
+
+## CNN
+--------------------------------------------------------------------------------
+  cnn                                                str                  = 2615000
+
+## DISPLAYADDRESSRANGE
+--------------------------------------------------------------------------------
+  displayAddressRange                                str                  = 951-1099
+
+## DISPLAYCARDINAL
+--------------------------------------------------------------------------------
+  displayCardinal                                    str                  = West side
+
+## DISPLAYNAME
+--------------------------------------------------------------------------------
+  displayName                                        str                  = Baker Street (West side, 951-1099)
+
+## DISPLAYNAMESHORT
+--------------------------------------------------------------------------------
+  displayNameShort                                   str                  = Baker Street (West side)
+
+## FROMADDRESS
+--------------------------------------------------------------------------------
+  fromAddress                                        str                  = 951
+
+## FROMSTREET
+--------------------------------------------------------------------------------
+  fromStreet                                         str                  = Pinar Ln
+
+## LAYER
+--------------------------------------------------------------------------------
+  layer                                              str                  = STREETS
+
+## RULES
+--------------------------------------------------------------------------------
+  rules                                              array[object]        = 1 items
+  rules[0].type                                      str                  = street-sweeping
+  rules[0].day                                       str                  = Wed
+  rules[0].startTime                                 str                  = 9
+  rules[0].endTime                                   str                  = 11
+  rules[0].activeDays                                array[int]           = 2
+  rules[0].startTimeMin                              int                  = 540
+  rules[0].endTimeMin                                int                  = 660
+  rules[0].description                               str                  = Street Cleaning Wednesday 9:00 AM-11:00 AM
+  rules[0].blockside                                 str                  = West
+  rules[0].side                                      str                  = L
+  rules[0].limits                                    str                  = Pinar Ln  -  Terra Vista Ave
+
+## SCHEDULES
+--------------------------------------------------------------------------------
+  schedules                                          array[empty]         = []
+
+## SIDE
+--------------------------------------------------------------------------------
+  side                                               str                  = L
+
+## STREETNAME
+--------------------------------------------------------------------------------
+  streetName                                         str                  = BAKER ST
+
+## TOADDRESS
+--------------------------------------------------------------------------------
+  toAddress                                          str                  = 1099
+
+## TOSTREET
+--------------------------------------------------------------------------------
+  toStreet                                           str                  = Terra Vista Ave
+
+## ZIP_CODE
+--------------------------------------------------------------------------------
+  zip_code                                           str                  = 94115
+
+================================================================================
+END OF SCHEMA
+================================================================================

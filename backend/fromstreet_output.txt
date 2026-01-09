@@ -1,0 +1,111 @@
+================================================================================
+INVESTIGATING fromStreet FIELD ACCURACY
+================================================================================
+
+Found 20 segments with fromStreet populated
+
+Sample Analysis:
+--------------------------------------------------------------------------------
+
+CNN 13100000 (side L):
+  Current fromStreet: START: 1000-1075 BLOCK
+  Current toStreet: FLORENCE ST
+  Street name: VALLEJO
+  Streets collection:
+    f_st: START: 1000-1075 BLOCK
+    t_st: FLORENCE ST
+    street: VALLEJO
+
+CNN 13100000 (side R):
+  Current fromStreet: START: 1000-1075 BLOCK
+  Current toStreet: FLORENCE ST
+  Street name: VALLEJO
+  Streets collection:
+    f_st: START: 1000-1075 BLOCK
+    t_st: FLORENCE ST
+    street: VALLEJO
+
+CNN 13107000 (side L):
+  Current fromStreet: LARKIN ST
+  Current toStreet: POLK ST
+  Street name: VALLEJO
+  Streets collection:
+    f_st: LARKIN ST
+    t_st: POLK ST
+    street: VALLEJO
+
+CNN 13107000 (side R):
+  Current fromStreet: LARKIN ST
+  Current toStreet: POLK ST
+  Street name: VALLEJO
+  Streets collection:
+    f_st: LARKIN ST
+    t_st: POLK ST
+    street: VALLEJO
+
+CNN 13114000 (side L):
+  Current fromStreet: Buchanan St
+  Current toStreet: Webster St
+  Street name: VALLEJO
+  Streets collection:
+    f_st: BUCHANAN ST
+    t_st: WEBSTER ST
+    street: VALLEJO
+
+CNN 13114000 (side R):
+  Current fromStreet: Buchanan St
+  Current toStreet: Webster St
+  Street name: VALLEJO
+  Streets collection:
+    f_st: BUCHANAN ST
+    t_st: WEBSTER ST
+    street: VALLEJO
+
+CNN 13121000 (side L):
+  Current fromStreet: Divisadero St
+  Current toStreet: Broderick St
+  Street name: VALLEJO
+  Streets collection:
+    f_st: DIVISADERO ST
+    t_st: BRODERICK ST
+    street: VALLEJO
+
+CNN 13121000 (side R):
+  Current fromStreet: Divisadero St
+  Current toStreet: Broderick St
+  Street name: VALLEJO
+  Streets collection:
+    f_st: DIVISADERO ST
+    t_st: BRODERICK ST
+    street: VALLEJO
+
+CNN 13127000 (side L):
+  Current fromStreet: Church St
+  Current toStreet: Sanchez St
+  Street name: VALLEY
+  Streets collection:
+    f_st: CHURCH ST
+    t_st: SANCHEZ ST
+    street: VALLEY
+
+CNN 13127000 (side R):
+  Current fromStreet: Church St
+  Current toStreet: Sanchez St
+  Street name: VALLEY
+  Streets collection:
+    f_st: CHURCH ST
+    t_st: SANCHEZ ST
+    street: VALLEY
+
+================================================================================
+CHECKING DATA SOURCE CONSISTENCY
+================================================================================
+
+Found 12 mismatches between segment.fromStreet and streets.f_st:
+  CNN 13114000: 'Buchanan St' vs 'BUCHANAN ST'
+  CNN 13114000: 'Buchanan St' vs 'BUCHANAN ST'
+  CNN 13121000: 'Divisadero St' vs 'DIVISADERO ST'
+  CNN 13121000: 'Divisadero St' vs 'DIVISADERO ST'
+  CNN 13127000: 'Church St' vs 'CHURCH ST'
+
+✓ Detailed report saved to fromstreet_investigation.json

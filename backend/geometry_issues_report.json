@@ -85384,13 +85384,13 @@
         "cardinal": "West"
       },
       {
-        "cnn": "13160201",
+        "cnn": "13157101",
         "side": "R",
         "detected_side": "L",
         "streetName": "VAN NESS AVE",
-        "fromAddress": "1800",
-        "toAddress": "1898",
-        "cardinal": "East"
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "13053000",
@@ -85438,13 +85438,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "12549101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "THE EMBARCADERO",
-        "fromAddress": "41",
-        "toAddress": "49",
-        "cardinal": "West"
+        "cnn": "12725000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "TURK ST",
+        "fromAddress": "800",
+        "toAddress": "898",
+        "cardinal": "North"
       },
       {
         "cnn": "12394000",
@@ -85481,15 +85481,6 @@
         "fromAddress": "1500",
         "toAddress": "1598",
         "cardinal": "North"
-      },
-      {
-        "cnn": "12425000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "TAYLOR ST",
-        "fromAddress": "1",
-        "toAddress": "79",
-        "cardinal": "SouthWest"
       },
       {
         "cnn": "12324000",
@@ -85663,6 +85654,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "10546000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "POLK ST",
+        "fromAddress": "2",
+        "toAddress": "98",
+        "cardinal": "East"
+      },
+      {
         "cnn": "10454000",
         "side": "L",
         "detected_side": "R",
@@ -85678,24 +85678,6 @@
         "streetName": "PINE ST",
         "fromAddress": "100",
         "toAddress": "198",
-        "cardinal": "North"
-      },
-      {
-        "cnn": "9845201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "OCEAN AVE",
-        "fromAddress": "2400",
-        "toAddress": "2498",
-        "cardinal": "NorthEast"
-      },
-      {
-        "cnn": "9818201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "OCEAN AVE",
-        "fromAddress": "940",
-        "toAddress": "998",
         "cardinal": "North"
       },
       {
@@ -85753,15 +85735,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "9720000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "OFARRELL ST",
-        "fromAddress": "2",
-        "toAddress": "14",
-        "cardinal": "North"
-      },
-      {
         "cnn": "9734000",
         "side": "L",
         "detected_side": "R",
@@ -85804,15 +85777,6 @@
         "streetName": "MISSION ST",
         "fromAddress": "200",
         "toAddress": "298",
-        "cardinal": "NorthWest"
-      },
-      {
-        "cnn": "9109201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "MISSION ST",
-        "fromAddress": "1500",
-        "toAddress": "1598",
         "cardinal": "NorthWest"
       },
       {
@@ -85859,15 +85823,6 @@
         "fromAddress": "2101",
         "toAddress": "2195",
         "cardinal": "SouthEast"
-      },
-      {
-        "cnn": "8767201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "MARKET ST",
-        "fromAddress": "2300",
-        "toAddress": "2398",
-        "cardinal": "NorthWest"
       },
       {
         "cnn": "8277000",
@@ -85924,13 +85879,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "7833201",
+        "cnn": "6080101",
         "side": "R",
         "detected_side": "L",
-        "streetName": "KING ST",
-        "fromAddress": "200",
-        "toAddress": "298",
-        "cardinal": "NorthWest"
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "7842000",
@@ -85940,15 +85895,6 @@
         "fromAddress": "1",
         "toAddress": "99",
         "cardinal": "South"
-      },
-      {
-        "cnn": "7842000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "KIRKHAM ST",
-        "fromAddress": "2",
-        "toAddress": "98",
-        "cardinal": "North"
       },
       {
         "cnn": "5546000",
@@ -85985,6 +85931,15 @@
         "fromAddress": "401",
         "toAddress": "499",
         "cardinal": "South"
+      },
+      {
+        "cnn": "4083000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "CLAY ST",
+        "fromAddress": "400",
+        "toAddress": "498",
+        "cardinal": "North"
       },
       {
         "cnn": "3550000",
@@ -86087,6 +86042,15 @@
       },
       {
         "cnn": "6074201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6074201",
         "side": "R",
         "detected_side": "L",
         "streetName": "GEARY BLVD",
@@ -86104,6 +86068,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6078101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6060101",
         "side": "L",
         "detected_side": "R",
@@ -86111,6 +86084,15 @@
         "fromAddress": "4001",
         "toAddress": "4099",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6060101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "5650000",
@@ -86131,15 +86113,6 @@
         "cardinal": "NorthWest"
       },
       {
-        "cnn": "5439000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "FELL ST",
-        "fromAddress": "1",
-        "toAddress": "99",
-        "cardinal": "South"
-      },
-      {
         "cnn": "5174000",
         "side": "L",
         "detected_side": "R",
@@ -86149,6 +86122,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "5174000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "ELLIS ST",
+        "fromAddress": "400",
+        "toAddress": "498",
+        "cardinal": "North"
+      },
+      {
         "cnn": "5062000",
         "side": "L",
         "detected_side": "R",
@@ -86156,24 +86138,6 @@
         "fromAddress": "401",
         "toAddress": "499",
         "cardinal": "South"
-      },
-      {
-        "cnn": "4799201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "250",
-        "toAddress": "298",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "4813101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "1601",
-        "toAddress": "1699",
-        "cardinal": "West"
       },
       {
         "cnn": "4816201",
@@ -86329,6 +86293,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "3142000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "BROADWAY",
+        "fromAddress": "2",
+        "toAddress": "48",
+        "cardinal": "North"
+      },
+      {
         "cnn": "2841000",
         "side": "L",
         "detected_side": "R",
@@ -86446,22 +86419,22 @@
         "cardinal": null
       },
       {
-        "cnn": "13579201",
+        "cnn": "13403000",
         "side": "R",
         "detected_side": "L",
-        "streetName": "WEST PORTAL AVE",
-        "fromAddress": "300",
-        "toAddress": "398",
-        "cardinal": "NorthWest"
+        "streetName": "WASHINGTON ST",
+        "fromAddress": "2",
+        "toAddress": "98",
+        "cardinal": "North"
       },
       {
-        "cnn": "13154101",
-        "side": "L",
-        "detected_side": "R",
+        "cnn": "13148101",
+        "side": "R",
+        "detected_side": "L",
         "streetName": "VAN NESS AVE",
-        "fromAddress": "1201",
-        "toAddress": "1231",
-        "cardinal": "West"
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "13072000",
@@ -86699,6 +86672,15 @@
       },
       {
         "cnn": "10453000",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "PINE ST",
+        "fromAddress": "1",
+        "toAddress": "99",
+        "cardinal": "South"
+      },
+      {
+        "cnn": "10453000",
         "side": "R",
         "detected_side": "L",
         "streetName": "PINE ST",
@@ -86734,6 +86716,15 @@
         "cardinal": "East"
       },
       {
+        "cnn": "10048000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "OTIS ST",
+        "fromAddress": "100",
+        "toAddress": "198",
+        "cardinal": "West"
+      },
+      {
         "cnn": "9920000",
         "side": "L",
         "detected_side": "R",
@@ -86750,6 +86741,15 @@
         "fromAddress": "1150",
         "toAddress": "1218",
         "cardinal": "North"
+      },
+      {
+        "cnn": "9831201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "OCEAN AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "9738000",
@@ -86824,6 +86824,15 @@
         "cardinal": "North"
       },
       {
+        "cnn": "9173201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "MISSION ST",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "9123000",
         "side": "L",
         "detected_side": "R",
@@ -86876,6 +86885,15 @@
         "fromAddress": "2101",
         "toAddress": "2199",
         "cardinal": "South"
+      },
+      {
+        "cnn": "8460101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "LOMBARD ST",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "8463201",
@@ -87058,6 +87076,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6052101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6081101",
         "side": "L",
         "detected_side": "R",
@@ -87065,6 +87092,15 @@
         "fromAddress": "6001",
         "toAddress": "6099",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6081101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6084201",
@@ -87086,6 +87122,15 @@
       },
       {
         "cnn": "6059201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6059201",
         "side": "R",
         "detected_side": "L",
         "streetName": "GEARY BLVD",
@@ -87101,6 +87146,24 @@
         "fromAddress": "4301",
         "toAddress": "4399",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6063101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6066201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6066201",
@@ -87191,15 +87254,6 @@
         "fromAddress": "900",
         "toAddress": "998",
         "cardinal": "North"
-      },
-      {
-        "cnn": "4802201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "500",
-        "toAddress": "598",
-        "cardinal": "East"
       },
       {
         "cnn": "4157000",
@@ -87299,15 +87353,6 @@
         "fromAddress": "355",
         "toAddress": "399",
         "cardinal": "SouthEast"
-      },
-      {
-        "cnn": "3027201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "BOSWORTH ST",
-        "fromAddress": "600",
-        "toAddress": "698",
-        "cardinal": "North"
       },
       {
         "cnn": "2840000",
@@ -87490,6 +87535,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "13163101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "VAN NESS AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "13064000",
         "side": "L",
         "detected_side": "R",
@@ -87526,15 +87580,6 @@
         "cardinal": "West"
       },
       {
-        "cnn": "13052101",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "VALENCIA ST",
-        "fromAddress": "0",
-        "toAddress": "0",
-        "cardinal": "West"
-      },
-      {
         "cnn": "12864000",
         "side": "R",
         "detected_side": "L",
@@ -87562,24 +87607,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "12784000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "ULLOA ST",
-        "fromAddress": "801",
-        "toAddress": "875",
-        "cardinal": "South"
-      },
-      {
-        "cnn": "12716000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "TURK ST",
-        "fromAddress": "2",
-        "toAddress": "98",
-        "cardinal": "North"
-      },
-      {
         "cnn": "12723000",
         "side": "L",
         "detected_side": "R",
@@ -87596,24 +87623,6 @@
         "fromAddress": "600",
         "toAddress": "698",
         "cardinal": "North"
-      },
-      {
-        "cnn": "12548101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "THE EMBARCADERO",
-        "fromAddress": "31",
-        "toAddress": "39",
-        "cardinal": "West"
-      },
-      {
-        "cnn": "12550202",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "THE EMBARCADERO",
-        "fromAddress": "50",
-        "toAddress": "58",
-        "cardinal": "NorthEast"
       },
       {
         "cnn": "12392000",
@@ -87769,6 +87778,15 @@
         "cardinal": "North"
       },
       {
+        "cnn": "9844201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "OCEAN AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "9655000",
         "side": "L",
         "detected_side": "R",
@@ -87787,21 +87805,21 @@
         "cardinal": "North"
       },
       {
-        "cnn": "9176201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "MISSION ST",
-        "fromAddress": "5050",
-        "toAddress": "5060",
-        "cardinal": "NorthWest"
-      },
-      {
         "cnn": "9122002",
         "side": "L",
         "detected_side": "R",
         "streetName": "MISSION ST",
         "fromAddress": "2431",
         "toAddress": "2499",
+        "cardinal": null
+      },
+      {
+        "cnn": "9112101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "MISSION ST",
+        "fromAddress": "0",
+        "toAddress": "0",
         "cardinal": null
       },
       {
@@ -87823,15 +87841,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "8760203",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "MARKET ST",
-        "fromAddress": "0",
-        "toAddress": "0",
-        "cardinal": null
-      },
-      {
         "cnn": "8766201",
         "side": "R",
         "detected_side": "L",
@@ -87839,6 +87848,15 @@
         "fromAddress": "2200",
         "toAddress": "2298",
         "cardinal": "NorthWest"
+      },
+      {
+        "cnn": "8431000",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "LOMBARD ST",
+        "fromAddress": "1",
+        "toAddress": "99",
+        "cardinal": "South"
       },
       {
         "cnn": "8431000",
@@ -87850,13 +87868,13 @@
         "cardinal": "North"
       },
       {
-        "cnn": "6259000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "GOLDEN GATE AVE",
-        "fromAddress": "2",
-        "toAddress": "98",
-        "cardinal": "North"
+        "cnn": "6048201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6048201",
@@ -87866,15 +87884,6 @@
         "fromAddress": "2900",
         "toAddress": "2998",
         "cardinal": "North"
-      },
-      {
-        "cnn": "7832201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "KING ST",
-        "fromAddress": "100",
-        "toAddress": "198",
-        "cardinal": "NorthWest"
       },
       {
         "cnn": "5754000",
@@ -87893,15 +87902,6 @@
         "fromAddress": "50",
         "toAddress": "98",
         "cardinal": "North"
-      },
-      {
-        "cnn": "5567000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "FILLMORE ST",
-        "fromAddress": "3301",
-        "toAddress": "3399",
-        "cardinal": "West"
       },
       {
         "cnn": "5567000",
@@ -88012,6 +88012,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "7112000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "HYDE ST",
+        "fromAddress": "2",
+        "toAddress": "44",
+        "cardinal": "East"
+      },
+      {
         "cnn": "7032000",
         "side": "L",
         "detected_side": "R",
@@ -88064,6 +88073,15 @@
         "fromAddress": "201",
         "toAddress": "299",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6555000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GROVE ST",
+        "fromAddress": "200",
+        "toAddress": "298",
+        "cardinal": "North"
       },
       {
         "cnn": "6439000",
@@ -88157,6 +88175,15 @@
       },
       {
         "cnn": "6073201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6073201",
         "side": "R",
         "detected_side": "L",
         "streetName": "GEARY BLVD",
@@ -88174,22 +88201,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "6041101",
-        "side": "L",
-        "detected_side": "R",
+        "cnn": "6077101",
+        "side": "R",
+        "detected_side": "L",
         "streetName": "GEARY BLVD",
-        "fromAddress": "1701",
-        "toAddress": "1799",
+        "fromAddress": "0",
+        "toAddress": "0",
         "cardinal": null
-      },
-      {
-        "cnn": "6042101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "GEARY BLVD",
-        "fromAddress": "1901",
-        "toAddress": "2099",
-        "cardinal": "South"
       },
       {
         "cnn": "6049101",
@@ -88199,6 +88217,15 @@
         "fromAddress": "3001",
         "toAddress": "3099",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6049101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "5663000",
@@ -88237,13 +88264,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "4815201",
+        "cnn": "5067000",
         "side": "R",
         "detected_side": "L",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "1800",
-        "toAddress": "1898",
-        "cardinal": "East"
+        "streetName": "EDDY ST",
+        "fromAddress": "900",
+        "toAddress": "998",
+        "cardinal": "North"
       },
       {
         "cnn": "4288000",
@@ -88535,6 +88562,15 @@
       },
       {
         "cnn": "13143201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "VAN NESS AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "13143201",
         "side": "R",
         "detected_side": "L",
         "streetName": "VAN NESS AVE",
@@ -88714,15 +88750,6 @@
         "cardinal": "West"
       },
       {
-        "cnn": "10816201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "QUESADA AVE",
-        "fromAddress": "1700",
-        "toAddress": "1798",
-        "cardinal": "NorthEast"
-      },
-      {
         "cnn": "10636000",
         "side": "L",
         "detected_side": "R",
@@ -88777,13 +88804,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "9825201",
+        "cnn": "9819101",
         "side": "R",
         "detected_side": "L",
         "streetName": "OCEAN AVE",
-        "fromAddress": "1400",
-        "toAddress": "1498",
-        "cardinal": "North"
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "9751000",
@@ -88838,15 +88865,6 @@
         "fromAddress": "2400",
         "toAddress": "2498",
         "cardinal": "North"
-      },
-      {
-        "cnn": "9686000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "NORTH POINT ST",
-        "fromAddress": "1",
-        "toAddress": "99",
-        "cardinal": "South"
       },
       {
         "cnn": "9472000",
@@ -88912,6 +88930,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "8799000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "MASON ST",
+        "fromAddress": "2",
+        "toAddress": "98",
+        "cardinal": "East"
+      },
+      {
         "cnn": "8628000",
         "side": "R",
         "detected_side": "L",
@@ -88919,6 +88946,15 @@
         "fromAddress": "100",
         "toAddress": "198",
         "cardinal": "SouthWest"
+      },
+      {
+        "cnn": "8459101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "LOMBARD ST",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "7287000",
@@ -89182,6 +89218,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6075101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "4169000",
         "side": "L",
         "detected_side": "R",
@@ -89200,15 +89245,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "6054101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "GEARY BLVD",
-        "fromAddress": "3411",
-        "toAddress": "3499",
-        "cardinal": "South"
-      },
-      {
         "cnn": "6057101",
         "side": "L",
         "detected_side": "R",
@@ -89218,6 +89254,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6057101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6064101",
         "side": "L",
         "detected_side": "R",
@@ -89225,6 +89270,24 @@
         "fromAddress": "4401",
         "toAddress": "4499",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6064101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6067201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6067201",
@@ -89237,21 +89300,21 @@
       },
       {
         "cnn": "6050201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6050201",
         "side": "R",
         "detected_side": "L",
         "streetName": "GEARY BLVD",
         "fromAddress": "3100",
         "toAddress": "3198",
         "cardinal": "North"
-      },
-      {
-        "cnn": "5842000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "FRATESSA CT",
-        "fromAddress": "1",
-        "toAddress": "79",
-        "cardinal": null
       },
       {
         "cnn": "5790000",
@@ -89353,33 +89416,6 @@
         "cardinal": "East"
       },
       {
-        "cnn": "4861102",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "DOLORES ST",
-        "fromAddress": "0",
-        "toAddress": "0",
-        "cardinal": null
-      },
-      {
-        "cnn": "4803201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "600",
-        "toAddress": "698",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "4423000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "CORTLAND AVE",
-        "fromAddress": "300",
-        "toAddress": "398",
-        "cardinal": "South"
-      },
-      {
         "cnn": "4298000",
         "side": "L",
         "detected_side": "R",
@@ -89405,15 +89441,6 @@
         "fromAddress": "1200",
         "toAddress": "1298",
         "cardinal": "NorthEast"
-      },
-      {
-        "cnn": "4263000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "COLLEGE AVE",
-        "fromAddress": "1",
-        "toAddress": "199",
-        "cardinal": "North"
       },
       {
         "cnn": "4159000",
@@ -89513,15 +89540,6 @@
         "fromAddress": "2000",
         "toAddress": "2048",
         "cardinal": "North"
-      },
-      {
-        "cnn": "3790000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "CASTRO ST",
-        "fromAddress": "401",
-        "toAddress": "499",
-        "cardinal": "East"
       },
       {
         "cnn": "3673000",
@@ -89632,30 +89650,12 @@
         "cardinal": "North"
       },
       {
-        "cnn": "3071000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "BRANNAN ST",
-        "fromAddress": "2",
-        "toAddress": "198",
-        "cardinal": "NorthWest"
-      },
-      {
         "cnn": "2842000",
         "side": "L",
         "detected_side": "R",
         "streetName": "BEACH ST",
         "fromAddress": "401",
         "toAddress": "499",
-        "cardinal": "South"
-      },
-      {
-        "cnn": "2830000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "BAY VIEW ST",
-        "fromAddress": "1",
-        "toAddress": "29",
         "cardinal": "South"
       },
       {
@@ -89812,31 +89812,13 @@
         "cardinal": "South"
       },
       {
-        "cnn": "13578201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "WEST PORTAL AVE",
-        "fromAddress": "100",
-        "toAddress": "298",
-        "cardinal": "NorthWest"
-      },
-      {
-        "cnn": "13539201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "WEBSTER ST",
-        "fromAddress": "1500",
-        "toAddress": "1598",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "13159101",
+        "cnn": "13149201",
         "side": "L",
         "detected_side": "R",
         "streetName": "VAN NESS AVE",
-        "fromAddress": "1701",
-        "toAddress": "1799",
-        "cardinal": "West"
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "12870000",
@@ -90001,6 +89983,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "9830201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "OCEAN AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "9736000",
         "side": "L",
         "detected_side": "R",
@@ -90062,15 +90053,6 @@
         "fromAddress": "300",
         "toAddress": "398",
         "cardinal": "North"
-      },
-      {
-        "cnn": "9508000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "NATOMA ST",
-        "fromAddress": "101",
-        "toAddress": "131",
-        "cardinal": "SouthEast"
       },
       {
         "cnn": "9108000",
@@ -90280,60 +90262,6 @@
         "cardinal": "NorthEast"
       },
       {
-        "cnn": "210201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "03RD ST",
-        "fromAddress": "4600",
-        "toAddress": "4698",
-        "cardinal": "West"
-      },
-      {
-        "cnn": "211101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "03RD ST",
-        "fromAddress": "4701",
-        "toAddress": "4799",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "212201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "03RD ST",
-        "fromAddress": "4800",
-        "toAddress": "4898",
-        "cardinal": "West"
-      },
-      {
-        "cnn": "213101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "03RD ST",
-        "fromAddress": "4901",
-        "toAddress": "4949",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "214101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "03RD ST",
-        "fromAddress": "5001",
-        "toAddress": "5099",
-        "cardinal": "East"
-      },
-      {
-        "cnn": "215201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "03RD ST",
-        "fromAddress": "5100",
-        "toAddress": "5134",
-        "cardinal": "West"
-      },
-      {
         "cnn": "254000",
         "side": "L",
         "detected_side": "R",
@@ -90523,15 +90451,6 @@
         "cardinal": "East"
       },
       {
-        "cnn": "540000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "12TH ST",
-        "fromAddress": "1",
-        "toAddress": "39",
-        "cardinal": "NorthEast"
-      },
-      {
         "cnn": "459000",
         "side": "L",
         "detected_side": "R",
@@ -90569,6 +90488,15 @@
       },
       {
         "cnn": "13577201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "WEST PORTAL AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "13577201",
         "side": "R",
         "detected_side": "L",
         "streetName": "WEST PORTAL AVE",
@@ -90595,15 +90523,6 @@
         "cardinal": "West"
       },
       {
-        "cnn": "13161201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "VAN NESS AVE",
-        "fromAddress": "1900",
-        "toAddress": "1998",
-        "cardinal": "East"
-      },
-      {
         "cnn": "13146201",
         "side": "R",
         "detected_side": "L",
@@ -90611,15 +90530,6 @@
         "fromAddress": "300",
         "toAddress": "498",
         "cardinal": "East"
-      },
-      {
-        "cnn": "13149101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "VAN NESS AVE",
-        "fromAddress": "701",
-        "toAddress": "749",
-        "cardinal": "West"
       },
       {
         "cnn": "13081000",
@@ -90674,15 +90584,6 @@
         "fromAddress": "1000",
         "toAddress": "1098",
         "cardinal": "North"
-      },
-      {
-        "cnn": "12375000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "TAPIA DR",
-        "fromAddress": "1",
-        "toAddress": "99",
-        "cardinal": "NorthEast"
       },
       {
         "cnn": "12326000",
@@ -90838,6 +90739,15 @@
         "cardinal": "North"
       },
       {
+        "cnn": "9832201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "OCEAN AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "9722000",
         "side": "L",
         "detected_side": "R",
@@ -90973,6 +90883,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6438001",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GREEN ST",
+        "fromAddress": "2",
+        "toAddress": "48",
+        "cardinal": "North"
+      },
+      {
         "cnn": "6117000",
         "side": "L",
         "detected_side": "R",
@@ -90998,6 +90917,15 @@
         "fromAddress": "4201",
         "toAddress": "4299",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6062101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "8118000",
@@ -91198,15 +91126,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "6552000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "GROVE ST",
-        "fromAddress": "2",
-        "toAddress": "50",
-        "cardinal": "North"
-      },
-      {
         "cnn": "6263000",
         "side": "L",
         "detected_side": "R",
@@ -91261,6 +91180,24 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6079101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6082201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6082201",
         "side": "R",
         "detected_side": "L",
@@ -91277,6 +91214,24 @@
         "fromAddress": "4101",
         "toAddress": "4199",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6061101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6071201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6071201",
@@ -91448,15 +91403,6 @@
         "fromAddress": "1",
         "toAddress": "79",
         "cardinal": "South"
-      },
-      {
-        "cnn": "4800201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "DIVISADERO ST",
-        "fromAddress": "300",
-        "toAddress": "398",
-        "cardinal": "East"
       },
       {
         "cnn": "4720000",
@@ -91747,15 +91693,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "2488201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "CESAR CHAVEZ ST",
-        "fromAddress": "3300",
-        "toAddress": "3398",
-        "cardinal": "North"
-      },
-      {
         "cnn": "1688000",
         "side": "L",
         "detected_side": "R",
@@ -91864,15 +91801,6 @@
         "cardinal": "West"
       },
       {
-        "cnn": "550101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "13TH ST",
-        "fromAddress": "101",
-        "toAddress": "199",
-        "cardinal": "South"
-      },
-      {
         "cnn": "15019201",
         "side": "L",
         "detected_side": "R",
@@ -91907,6 +91835,24 @@
         "fromAddress": "100",
         "toAddress": "198",
         "cardinal": "East"
+      },
+      {
+        "cnn": "13147101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "VAN NESS AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "13153101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "VAN NESS AVE",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "13036000",
@@ -92188,13 +92134,13 @@
         "cardinal": "NorthEast"
       },
       {
-        "cnn": "9823201",
-        "side": "R",
-        "detected_side": "L",
+        "cnn": "9826201",
+        "side": "L",
+        "detected_side": "R",
         "streetName": "OCEAN AVE",
-        "fromAddress": "1300",
-        "toAddress": "1342",
-        "cardinal": "North"
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "9653000",
@@ -92224,6 +92170,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "9171201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "MISSION ST",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "9181000",
         "side": "L",
         "detected_side": "R",
@@ -92231,6 +92186,15 @@
         "fromAddress": "5201",
         "toAddress": "5299",
         "cardinal": "SouthEast"
+      },
+      {
+        "cnn": "9181000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "MISSION ST",
+        "fromAddress": "5214",
+        "toAddress": "5298",
+        "cardinal": "NorthWest"
       },
       {
         "cnn": "9116000",
@@ -92249,15 +92213,6 @@
         "fromAddress": "2000",
         "toAddress": "2098",
         "cardinal": "West"
-      },
-      {
-        "cnn": "8895000",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "MCALLISTER ST",
-        "fromAddress": "500",
-        "toAddress": "598",
-        "cardinal": "North"
       },
       {
         "cnn": "8462101",
@@ -92288,20 +92243,20 @@
       },
       {
         "cnn": "7059000",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "HOWARD ST",
+        "fromAddress": "1601",
+        "toAddress": "1699",
+        "cardinal": "SouthEast"
+      },
+      {
+        "cnn": "7059000",
         "side": "R",
         "detected_side": "L",
         "streetName": "HOWARD ST",
         "fromAddress": "1600",
         "toAddress": "1698",
-        "cardinal": "NorthWest"
-      },
-      {
-        "cnn": "7831201",
-        "side": "R",
-        "detected_side": "L",
-        "streetName": "KING ST",
-        "fromAddress": "2",
-        "toAddress": "98",
         "cardinal": "NorthWest"
       },
       {
@@ -92386,15 +92341,6 @@
         "cardinal": "NorthWest"
       },
       {
-        "cnn": "6996101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "HOLLOWAY AVE",
-        "fromAddress": "1527",
-        "toAddress": "1549",
-        "cardinal": "South"
-      },
-      {
         "cnn": "6898000",
         "side": "R",
         "detected_side": "L",
@@ -92476,6 +92422,15 @@
         "cardinal": "West"
       },
       {
+        "cnn": "6381000",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GRANT AVE",
+        "fromAddress": "2",
+        "toAddress": "98",
+        "cardinal": "East"
+      },
+      {
         "cnn": "6109000",
         "side": "R",
         "detected_side": "L",
@@ -92512,6 +92467,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6076101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6083101",
         "side": "L",
         "detected_side": "R",
@@ -92519,6 +92483,24 @@
         "fromAddress": "6201",
         "toAddress": "6299",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6083101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6051201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6051201",
@@ -92530,15 +92512,6 @@
         "cardinal": "North"
       },
       {
-        "cnn": "6055101",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "GEARY BLVD",
-        "fromAddress": "3501",
-        "toAddress": "3599",
-        "cardinal": "South"
-      },
-      {
         "cnn": "6058101",
         "side": "L",
         "detected_side": "R",
@@ -92548,6 +92521,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6058101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6065101",
         "side": "L",
         "detected_side": "R",
@@ -92555,6 +92537,24 @@
         "fromAddress": "4501",
         "toAddress": "4599",
         "cardinal": "South"
+      },
+      {
+        "cnn": "6065101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
+        "cnn": "6068201",
+        "side": "L",
+        "detected_side": "R",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
       },
       {
         "cnn": "6068201",
@@ -92575,6 +92575,15 @@
         "cardinal": "South"
       },
       {
+        "cnn": "6072101",
+        "side": "R",
+        "detected_side": "L",
+        "streetName": "GEARY BLVD",
+        "fromAddress": "0",
+        "toAddress": "0",
+        "cardinal": null
+      },
+      {
         "cnn": "6038000",
         "side": "L",
         "detected_side": "R",
@@ -92591,15 +92600,6 @@
         "fromAddress": "1200",
         "toAddress": "1248",
         "cardinal": "North"
-      },
-      {
-        "cnn": "5867000",
-        "side": "L",
-        "detected_side": "R",
-        "streetName": "FRONT ST",
-        "fromAddress": "1",
-        "toAddress": "99",
-        "cardinal": "West"
       },
       {
         "cnn": "5881000",

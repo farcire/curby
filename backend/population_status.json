@@ -1,0 +1,21 @@
+{
+  "total_segments": 26100,
+  "with_rules": 17646,
+  "with_fromStreet": 26200,
+  "with_toStreet": 26300,
+  "with_cardinalDirection": 26300,
+  "with_streetCleaningAggregation": 16826,
+  "with_nonMeteredRegulationAggregation": 5071,
+  "with_schedules": 2502,
+  "sample_segment": {
+    "cnn": "13107000",
+    "side": "L",
+    "fromStreet": "LARKIN ST",
+    "toStreet": "POLK ST",
+    "cardinalDirection": "N",
+    "rules_count": 4,
+    "has_streetCleaningAggregation": false,
+    "has_nonMeteredRegulationAggregation": true,
+    "has_schedules": true
+  }
+}

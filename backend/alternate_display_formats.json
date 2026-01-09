@@ -1,0 +1,1500 @@
+{
+  "summary": {
+    "total_meters": 221,
+    "patterns": 6
+  },
+  "display_formats": {
+    "Business Hours": {
+      "line1": "Passenger Loading Zone on Business Hours",
+      "line2": "All other days 2hr limit M-Sa (Free)",
+      "sample_post_id": "350-07080",
+      "sample_street": "CALIFORNIA ST 700",
+      "meter_count": 2
+    },
+    "Giants Night": {
+      "line1": "Passenger Loading Zone on Giants Night Games",
+      "line2": "All other days 24hr limit M-Sa (Free)",
+      "sample_post_id": "202-06320",
+      "sample_street": "02ND ST 600",
+      "meter_count": 20
+    },
+    "Performance": {
+      "line1": "Passenger Loading Zone on Special Event Periods",
+      "line2": "All other days 2hr limit M-Sa (Free)",
+      "sample_post_id": "352-04110",
+      "sample_street": "CASTRO ST 400",
+      "meter_count": 48
+    },
+    "Posted Events": {
+      "line1": "Passenger Loading Zone on Special Event Periods",
+      "line2": "All other days 4hr limit M-Sa (Free)",
+      "sample_post_id": "216-31010",
+      "sample_street": "16TH ST 3100",
+      "meter_count": 19
+    },
+    "Posted Services": {
+      "line1": "Passenger Loading Zone on Service Periods",
+      "line2": "All other days 2hr limit M-Sa (Free)",
+      "sample_post_id": "223-32270",
+      "sample_street": "23RD ST 3200",
+      "meter_count": 19
+    },
+    "School Days": {
+      "line1": "Passenger Loading Zone on School Days",
+      "line2": "All other days 4hr limit M-Sa (Free)",
+      "sample_post_id": "223-33390",
+      "sample_street": "23RD ST 3300",
+      "meter_count": 113
+    }
+  },
+  "detailed_samples": {
+    "Giants Night": [
+      {
+        "post_id": "202-06320",
+        "street": "02ND ST 600",
+        "alternate": {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06320",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06320",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06320",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06320",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06320",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "202-06340",
+        "street": "02ND ST 600",
+        "alternate": {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06340",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "202-06360",
+        "street": "02ND ST 600",
+        "alternate": {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06360",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06360",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06360",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06360",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06360",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "202-06380",
+        "street": "02ND ST 600",
+        "alternate": {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06380",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06380",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06380",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06380",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06380",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "202-06400",
+        "street": "02ND ST 600",
+        "alternate": {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06400",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06400",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06400",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06400",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "10:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "02ND ST 600",
+            "block_side": "Even",
+            "post_id": "202-06400",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      }
+    ],
+    "Posted Events": [
+      {
+        "post_id": "216-31010",
+        "street": "16TH ST 3100",
+        "alternate": {
+          "street_and_block": "16TH ST 3100",
+          "block_side": "Odd",
+          "post_id": "216-31010",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "16TH ST 3100",
+            "block_side": "Odd",
+            "post_id": "216-31010",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "16TH ST 3100",
+            "block_side": "Odd",
+            "post_id": "216-31010",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "216-31030",
+        "street": "16TH ST 3100",
+        "alternate": {
+          "street_and_block": "16TH ST 3100",
+          "block_side": "Odd",
+          "post_id": "216-31030",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "16TH ST 3100",
+            "block_side": "Odd",
+            "post_id": "216-31030",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "16TH ST 3100",
+            "block_side": "Odd",
+            "post_id": "216-31030",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "470-08161",
+        "street": "HOWARD ST 800",
+        "alternate": {
+          "street_and_block": "HOWARD ST 800",
+          "block_side": "Even",
+          "post_id": "470-08161",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08161",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "7:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08161",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "470-08162",
+        "street": "HOWARD ST 800",
+        "alternate": {
+          "street_and_block": "HOWARD ST 800",
+          "block_side": "Even",
+          "post_id": "470-08162",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08162",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "7:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08162",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "470-08163",
+        "street": "HOWARD ST 800",
+        "alternate": {
+          "street_and_block": "HOWARD ST 800",
+          "block_side": "Even",
+          "post_id": "470-08163",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08163",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "7:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "HOWARD ST 800",
+            "block_side": "Even",
+            "post_id": "470-08163",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      }
+    ],
+    "Posted Services": [
+      {
+        "post_id": "223-32270",
+        "street": "23RD ST 3200",
+        "alternate": {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32270",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32270",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32270",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-32290",
+        "street": "23RD ST 3200",
+        "alternate": {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32290",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32290",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32290",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-32310",
+        "street": "23RD ST 3200",
+        "alternate": {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32310",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32310",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3200",
+            "block_side": "Odd",
+            "post_id": "223-32310",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "440-12060",
+        "street": "GEARY BLVD 1200",
+        "alternate": {
+          "street_and_block": "GEARY BLVD 1200",
+          "block_side": "Even",
+          "post_id": "440-12060",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "GEARY BLVD 1200",
+            "block_side": "Even",
+            "post_id": "440-12060",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "GEARY BLVD 1200",
+            "block_side": "Even",
+            "post_id": "440-12060",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "440-12080",
+        "street": "GEARY BLVD 1200",
+        "alternate": {
+          "street_and_block": "GEARY BLVD 1200",
+          "block_side": "Even",
+          "post_id": "440-12080",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "GEARY BLVD 1200",
+            "block_side": "Even",
+            "post_id": "440-12080",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "GEARY BLVD 1200",
+            "block_side": "Even",
+            "post_id": "440-12080",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      }
+    ],
+    "School Days": [
+      {
+        "post_id": "223-33390",
+        "street": "23RD ST 3300",
+        "alternate": {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33390",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33390",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33390",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-33410",
+        "street": "23RD ST 3300",
+        "alternate": {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33410",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33410",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33410",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-33430",
+        "street": "23RD ST 3300",
+        "alternate": {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33430",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33430",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33430",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-33470",
+        "street": "23RD ST 3300",
+        "alternate": {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33470",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33470",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33470",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "223-33490",
+        "street": "23RD ST 3300",
+        "alternate": {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33490",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33490",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "23RD ST 3300",
+            "block_side": "Odd",
+            "post_id": "223-33490",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      }
+    ],
+    "Business Hours": [
+      {
+        "post_id": "350-07080",
+        "street": "CALIFORNIA ST 700",
+        "alternate": {
+          "street_and_block": "CALIFORNIA ST 700",
+          "block_side": "Even",
+          "post_id": "350-07080",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Business Hours",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "CALIFORNIA ST 700",
+            "block_side": "Even",
+            "post_id": "350-07080",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "7:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "CALIFORNIA ST 700",
+            "block_side": "Even",
+            "post_id": "350-07080",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "400-09340",
+        "street": "EDDY ST 900",
+        "alternate": {
+          "street_and_block": "EDDY ST 900",
+          "block_side": "Even",
+          "post_id": "400-09340",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Business Hours",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "EDDY ST 900",
+            "block_side": "Even",
+            "post_id": "400-09340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          },
+          {
+            "street_and_block": "EDDY ST 900",
+            "block_side": "Even",
+            "post_id": "400-09340",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      }
+    ],
+    "Performance": [
+      {
+        "post_id": "352-04110",
+        "street": "CASTRO ST 400",
+        "alternate": {
+          "street_and_block": "CASTRO ST 400",
+          "block_side": "Odd",
+          "post_id": "352-04110",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "CASTRO ST 400",
+            "block_side": "Odd",
+            "post_id": "352-04110",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "CASTRO ST 400",
+            "block_side": "Odd",
+            "post_id": "352-04110",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "352-04130",
+        "street": "CASTRO ST 400",
+        "alternate": {
+          "street_and_block": "CASTRO ST 400",
+          "block_side": "Odd",
+          "post_id": "352-04130",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "CASTRO ST 400",
+            "block_side": "Odd",
+            "post_id": "352-04130",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "CASTRO ST 400",
+            "block_side": "Odd",
+            "post_id": "352-04130",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "415-22250",
+        "street": "FILLMORE ST 2200",
+        "alternate": {
+          "street_and_block": "FILLMORE ST 2200",
+          "block_side": "Odd",
+          "post_id": "415-22250",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "FILLMORE ST 2200",
+            "block_side": "Odd",
+            "post_id": "415-22250",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          },
+          {
+            "street_and_block": "FILLMORE ST 2200",
+            "block_side": "Odd",
+            "post_id": "415-22250",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "1440 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "440-30060",
+        "street": "GEARY BLVD 3000",
+        "alternate": {
+          "street_and_block": "GEARY BLVD 3000",
+          "block_side": "Even",
+          "post_id": "440-30060",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "GEARY BLVD 3000",
+            "block_side": "Even",
+            "post_id": "440-30060",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "GEARY BLVD 3000",
+            "block_side": "Even",
+            "post_id": "440-30060",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      },
+      {
+        "post_id": "440-10310",
+        "street": "GEARY ST 1000",
+        "alternate": {
+          "street_and_block": "GEARY ST 1000",
+          "block_side": "Odd",
+          "post_id": "440-10310",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        "operating": [
+          {
+            "street_and_block": "GEARY ST 1000",
+            "block_side": "Odd",
+            "post_id": "440-10310",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "1",
+            "days_applied": "Mo,Tu,We,Th,Fr,Sa",
+            "from_time": "9:00 AM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "120 minutes"
+          },
+          {
+            "street_and_block": "GEARY ST 1000",
+            "block_side": "Odd",
+            "post_id": "440-10310",
+            "cap_color": "Grey",
+            "schedule_type": "Operating Schedule",
+            "applied_color_rule": "Grey - General metered parking",
+            "priority": "2",
+            "days_applied": "Su",
+            "from_time": "12:00 PM",
+            "to_time": "6:00 PM",
+            "active_meter_status": "M - Active meter installed",
+            "time_limit": "240 minutes"
+          }
+        ]
+      }
+    ]
+  }
+}

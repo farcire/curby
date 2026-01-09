@@ -1,0 +1,12 @@
+{
+  "total_segments": 34324,
+  "with_rules": 23778,
+  "with_schedules": 3324,
+  "empty_rules": 10546,
+  "empty_schedules": 31000,
+  "parking_regulations_count": 7783,
+  "street_cleaning_count": 37878,
+  "meters_count": 38356,
+  "rules_percentage": 69.28,
+  "schedules_percentage": 9.68
+}

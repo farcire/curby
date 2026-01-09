@@ -1,0 +1,204 @@
+[
+  {
+    "objectid": "7445",
+    "regulation": "Time limited",
+    "days": "M-F",
+    "hours": "900-1800",
+    "hrs_begin": "900",
+    "hrs_end": "1800",
+    "modified": "2015-01-07 16:00:00-08:00",
+    "editor": "Mark C. Dreger",
+    "rpparea1": "N",
+    "fid_100": "3076",
+    "length_ft": "383",
+    "conflict": "0",
+    "hrlimit": "2",
+    "last_edited_user": "RAYNELLCOOPER",
+    "last_edited_date": "2024-04-29 17:21:10-07:00",
+    "rpp_sym": "black, 2.5 pt, no dash",
+    "sym_rpp2": "black, 2.5 pt, no dash | 2, M-F, 900-1800",
+    "exceptions": "Yes. RPP holders are exempt from time limits.",
+    "from_time": "9am",
+    "to_time": "6pm",
+    "shape": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -122.473990553,
+            37.781814028
+          ],
+          [
+            -122.473914429,
+            37.780764073
+          ]
+        ]
+      ]
+    },
+    "data_as_of": "2024-04-29T17:21:10.000",
+    "analysis_neighborhood": "Outer Richmond",
+    "supervisor_district": "1",
+    "data_loaded_at": "2025-05-03T10:16:38.810"
+  },
+  {
+    "objectid": "17286",
+    "regulation": "Time limited",
+    "days": "M-F",
+    "hours": "800-1800",
+    "hrs_begin": "800",
+    "hrs_end": "1800",
+    "rpparea1": "L",
+    "fid_100": "1718",
+    "length_ft": "238",
+    "conflict": "0",
+    "enacted": "7/19/2016",
+    "last_edite": "mta",
+    "last_edi_1": "1442448000000",
+    "hrlimit": "2",
+    "created_user": "LULUBRIEN",
+    "created_date": "2025-04-28 18:02:32-07:00",
+    "last_edited_user": "LULUBRIEN",
+    "last_edited_date": "2025-04-28 18:02:32-07:00",
+    "rpp_sym": "lapis lazuli, 2.5 pt, no dash",
+    "sym_rpp2": "lapis lazuli, 2.5 pt, no dash | 2, M-F, 800-1800",
+    "exceptions": "Yes. RPP holders are exempt from time limits.",
+    "from_time": "8am",
+    "to_time": "6pm",
+    "shape": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -122.463752822,
+            37.775441908
+          ],
+          [
+            -122.462929853,
+            37.775479351
+          ]
+        ]
+      ]
+    },
+    "data_as_of": "2025-04-28T18:02:32.000",
+    "analysis_neighborhood": "Inner Richmond",
+    "supervisor_district": "1",
+    "data_loaded_at": "2025-05-03T10:16:38.810"
+  },
+  {
+    "objectid": "2596",
+    "regulation": "Time limited",
+    "days": "M-F",
+    "hours": "900-1800",
+    "hrs_begin": "900",
+    "hrs_end": "1800",
+    "rpparea1": "N",
+    "fid_100": "7445",
+    "length_ft": "596",
+    "conflict": "0",
+    "hrlimit": "2",
+    "last_edited_user": "MTA",
+    "last_edited_date": "2017-05-12 17:13:37-07:00",
+    "rpp_sym": "black, 2.5 pt, no dash",
+    "sym_rpp2": "black, 2.5 pt, no dash | 2, M-F, 900-1800",
+    "exceptions": "Yes. RPP holders are exempt from time limits.",
+    "from_time": "9am",
+    "to_time": "6pm",
+    "shape": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -122.475310075,
+            37.784442193
+          ],
+          [
+            -122.475428496,
+            37.786075601
+          ]
+        ]
+      ]
+    },
+    "data_as_of": "2017-05-12T17:13:37.000",
+    "analysis_neighborhood": "Outer Richmond",
+    "supervisor_district": "1",
+    "data_loaded_at": "2025-05-03T10:16:38.810"
+  },
+  {
+    "objectid": "7157",
+    "regulation": "Time limited",
+    "days": "M-F",
+    "hours": "900-1800",
+    "hrs_begin": "900",
+    "hrs_end": "1800",
+    "rpparea1": "N",
+    "fid_100": "7477",
+    "length_ft": "74",
+    "conflict": "0",
+    "hrlimit": "2",
+    "last_edited_user": "MTA",
+    "last_edited_date": "2017-05-12 17:13:38-07:00",
+    "rpp_sym": "black, 2.5 pt, no dash",
+    "sym_rpp2": "black, 2.5 pt, no dash | 2, M-F, 900-1800",
+    "exceptions": "Yes. RPP holders are exempt from time limits.",
+    "from_time": "9am",
+    "to_time": "6pm",
+    "shape": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -122.472122096,
+            37.786440543
+          ],
+          [
+            -122.472138266,
+            37.786643052
+          ]
+        ]
+      ]
+    },
+    "data_as_of": "2017-05-12T17:13:38.000",
+    "analysis_neighborhood": "Inner Richmond",
+    "supervisor_district": "1",
+    "data_loaded_at": "2025-05-03T10:16:38.810"
+  },
+  {
+    "objectid": "6968",
+    "regulation": "Time limited",
+    "days": "M-F",
+    "hours": "800-1800",
+    "hrs_begin": "800",
+    "hrs_end": "1800",
+    "rpparea1": "L",
+    "fid_100": "7000",
+    "length_ft": "486",
+    "conflict": "0",
+    "hrlimit": "2",
+    "last_edited_user": "MTA",
+    "last_edited_date": "2017-05-12 17:13:12-07:00",
+    "rpp_sym": "lapis lazuli, 2.5 pt, no dash",
+    "sym_rpp2": "lapis lazuli, 2.5 pt, no dash | 2, M-F, 800-1800",
+    "exceptions": "Yes. RPP holders are exempt from time limits.",
+    "from_time": "8am",
+    "to_time": "6pm",
+    "shape": {
+      "type": "MultiLineString",
+      "coordinates": [
+        [
+          [
+            -122.45826124,
+            37.775315163
+          ],
+          [
+            -122.456598291,
+            37.775521553
+          ]
+        ]
+      ]
+    },
+    "data_as_of": "2017-05-12T17:13:12.000",
+    "analysis_neighborhood": "Lone Mountain/USF",
+    "supervisor_district": "1",
+    "data_loaded_at": "2025-05-03T10:16:38.810"
+  }
+]

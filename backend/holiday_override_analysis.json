@@ -1,0 +1,946 @@
+{
+  "total_records": 37878,
+  "total_cnn_sides": 12253,
+  "override_cases_count": 172,
+  "override_percentage": 1.40373786011589,
+  "override_cases": [
+    {
+      "cnn": "5171000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "327000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13157101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7562000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 10
+    },
+    {
+      "cnn": "328000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "8240000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13156201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13151102",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13161201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5175000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "7563000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "6113000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13159101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5172000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "5170000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "9732000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "335000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "9730000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12723000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5176000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13146101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7566000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "9734000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7458000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Sunday",
+        "Saturday",
+        "Saturday",
+        "Sunday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "7564000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "329000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "10553000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13161101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13155101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "6262000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13149101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "10558000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "10557000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "330000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "12719000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13154101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "10552000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13156102",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "332000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13148101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "6117000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12425000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13155201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "6261000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13154202",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7569000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "336000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "326000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13147101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7119000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7568000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13156202",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5179000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 9
+    },
+    {
+      "cnn": "8131000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "9733000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "337000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "334000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "7570000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "9727000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7455000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Sunday",
+        "Sunday",
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "5173000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "5061002",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13153202",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5169000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "7115000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "9731000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13146201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12722000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "6118000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13154201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "333000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13153101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7118000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12428000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7117000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5178000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 9
+    },
+    {
+      "cnn": "12015201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13149201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7114000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12015101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7457000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday",
+        "Sunday",
+        "Sunday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "10555000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "6115000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "12427000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "8125000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7565000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday",
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13160201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13144101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "8243000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7120000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "8241000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13145201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "8242000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "8126000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13158201",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13143101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "5061001",
+      "side": "",
+      "days_with_holidays_1": [
+        "Monday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "7456000",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday",
+        "Saturday",
+        "Sunday",
+        "Sunday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 16
+    },
+    {
+      "cnn": "13152101",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    },
+    {
+      "cnn": "13151202",
+      "side": "",
+      "days_with_holidays_1": [
+        "Saturday"
+      ],
+      "has_holiday_override": true,
+      "record_count": 8
+    }
+  ]
+}

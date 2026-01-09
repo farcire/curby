@@ -1,0 +1,56 @@
+{
+  "_id": "6958461adb078562111dbef7",
+  "objectid": "4973",
+  "regulation": "No overnight parking",
+  "days": NaN,
+  "hours": "2200-600",
+  "hrs_begin": "2200",
+  "hrs_end": "600",
+  "modified": NaN,
+  "editor": NaN,
+  "rpparea1": NaN,
+  "fid_100": "449",
+  "length_ft": "193",
+  "conflict": "0",
+  "hrlimit": "0",
+  "last_edited_user": "MTA",
+  "last_edited_date": "2017-05-12 17:09:13-07:00",
+  "rpp_sym": NaN,
+  "sym_rpp2": NaN,
+  "exceptions": "None. Regulation applies to all vehicles.",
+  "from_time": "10pm",
+  "to_time": "6am",
+  "shape": {
+    "type": "MultiLineString",
+    "coordinates": [
+      [
+        [
+          -122.413221569,
+          37.768078752
+        ],
+        [
+          -122.412555332,
+          37.768115813
+        ]
+      ]
+    ]
+  },
+  "data_as_of": "2017-05-12T17:09:13.000",
+  "analysis_neighborhood": "Mission",
+  "supervisor_district": "6",
+  "data_loaded_at": "2025-05-03T10:16:38.810",
+  "enacted": NaN,
+  "last_edite": "mta",
+  "last_edi_1": "1442448000000",
+  "created_user": NaN,
+  "created_date": NaN,
+  "rpparea2": NaN,
+  "regdetails": NaN,
+  "mtab_motion": NaN,
+  "mtab_reso_text": NaN,
+  "mtab_date": NaN,
+  "rpparea3": NaN,
+  "agency": NaN,
+  "created_us": NaN,
+  "created_da": NaN
+}

@@ -1,0 +1,332 @@
+{
+  "summary": {
+    "total_schedules": 72365,
+    "total_unique_patterns": 36,
+    "dow_patterns": 29,
+    "non_dow_patterns": 7
+  },
+  "non_dow_patterns": {
+    "School Days": {
+      "count": 177,
+      "percentage": 0.24459338077800044,
+      "samples": [
+        {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33390",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33410",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "23RD ST 3300",
+          "block_side": "Odd",
+          "post_id": "223-33430",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "School Days",
+          "from_time": "7:00 AM",
+          "to_time": "4:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Giants Day": {
+      "count": 52,
+      "percentage": 0.07185794237545774,
+      "samples": [
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06320",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Giants Day",
+          "from_time": "1:00 PM",
+          "to_time": "6:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06340",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Giants Day",
+          "from_time": "1:00 PM",
+          "to_time": "6:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06360",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Giants Day",
+          "from_time": "1:00 PM",
+          "to_time": "6:00 PM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Giants Night": {
+      "count": 52,
+      "percentage": 0.07185794237545774,
+      "samples": [
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06320",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06340",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "02ND ST 600",
+          "block_side": "Even",
+          "post_id": "202-06360",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Giants Night",
+          "from_time": "8:00 PM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Performance": {
+      "count": 50,
+      "percentage": 0.06909417536101706,
+      "samples": [
+        {
+          "street_and_block": "CASTRO ST 400",
+          "block_side": "Odd",
+          "post_id": "352-04110",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "CASTRO ST 400",
+          "block_side": "Odd",
+          "post_id": "352-04130",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "FILLMORE ST 2200",
+          "block_side": "Odd",
+          "post_id": "415-22250",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Performance",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Posted Events": {
+      "count": 19,
+      "percentage": 0.026255786637186484,
+      "samples": [
+        {
+          "street_and_block": "16TH ST 3100",
+          "block_side": "Odd",
+          "post_id": "216-31010",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "16TH ST 3100",
+          "block_side": "Odd",
+          "post_id": "216-31030",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "2",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "HOWARD ST 800",
+          "block_side": "Even",
+          "post_id": "470-08161",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Events",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Posted Services": {
+      "count": 19,
+      "percentage": 0.026255786637186484,
+      "samples": [
+        {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32270",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32290",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "23RD ST 3200",
+          "block_side": "Odd",
+          "post_id": "223-32310",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Posted Services",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    },
+    "Business Hours": {
+      "count": 2,
+      "percentage": 0.002763767014440683,
+      "samples": [
+        {
+          "street_and_block": "CALIFORNIA ST 700",
+          "block_side": "Even",
+          "post_id": "350-07080",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Business Hours",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        },
+        {
+          "street_and_block": "EDDY ST 900",
+          "block_side": "Even",
+          "post_id": "400-09340",
+          "cap_color": "Grey",
+          "schedule_type": "Alternate",
+          "applied_color_rule": "White - Passenger loading zone",
+          "priority": "1",
+          "days_applied": "Business Hours",
+          "from_time": "12:00 AM",
+          "to_time": "12:00 AM",
+          "active_meter_status": "M - Active meter installed",
+          "time_limit": "0 minutes"
+        }
+      ]
+    }
+  }
+}

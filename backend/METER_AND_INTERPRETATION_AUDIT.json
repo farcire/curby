@@ -1,0 +1,32 @@
+{
+  "audit_date": "2025-12-05",
+  "total_segments": 34324,
+  "issues": {
+    "null_schedules": {
+      "count": 4090,
+      "percentage": "11.9%",
+      "description": "Segments with schedules array but all null values (missing meter data)"
+    },
+    "no_meters_field": {
+      "count": 34324,
+      "percentage": "100.0%",
+      "description": "Segments without 'meters' field at all"
+    },
+    "sweeping_rules": {
+      "count": 22573,
+      "percentage": "65.8%",
+      "description": "Segments with street-sweeping rules"
+    },
+    "no_parking_plus_sweeping": {
+      "count": 116,
+      "percentage": "0.3%",
+      "description": "Segments with 'No parking any time' + street sweeping (need special interpretation)"
+    }
+  },
+  "recommendations": [
+    "Ingest meter data from SFMTA parking meters dataset",
+    "Apply proper interpretation to street sweeping rules",
+    "Handle 'No parking + sweeping' combination with two-line display",
+    "Consider removing null schedule entries or populating with actual data"
+  ]
+}

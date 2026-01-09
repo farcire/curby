@@ -1,11 +1,24 @@
 {
   "description": "Manual data corrections for missing or incorrect SFMTA data. These overrides are applied during ingestion to augment the official datasets.",
-  "version": "1.0.0",
-  "last_updated": "2025-12-05",
+  "version": "1.2.0",
+  "last_updated": "2025-12-29",
+  "application_point": "STEP 5.4 in ingest_data_cnn_segments.py (line 794)",
+  "implementation": "apply_manual_overrides.py",
+  "traceability": "All applied overrides are marked with 'source': 'manual_override' in the database",
   "notes": [
     "Pattern identified: Some CNNs have street cleaning data for only L or R side, missing the opposite side",
-    "19th St has same CNN for both L (2701-2799) and R (2700-2798) sides",
-    "When one side has data but opposite is missing, it likely needs manual verification"
+    "19th St has same CNN (961000) for both L (2701-2799) and R (2700-2798) sides",
+    "When one side has data but opposite is missing, it likely needs manual verification",
+    "All overrides must be physically verified on-site before being added to this file",
+    "Each override includes verification date and verifier for accountability",
+    "CRITICAL: Stanyan St is incorrectly labeled as 'STANYAN BLVD' for 3 CNN segments (12076000, 12077000, 12078000) in SFMTA Active Streets dataset",
+    "This causes meter matching failures because meters reference 'STANYAN ST' but these segments are labeled 'STANYAN BLVD'"
+  ],
+  "documentation": [
+    "Architecture: CURBY_ARCHITECTURE_ANALYSIS_Dec282025.md",
+    "Data Quality Issues: backend/DATA_QUALITY_ISSUES.md (Issue #1)",
+    "Data Quality Log: backend/DATA_QUALITY_LOG.md (Issue #006)",
+    "CNN Master Reference: backend/CNN_MASTER_REFERENCE_ARCHITECTURE.md"
   ],
   "overrides": [
     {
@@ -15,11 +28,10 @@
       "verified_date": "2025-12-04",
       "verified_by": "User",
       "match_criteria": {
-        "street_name_regex": "19TH.*ST",
         "side": "R",
         "from_address": "2700",
         "to_address": "2798",
-        "cnn": null
+        "cnn": "961000"
       },
       "data": {
         "type": "street-sweeping",
@@ -33,7 +45,21 @@
         "cnnrightleft": "R",
         "limits": null
       },
-      "notes": "This CNN also serves 19th St L 2701-2799 which has street cleaning data. R side was missing and manually verified."
+      "notes": "This CNN also serves 19th St L 2701-2799 which has street cleaning data. R side was missing and manually verified.",
+      "documentation": "See Issue #006 in DATA_QUALITY_LOG.md and Issue #1 in DATA_QUALITY_ISSUES.md"
     }
-  ]
+  ],
+  "statistics": {
+    "total_overrides": 1,
+    "by_type": {
+      "street_sweeping": 1,
+      "parking_regulation": 0,
+      "meter": 0,
+      "other": 0
+    },
+    "by_status": {
+      "active": 1,
+      "deprecated": 0
+    }
+  }
 }

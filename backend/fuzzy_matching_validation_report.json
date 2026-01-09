@@ -1,0 +1,453 @@
+{
+  "summary": {
+    "total_test_records": 113,
+    "parsed": 112,
+    "matched": 106,
+    "correct_cnn": 24,
+    "accuracy": 21.428571428571427
+  },
+  "mismatches": [
+    {
+      "globalid": "{CA1A50DB-4DB6-4824-A5B0-77D3F718E9C5}",
+      "popupinfo": "17th Street between Valencia St and Mission St, south side",
+      "actual_cnn": "797000",
+      "predicted_cnn": "24165000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{D9DD5429-9FC8-4609-9893-18ECC2E08304}",
+      "popupinfo": "19th Street between Mission St and Capp St, south side",
+      "actual_cnn": "971000",
+      "predicted_cnn": "24131000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{1B791F3F-6401-4DDC-8A43-C01941734221}",
+      "popupinfo": "24th Street between Castro St and Noe St, south side",
+      "actual_cnn": "1362000",
+      "predicted_cnn": "1363000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{CFA7FE42-CF8E-4B53-89B9-A5549E0E2069}",
+      "popupinfo": "31st Avenue between Ortega St and Noriega St, west side",
+      "actual_cnn": "1689000",
+      "predicted_cnn": "27674000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{26ED5D5B-1AD3-495B-AD7F-005F0B7C92DF}",
+      "popupinfo": "37th Avenue between Cabrillo St and Balboa St, west side",
+      "actual_cnn": "1823000",
+      "predicted_cnn": "27863000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{E47720A8-D3C7-49FA-AF9A-52A46CF35F7B}",
+      "popupinfo": "3rd Street between Howard St and Mission St, west side",
+      "actual_cnn": "166000",
+      "predicted_cnn": null,
+      "reason": "No match found"
+    },
+    {
+      "globalid": "{39875F42-C9F6-48F9-9CDB-AE99483C8BD0}",
+      "popupinfo": "3rd Street between Shafter Ave and Revere Ave, east side",
+      "actual_cnn": "215201",
+      "predicted_cnn": null,
+      "reason": "No match found"
+    },
+    {
+      "globalid": "{AE3FD61C-5872-4CF6-8C23-8EBB790B5E16}",
+      "popupinfo": "4th Street between Bluxome St and Brannan St, west side",
+      "actual_cnn": "265000",
+      "predicted_cnn": null,
+      "reason": "No match found"
+    },
+    {
+      "globalid": "{26648022-C091-4C67-9441-213BF82FEF86}",
+      "popupinfo": "Alameda Street between Potrero Ave and Utah St, south side",
+      "actual_cnn": "2136000",
+      "predicted_cnn": "24189000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{016798D2-C6B9-4DD4-B2BD-D6A7DAB51C41}",
+      "popupinfo": "Bacon Street between San Bruno Ave and Bay Shore Blvd, north side",
+      "actual_cnn": "2579000",
+      "predicted_cnn": "33647000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{78288CBB-C28A-4AA2-BCCF-A1B20562700F}",
+      "popupinfo": "Balboa Street between 4th Ave and 3rd Ave, north side",
+      "actual_cnn": "2647000",
+      "predicted_cnn": "2658000",
+      "predicted_side": "R",
+      "confidence": 0.5,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{64DBE2FC-EBB1-4188-AC3C-51E51AA5053F}",
+      "popupinfo": "Balboa Street between 5th Ave and 4th Ave, south side",
+      "actual_cnn": "2648000",
+      "predicted_cnn": "2658000",
+      "predicted_side": "L",
+      "confidence": 0.5,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{C76C17E8-EAD3-4783-AA6F-2782A7F9F6DC}",
+      "popupinfo": "Battery Street between California St and Pine St, east side",
+      "actual_cnn": "2753000",
+      "predicted_cnn": "24675000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{C6436AAB-8B7D-4128-943B-9239E0951107}",
+      "popupinfo": "Battery Street between Pacific Ave and Jackson St, east side",
+      "actual_cnn": "2761000",
+      "predicted_cnn": "2762000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{8A78510E-22D9-4C3A-8A30-4880812EA760}",
+      "popupinfo": "Brannan Street between 9th St and 8th St, north side",
+      "actual_cnn": "3089000",
+      "predicted_cnn": "23881000",
+      "predicted_side": "R",
+      "confidence": 0.5,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{0909CBCE-0F8D-48FD-9D1B-AC153EE471EE}",
+      "popupinfo": "Broadway Street between Sansome St and Battery St, north side",
+      "actual_cnn": "3145000",
+      "predicted_cnn": null,
+      "reason": "No match found"
+    },
+    {
+      "globalid": "{5125BCD5-0603-4EDE-9B91-1C7EAA58410E}",
+      "popupinfo": "Bryant Street between 5th St and 4th St, north side",
+      "actual_cnn": "3285000",
+      "predicted_cnn": "3313000",
+      "predicted_side": "R",
+      "confidence": 0.5,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{F074138B-61C0-40EF-BBA1-03E3EA4D0A55}",
+      "popupinfo": "California Street between Broderick St and Divisadero St, north side",
+      "actual_cnn": "3562000",
+      "predicted_cnn": "3563000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{5C3285CD-BB98-4053-A656-518B605FC6D8}",
+      "popupinfo": "California Street between Front St and Davis St, north side",
+      "actual_cnn": "3525000",
+      "predicted_cnn": "3526000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{30215DFA-2688-4817-A46E-6CD55308DF0A}",
+      "popupinfo": "California Street between Walnut St and Presidio Ave, south side",
+      "actual_cnn": "3566000",
+      "predicted_cnn": "3567000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{DF979CB3-79B0-4203-933C-C6D1C0C47B89}",
+      "popupinfo": "Clay Street between Fillmore St and Webster St, south side",
+      "actual_cnn": "4110000",
+      "predicted_cnn": "4112000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{C56683A5-6B8C-4808-AD3F-BA8BB8DDCA4B}",
+      "popupinfo": "Clement Street between 12th Ave and 11th Ave, north side",
+      "actual_cnn": "4160000",
+      "predicted_cnn": "4161000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{7128C12A-A46D-4DFA-8494-5D5121A5521A}",
+      "popupinfo": "Columbus Avenue between Green St and Vallejo St, north side",
+      "actual_cnn": "4294000",
+      "predicted_cnn": "25332000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{1507E781-4A71-4D66-88C0-54C74364FA11}",
+      "popupinfo": "Columbus Avenue between Pacific Ave and Kearny St, south side",
+      "actual_cnn": "NULL",
+      "predicted_cnn": "24791000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{5F86DC74-044C-4B82-9087-64B313311461}",
+      "popupinfo": "Commercial Street between Grant Ave and Kearny St, south side",
+      "actual_cnn": "4315000",
+      "predicted_cnn": "24986000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{A6AF3B62-C1E6-4CEB-B94D-3B8413DD6AE3}",
+      "popupinfo": "Divisadero Street between Sutter St and Post St, west side",
+      "actual_cnn": "4813101",
+      "predicted_cnn": "4813201",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{575AFA31-0111-483E-A44A-067C2D15CDC2}",
+      "popupinfo": "Eddy Street between Larkin St and Polk St, north side",
+      "actual_cnn": "5064000",
+      "predicted_cnn": "25176000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{96D03319-47F5-4F84-9ADD-93DBE0E242B0}",
+      "popupinfo": "Ellis Street between Leavenworth St and Jones St, south side",
+      "actual_cnn": "5174000",
+      "predicted_cnn": "25139000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{184EF7BB-310E-487D-852A-87D6559CB4A1}",
+      "popupinfo": "Fell Street between Octavia St and Gough St, north side",
+      "actual_cnn": "5442000",
+      "predicted_cnn": "25914000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{97167531-6058-4712-9F62-3B4734013775}",
+      "popupinfo": "Felton St between Girard St and San Bruno Ave, north side",
+      "actual_cnn": "5462000",
+      "predicted_cnn": "28173000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{13CABAAE-E773-4C59-9E49-C25D9EB4BDDE}",
+      "popupinfo": "Fillmore Street between Clay St and Sacramento St, east side",
+      "actual_cnn": "5554000",
+      "predicted_cnn": "26648000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{303F2F16-0776-42B6-A287-F7CCAE032D38}",
+      "popupinfo": "Fillmore Street between Geary Blvd and Ellis St, east side",
+      "actual_cnn": "5545000",
+      "predicted_cnn": "5547000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{28B3163F-BB12-47B6-A866-D3D99F18082D}",
+      "popupinfo": "Franklin Street between Grove St and Hayes St, east side",
+      "actual_cnn": "5802000",
+      "predicted_cnn": "24451000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{46637438-827E-4C10-81F7-BF91522BA622}",
+      "popupinfo": "Front Street between Green St and Vallejo St, east side",
+      "actual_cnn": "5875000",
+      "predicted_cnn": "5876000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{9094FC4E-2A0B-46C5-BA10-FDA0EE39AE15}",
+      "popupinfo": "Fulton Street between Divisadero St and Broderick St, north side",
+      "actual_cnn": "5891000",
+      "predicted_cnn": "5892000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{C81B98DC-7711-46A4-8CD0-6C1F73A8E965}",
+      "popupinfo": "Geary Boulevard between 25th Ave and 24th Ave, south side",
+      "actual_cnn": "6081101",
+      "predicted_cnn": "6081201",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{992DB4F9-E775-458A-A00B-EEE865B60292}",
+      "popupinfo": "Geary Street between Powell St and Stockton St, north side",
+      "actual_cnn": "NULL",
+      "predicted_cnn": "24901000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{8F823A21-6A0F-4CFC-98E4-5D83ACB4F207}",
+      "popupinfo": "Geary Street between Powell St and Stockton St, south side",
+      "actual_cnn": "6109000",
+      "predicted_cnn": "24901000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{3A0DE10E-0F3F-4FCC-B044-FC2FEEF894BF}",
+      "popupinfo": "Grant Ave between Sacramento St and California St, west side",
+      "actual_cnn": "6392000",
+      "predicted_cnn": "24749000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{3629035E-FBE5-4E39-802A-0CDBF48C70E8}",
+      "popupinfo": "Grant Avenue between Union St and Green St, east side",
+      "actual_cnn": "6404000",
+      "predicted_cnn": "25326000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{BCF2EB10-10A1-4062-B87B-928FA20188F3}",
+      "popupinfo": "Greenwich Street between Sansome St and Battery St, south side",
+      "actual_cnn": "6485000",
+      "predicted_cnn": "6486000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{AB0F0F4A-6B21-4757-A04E-5035682BF4BA}",
+      "popupinfo": "Grove Street between Larkin St and Hyde St, north side",
+      "actual_cnn": "6552000",
+      "predicted_cnn": "24434000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{271E0693-C015-4523-835D-6A6824F62E10}",
+      "popupinfo": "Harrison Street between Hawthorne St and 3rd St, north side",
+      "actual_cnn": "6716000",
+      "predicted_cnn": "24515000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{A7F1E016-4B85-42E0-9B1D-1E42FAA082FB}",
+      "popupinfo": "Howard Street between 1st St and Fremont St, south side",
+      "actual_cnn": "7032000",
+      "predicted_cnn": "24527000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{D99D9115-DA41-47E8-921C-E15AEE98D511}",
+      "popupinfo": "Howard Street between Hawthorne St and 3rd St, east side",
+      "actual_cnn": "7037000",
+      "predicted_cnn": "24595000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{500B0BED-8642-4D59-BE62-2F132ED93F9D}",
+      "popupinfo": "Hyde Street between Ellis St and Eddy St, west side",
+      "actual_cnn": "7117000",
+      "predicted_cnn": "25144000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{E2885324-B608-4FCC-A36F-EDCBD337D681}",
+      "popupinfo": "Hyde Street between United Nations Plz and Grove St, east side",
+      "actual_cnn": "7112000",
+      "predicted_cnn": "24429000",
+      "predicted_side": "R",
+      "confidence": 0.5,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{DB47E47B-967A-4236-A6DE-1B514FA93120}",
+      "popupinfo": "Irving Street between 10th Ave and 9th Ave, south side",
+      "actual_cnn": "7286000",
+      "predicted_cnn": "27155000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{C1E06469-3229-4E43-AB64-7106525D82D8}",
+      "popupinfo": "Jones Street between Beach St and N Point St, east side",
+      "actual_cnn": "7601000",
+      "predicted_cnn": "7602000",
+      "predicted_side": "R",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    },
+    {
+      "globalid": "{90FB9536-21D1-43AC-AF8B-3EF667ED5582}",
+      "popupinfo": "Kearny Street between Jackson St and Washington St, west side",
+      "actual_cnn": "7760000",
+      "predicted_cnn": "7761000",
+      "predicted_side": "L",
+      "confidence": 0.8,
+      "reason": "CNN mismatch"
+    }
+  ]
+}

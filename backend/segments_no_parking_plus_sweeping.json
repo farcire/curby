@@ -1,0 +1,814 @@
+[
+  {
+    "cnn": "698000",
+    "side": "L",
+    "displayName": "16th Street (South side, 601-699)",
+    "total_rules": 5,
+    "sweeping_rules": 4
+  },
+  {
+    "cnn": "487000",
+    "side": "R",
+    "displayName": "10th Street (Southwest side, 200-298)",
+    "total_rules": 6,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "13547000",
+    "side": "L",
+    "displayName": "Webster Street (West side, 2201-2299)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "13445000",
+    "side": "R",
+    "displayName": "Washington Street (North side, 3200-3298)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "13053000",
+    "side": "R",
+    "displayName": "Valencia Street (West side, 100-198)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "12549101",
+    "side": "L",
+    "displayName": "The Embarcadero (West side, 41-49)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "9204000",
+    "side": "L",
+    "displayName": "Mississippi Street (East side, 501-699)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8761201",
+    "side": "R",
+    "displayName": "Market Street (Northwest side, 1898-1998)",
+    "total_rules": 10,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "7116000",
+    "side": "R",
+    "displayName": "Hyde Street (East side, 200-298)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "5864000",
+    "side": "L",
+    "displayName": "Fremont Street (Northeast side, 301-399)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "5665000",
+    "side": "R",
+    "displayName": "Folsom Street (Northwest side, 900-946)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "5679000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1301-1343)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "3442000",
+    "side": "L",
+    "displayName": "Bush Street (South side, 1201-1299)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "725000",
+    "side": "R",
+    "displayName": "16th Street (North side, 2960-2998)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "697000",
+    "side": "L",
+    "displayName": "16th Street (South side, 501-599)",
+    "total_rules": 5,
+    "sweeping_rules": 4
+  },
+  {
+    "cnn": "697000",
+    "side": "R",
+    "displayName": "16th Street (North side, 500-598)",
+    "total_rules": 7,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "639000",
+    "side": "L",
+    "displayName": "15th Street (South side, 601-699)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "639000",
+    "side": "R",
+    "displayName": "15th Street (North side, 600-698)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "412000",
+    "side": "L",
+    "displayName": "08th Street (Northeast side, 301-341)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "412000",
+    "side": "R",
+    "displayName": "08th Street (Southwest side, 300-340)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "15189000",
+    "side": "R",
+    "displayName": "Mission Bay Circle (R side, 0-0)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "15017201",
+    "side": "R",
+    "displayName": "Mission Bay Blvd North (R side, 300-398)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "13546000",
+    "side": "R",
+    "displayName": "Webster Street (East side, 2100-2198)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "10048000",
+    "side": "R",
+    "displayName": "Otis Street (West side, 100-198)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "9123000",
+    "side": "R",
+    "displayName": "Mission Street (West side, 2500-2598)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "9119000",
+    "side": "R",
+    "displayName": "Mission Street (West side, 2146-2198)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "7833101",
+    "side": "L",
+    "displayName": "King Street (Southeast side, 201-299)",
+    "total_rules": 10,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "7702000",
+    "side": "R",
+    "displayName": "Juniper Street (Southwest side, 2-98)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6615000",
+    "side": "L",
+    "displayName": "Haight Street (South side, 1197-1293)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6629000",
+    "side": "L",
+    "displayName": "Hallam Street (Northeast side, 1-45)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6629000",
+    "side": "R",
+    "displayName": "Hallam Street (Southwest side, 2-64)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "5671000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1061-1073)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5678000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1201-1299)",
+    "total_rules": 6,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5173000",
+    "side": "L",
+    "displayName": "Ellis Street (South side, 301-399)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "4285000",
+    "side": "R",
+    "displayName": "Columbia Square Street (Southwest side, 2-98)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "849000",
+    "side": "R",
+    "displayName": "18th Street (North side, 500-598)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "454000",
+    "side": "L",
+    "displayName": "09th Street (Northeast side, 301-339)",
+    "total_rules": 7,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "454000",
+    "side": "R",
+    "displayName": "09th Street (Southwest side, 300-330)",
+    "total_rules": 6,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "9566000",
+    "side": "R",
+    "displayName": "Newhall Street (Northwest side, 600-698)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8760203",
+    "side": "R",
+    "displayName": "Market Street (R side, 1804-1896)",
+    "total_rules": 10,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "8716000",
+    "side": "L",
+    "displayName": "Mariposa Street (South side, 801-899)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8716000",
+    "side": "R",
+    "displayName": "Mariposa Street (North side, 800-898)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6259000",
+    "side": "L",
+    "displayName": "Golden Gate Avenue (South side, 1-99)",
+    "total_rules": 5,
+    "sweeping_rules": 4
+  },
+  {
+    "cnn": "3146000",
+    "side": "L",
+    "displayName": "Broadway (South side, 301-351)",
+    "total_rules": 10,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "5677000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1177-1199)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "4929000",
+    "side": "R",
+    "displayName": "Dore Street (Southwest side, 2-98)",
+    "total_rules": 5,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "2867000",
+    "side": "L",
+    "displayName": "Beale Street (Northeast side, 401-499)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "805000",
+    "side": "L",
+    "displayName": "17th Street (South side, 3701-3799)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "805000",
+    "side": "R",
+    "displayName": "17th Street (North side, 3700-3798)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "579000",
+    "side": "L",
+    "displayName": "14th Street (South side, 41-99)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "488000",
+    "side": "L",
+    "displayName": "10th Street (Northeast side, 301-353)",
+    "total_rules": 6,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "15018201",
+    "side": "R",
+    "displayName": "Mission Bay Blvd North (R side, 400-498)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "11803000",
+    "side": "L",
+    "displayName": "Sherman Street (Northeast side, 1-49)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "11803000",
+    "side": "R",
+    "displayName": "Sherman Street (Southwest side, 2-60)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "9874001",
+    "side": "L",
+    "displayName": "Octavia Street (L side, 1-19)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8712000",
+    "side": "R",
+    "displayName": "Mariposa Street (North side, 400-498)",
+    "total_rules": 4,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "7940000",
+    "side": "L",
+    "displayName": "Laguna Street (West side, 41-99)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "7193000",
+    "side": "L",
+    "displayName": "Indiana Street (East side, 501-699)",
+    "total_rules": 4,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "372000",
+    "side": "L",
+    "displayName": "07th Street (Northeast side, 301-333)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "372000",
+    "side": "R",
+    "displayName": "07th Street (Southwest side, 300-312)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "5666000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 947-999)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5666000",
+    "side": "R",
+    "displayName": "Folsom Street (Northwest side, 948-998)",
+    "total_rules": 5,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "5680000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1345-1399)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5404000",
+    "side": "L",
+    "displayName": "Falmouth Street (Northeast side, 1-99)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "4110000",
+    "side": "L",
+    "displayName": "Clay Street (South side, 2401-2449)",
+    "total_rules": 5,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "10660000",
+    "side": "R",
+    "displayName": "Potrero Avenue (West side, 200-298)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "10477000",
+    "side": "R",
+    "displayName": "Pine Street (North side, 1500-1598)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "9515000",
+    "side": "L",
+    "displayName": "Natoma Street (Southeast side, 701-799)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8715000",
+    "side": "L",
+    "displayName": "Mariposa Street (South side, 701-799)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6700000",
+    "side": "L",
+    "displayName": "Harriet Street (Northeast side, 101-199)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6700000",
+    "side": "R",
+    "displayName": "Harriet Street (Southwest side, 100-198)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6707000",
+    "side": "R",
+    "displayName": "Harrison Street (Northwest side, 2-98)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6708000",
+    "side": "L",
+    "displayName": "Harrison Street (Southeast side, 101-199)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6708000",
+    "side": "R",
+    "displayName": "Harrison Street (Northwest side, 100-198)",
+    "total_rules": 4,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6709000",
+    "side": "L",
+    "displayName": "Harrison Street (Southeast side, 201-299)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "6711000",
+    "side": "L",
+    "displayName": "Harrison Street (Southeast side, 401-499)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "185201",
+    "side": "R",
+    "displayName": "03rd Street (R side, 1200-1298)",
+    "total_rules": 5,
+    "sweeping_rules": 4
+  },
+  {
+    "cnn": "185202",
+    "side": "R",
+    "displayName": "03rd Street (R side, 1300-1398)",
+    "total_rules": 5,
+    "sweeping_rules": 4
+  },
+  {
+    "cnn": "327000",
+    "side": "L",
+    "displayName": "06th Street (Northeast side, 35-63)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "269000",
+    "side": "R",
+    "displayName": "04th Street (Southwest side, 800-898)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "19991101",
+    "side": "L",
+    "displayName": "Channel Street (L side, 101-199)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "19991201",
+    "side": "R",
+    "displayName": "Channel Street (R side, 100-198)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "850000",
+    "side": "L",
+    "displayName": "18th Street (South side, 601-699)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "638000",
+    "side": "L",
+    "displayName": "15th Street (South side, 501-599)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "515000",
+    "side": "L",
+    "displayName": "11th Street (Northeast side, 301-399)",
+    "total_rules": 4,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "411000",
+    "side": "R",
+    "displayName": "08th Street (Southwest side, 262-298)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "15188000",
+    "side": "R",
+    "displayName": "Mission Bay Circle (R side, 0-0)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "799000",
+    "side": "L",
+    "displayName": "17th Street (South side, 3401-3449)",
+    "total_rules": 4,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "713000",
+    "side": "R",
+    "displayName": "16th Street (North side, 1900-1998)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "11033000",
+    "side": "L",
+    "displayName": "Ringold Street (Southeast side, 1-99)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8760102",
+    "side": "R",
+    "displayName": "Market Street (Northwest side, 0-0)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8713000",
+    "side": "L",
+    "displayName": "Mariposa Street (South side, 501-599)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8713000",
+    "side": "R",
+    "displayName": "Mariposa Street (North side, 500-598)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8629000",
+    "side": "L",
+    "displayName": "Main Street (Northeast side, 201-299)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "7834101",
+    "side": "L",
+    "displayName": "King Street (Southeast side, 301-399)",
+    "total_rules": 9,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "7523000",
+    "side": "R",
+    "displayName": "Jessie Street (Northwest side, 500-598)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "7029000",
+    "side": "L",
+    "displayName": "Howard Street (Southeast side, 101-199)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "6885000",
+    "side": "L",
+    "displayName": "Hermann Street (South side)",
+    "total_rules": 4,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "310000",
+    "side": "L",
+    "displayName": "05th Street (Northeast side, 801-899)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5674000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1121-1141)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "3144000",
+    "side": "L",
+    "displayName": "Broadway (South side, 101-199)",
+    "total_rules": 10,
+    "sweeping_rules": 8
+  },
+  {
+    "cnn": "453000",
+    "side": "R",
+    "displayName": "09th Street (Southwest side, 262-298)",
+    "total_rules": 6,
+    "sweeping_rules": 5
+  },
+  {
+    "cnn": "12048000",
+    "side": "L",
+    "displayName": "Spear Street (Northeast side, 401-499)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "12048000",
+    "side": "R",
+    "displayName": "Spear Street (Southwest side, 400-498)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "10638000",
+    "side": "R",
+    "displayName": "Post Street (North side, 922-998)",
+    "total_rules": 4,
+    "sweeping_rules": 3
+  },
+  {
+    "cnn": "8714000",
+    "side": "L",
+    "displayName": "Mariposa Street (South side, 601-699)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8714000",
+    "side": "R",
+    "displayName": "Mariposa Street (North side, 600-698)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8630000",
+    "side": "L",
+    "displayName": "Main Street (Northeast side, 301-399)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8099000",
+    "side": "L",
+    "displayName": "Langton Street (Northeast side, 101-121)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "8099000",
+    "side": "R",
+    "displayName": "Langton Street (Southwest side, 100-106)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "7195000",
+    "side": "R",
+    "displayName": "Indiana Street (West side, 800-998)",
+    "total_rules": 3,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "5676000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1149-1175)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "5986000",
+    "side": "R",
+    "displayName": "Galvez Avenue (Northeast side, 1530-1636)",
+    "total_rules": 2,
+    "sweeping_rules": 1
+  },
+  {
+    "cnn": "5682000",
+    "side": "L",
+    "displayName": "Folsom Street (Southeast side, 1447-1499)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "3445000",
+    "side": "L",
+    "displayName": "Bush Street (South side, 1501-1599)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  },
+  {
+    "cnn": "2955000",
+    "side": "R",
+    "displayName": "Berry Street (Northwest side, 300-398)",
+    "total_rules": 3,
+    "sweeping_rules": 2
+  }
+]

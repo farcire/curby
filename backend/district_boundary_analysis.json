@@ -1,0 +1,82 @@
+{
+  "total_districts": 12,
+  "total_segments": 34324,
+  "geometry_coverage_percent": 100.0,
+  "overlap_percentage": 0.0,
+  "confidence_level": "HIGH",
+  "districts": [
+    {
+      "district": "10",
+      "segment_count": 4656,
+      "centerline_count": 4656,
+      "blockface_count": 4656
+    },
+    {
+      "district": "7",
+      "segment_count": 4306,
+      "centerline_count": 4306,
+      "blockface_count": 4306
+    },
+    {
+      "district": "2",
+      "segment_count": 3394,
+      "centerline_count": 3394,
+      "blockface_count": 3394
+    },
+    {
+      "district": "9",
+      "segment_count": 3270,
+      "centerline_count": 3270,
+      "blockface_count": 3270
+    },
+    {
+      "district": "6",
+      "segment_count": 3214,
+      "centerline_count": 3214,
+      "blockface_count": 3214
+    },
+    {
+      "district": "8",
+      "segment_count": 3104,
+      "centerline_count": 3104,
+      "blockface_count": 3104
+    },
+    {
+      "district": "11",
+      "segment_count": 3016,
+      "centerline_count": 3016,
+      "blockface_count": 3016
+    },
+    {
+      "district": "3",
+      "segment_count": 2866,
+      "centerline_count": 2866,
+      "blockface_count": 2866
+    },
+    {
+      "district": "4",
+      "segment_count": 2538,
+      "centerline_count": 2538,
+      "blockface_count": 2538
+    },
+    {
+      "district": "1",
+      "segment_count": 2000,
+      "centerline_count": 2000,
+      "blockface_count": 2000
+    },
+    {
+      "district": "5",
+      "segment_count": 1680,
+      "centerline_count": 1680,
+      "blockface_count": 1680
+    },
+    {
+      "district": "nan",
+      "segment_count": 280,
+      "centerline_count": 280,
+      "blockface_count": 280
+    }
+  ],
+  "existing_collections": []
+}

@@ -1,0 +1,290 @@
+====================================================================================================
+KING ST 300-399 BLOCK - METER, REGULATION & STREET SWEEPING FIELDS
+====================================================================================================
+
+====================================================================================================
+CNN 7834201, SIDE R (NorthWest, 300-398)
+====================================================================================================
+
+Display Name: King Street (Northwest side, 300-398)
+Address Range: 300-398
+Cardinal: Northwest side
+From Street: 04th St
+To Street: 05th St
+
+METER FIELDS:
+----------------------------------------------------------------------------------------------------
+  No meter fields found
+
+REGULATION/PARKING/RULES FIELDS:
+----------------------------------------------------------------------------------------------------
+rules                                    (list           ): [8 items]
+                                           Item 1:
+{
+      "type": "street-sweeping",
+      "day": "Fri",
+      "startTime": "0",
+      "endTime": "2",
+      "activeDays": [
+            4
+      ],
+      "startTimeMin": 0,
+      "endTimeMin": 120,
+      "description": "Street Cleaning Friday 12:00 AM-2:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 2:
+{
+      "type": "street-sweeping",
+      "day": "Thu",
+      "startTime": "0",
+      "endTime": "2",
+      "activeDays": [
+            3
+      ],
+      "startTimeMin": 0,
+      "endTimeMin": 120,
+      "description": "Street Cleaning Thursday 12:00 AM-2:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 3:
+{
+      "type": "street-sweeping",
+      "day": "Sun",
+      "startTime": "1",
+      "endTime": "3",
+      "activeDays": [
+            6
+      ],
+      "startTimeMin": 60,
+      "endTimeMin": 180,
+      "description": "Street Cleaning Sunday 1:00 AM-3:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 4:
+{
+      "type": "street-sweeping",
+      "day": "Wed",
+      "startTime": "0",
+      "endTime": "2",
+      "activeDays": [
+            2
+      ],
+      "startTimeMin": 0,
+      "endTimeMin": 120,
+      "description": "Street Cleaning Wednesday 12:00 AM-2:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 5:
+{
+      "type": "street-sweeping",
+      "day": "Holiday",
+      "startTime": "1",
+      "endTime": "6",
+      "activeDays": [],
+      "startTimeMin": 60,
+      "endTimeMin": 360,
+      "description": "Street Cleaning Holiday 1:00 AM-6:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 6:
+{
+      "type": "street-sweeping",
+      "day": "Tues",
+      "startTime": "0",
+      "endTime": "2",
+      "activeDays": [
+            1
+      ],
+      "startTimeMin": 0,
+      "endTimeMin": 120,
+      "description": "Street Cleaning Tuesday 12:00 AM-2:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 7:
+{
+      "type": "street-sweeping",
+      "day": "Mon",
+      "startTime": "0",
+      "endTime": "2",
+      "activeDays": [
+            0
+      ],
+      "startTimeMin": 0,
+      "endTimeMin": 120,
+      "description": "Street Cleaning Monday 12:00 AM-2:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+                                           Item 8:
+{
+      "type": "street-sweeping",
+      "day": "Sat",
+      "startTime": "1",
+      "endTime": "3",
+      "activeDays": [
+            5
+      ],
+      "startTimeMin": 60,
+      "endTimeMin": 180,
+      "description": "Street Cleaning Saturday 1:00 AM-3:00 AM",
+      "blockside": "NorthWest",
+      "side": "R",
+      "limits": "04th St  -  05th St",
+      "interpretation": {
+            "type": "unknown",
+            "display": {
+                  "summary": "None None",
+                  "details": "Unable to fully interpret this restriction. Please check signage.",
+                  "severity": "medium",
+                  "icon": "info"
+            },
+            "logic": {},
+            "conditions": {},
+            "meta": {
+                  "interpreted_at": "2025-11-30T21:53:18.068409",
+                  "original_text": "None None",
+                  "fallback": true
+            }
+      }
+}
+
+STREET SWEEPING/CLEANING/SCHEDULES FIELDS:
+----------------------------------------------------------------------------------------------------
+schedules                                (list           ): [0 items]
+
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/get_king_st_300_399_fields.py", line 227, in <module>
+    asyncio.run(get_king_st_fields())
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/get_king_st_300_399_fields.py", line 154, in get_king_st_fields
+    with open(filename, "w") as f:
+FileNotFoundError: [Errno 2] No such file or directory: 'backend/king_st_cnn_7834201_side_R_fields.json'

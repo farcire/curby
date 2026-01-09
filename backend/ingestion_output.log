@@ -1,63 +1,99 @@
-Starting data ingestion...
 /Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
   warnings.warn(
 
---- 1. Processing Active Streets (The Backbone) ---
-Fetching dataset 3psu-pn9h...
-Successfully fetched 2007 records from 3psu-pn9h.
-Saved raw 'streets' collection.
-Loaded metadata for 2007 streets.
+📂 Loading checkpoint...
+✓ Checkpoint found: Last completed Step 2.5
+  Timestamp: 2026-01-02T20:39:02.398539
+  Segments: 34324
+  Next step: 3
+✓ Will resume from step 3
+✓ Successfully connected to MongoDB
+✓ Loaded 34324 segments from checkpoint
 
---- 2. Processing Street Nodes ---
-Fetching dataset vd6w-dq8r...
-Successfully fetched 9719 records from vd6w-dq8r.
-Saved 'street_nodes'.
+=== STEP 1: Skipping (already completed) ===
 
---- 3. Processing Intersections ---
-Fetching dataset sw2d-qfup...
-Successfully fetched 18756 records from sw2d-qfup.
-Saved 'intersections'.
+=== STEP 2: Skipping (already completed) ===
+✓ Added 0 blockface geometries to segments
+✓ Checkpoint saved: Step 2 complete, resume from Step 2.5
 
---- 4. Processing Intersection Permutations ---
-Fetching dataset jfxm-zeee...
-Successfully fetched 21046 records from jfxm-zeee.
-Saved 'intersection_permutations'.
+=== STEP 2.5: Generating Synthetic Blockfaces for Missing Geometries ===
+✓ Generated 0 synthetic blockface geometries
+✓ Checkpoint saved: Step 2.5 complete, resume from Step 3
 
---- 5. Creating Blockfaces from pep9-66vw ---
-Fetching dataset pep9-66vw...
-Successfully fetched 18355 records from pep9-66vw.
-Created 218 distinct blockfaces from pep9-66vw.
-
---- 6. Enriching with Street Cleaning ---
-Fetching dataset yhqp-riqs...
-Successfully fetched 37878 records from yhqp-riqs.
-Saved 'street_cleaning_schedules' collection.
-Added 914 sweeping rules to blockfaces.
-
---- 7. Processing Parking Regulations ---
+=== STEP 3: Matching Parking Regulations (Non-Metered Parking Availability) ===
 Fetching dataset hi6h-neyh...
-Successfully fetched 660 records from hi6h-neyh.
-Ensured 2dsphere index on 'parking_regulations'.
-Saved 660 parking regulations to collection.
-Enriching blockfaces with parking regulations via geometric analysis...
-Added 0 parking regulations to blockfaces.
-  Skipped 660 regulations without CNN or CNN not in our area
+Successfully fetched 7783 records from hi6h-neyh.
+  Inserted parking regulations 0 to 1000
+  Inserted parking regulations 1000 to 2000
+  Inserted parking regulations 2000 to 3000
+  Inserted parking regulations 3000 to 4000
+  Inserted parking regulations 4000 to 5000
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/pool.py", line 466, in receive_message
+    return receive_message(self, request_id, self.max_message_size)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/network_layer.py", line 759, in receive_message
+    length, _, response_to, op_code = _UNPACK_HEADER(receive_data(conn, 16, deadline))
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/network_layer.py", line 353, in receive_data
+    chunk_length = conn.conn.recv_into(mv[bytes_read:])
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/network_layer.py", line 469, in recv_into
+    return self.conn.recv_into(buffer)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ssl.py", line 1241, in recv_into
+    return self.read(nbytes, buffer)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/ssl.py", line 1099, in read
+    return self._sslobj.read(len, buffer)
+socket.timeout: The read operation timed out
 
---- 8. Processing Metered Blockfaces (Metadata) ---
-Fetching dataset mk27-a5x2...
-Successfully fetched 3123 records from mk27-a5x2.
+The above exception was the direct cause of the following exception:
 
---- 9-10. Enriching with Meters & Schedules ---
-Fetching dataset 6cqg-dxku...
-Successfully fetched 72365 records from 6cqg-dxku.
-Fetching dataset 8vzz-qzz9...
-Successfully fetched 38239 records from 8vzz-qzz9.
-Linked 5790 meters to blockfaces.
-
---- Saving Unified Blockfaces to MongoDB ---
-Inserted batch 0 to 218
-Creating geospatial index...
-Successfully saved 218 unified blockfaces.
-
-Ingestion Complete.
-Data ingestion completed.
+Traceback (most recent call last):
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/ingest_data_cnn_segments.py", line 1211, in <module>
+    asyncio.run(main())
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/runners.py", line 44, in run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/ingest_data_cnn_segments.py", line 740, in main
+    await db.parking_regulations.insert_many(chunk)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/thread.py", line 52, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/collection.py", line 975, in insert_many
+    blk.execute(write_concern, session, _Op.INSERT)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 751, in execute
+    return self.execute_command(generator, write_concern, session, operation)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 604, in execute_command
+    _ = client._retryable_write(
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/mongo_client.py", line 2082, in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/mongo_client.py", line 1968, in _retry_with_session
+    return self._retry_internal(
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/mongo_client.py", line 2003, in _retry_internal
+    return _ClientConnectionRetryable(
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/mongo_client.py", line 2765, in run
+    return self._read() if self._is_read else self._write()
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/mongo_client.py", line 2897, in _write
+    return self._func(self._session, conn, self._retryable)  # type: ignore
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 593, in retryable_bulk
+    self._execute_command(
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 538, in _execute_command
+    result, to_send = self._execute_batch(bwc, cmd, ops, client)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 462, in _execute_batch
+    result = self.write_command(bwc, cmd, request_id, msg, to_send, client)  # type: ignore[arg-type]
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/helpers.py", line 47, in inner
+    return func(*args, **kwargs)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/bulk.py", line 274, in write_command
+    reply = bwc.conn.write_command(request_id, msg, bwc.codec)  # type: ignore[misc]
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/pool.py", line 501, in write_command
+    reply = self.receive_message(request_id)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/pool.py", line 469, in receive_message
+    self._raise_connection_failure(error)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/synchronous/pool.py", line 643, in _raise_connection_failure
+    _raise_connection_failure(self.address, error, timeout_details=details)
+  File "/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/pymongo/pool_shared.py", line 142, in _raise_connection_failure
+    raise NetworkTimeout(msg) from error
+pymongo.errors.NetworkTimeout: ac-bloom9d-shard-00-02.myw6nls.mongodb.net:27017: The read operation timed out (configured timeouts: socketTimeoutMS: 60000.0ms, connectTimeoutMS: 60000.0ms)
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(

@@ -1,0 +1,1 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/bin/python: can't open file '/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/backend/investigate_meter_operating_schedules.py': [Errno 2] No such file or directory

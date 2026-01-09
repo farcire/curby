@@ -1,0 +1,16 @@
+{
+  "summary": {
+    "total_segments": 16374,
+    "both_sides": 16374,
+    "left_only": 0,
+    "right_only": 0,
+    "neither_side": 0,
+    "one_sided_total": 0,
+    "both_sides_pct": 100.0,
+    "one_sided_pct": 0.0,
+    "no_address_pct": 0.0
+  },
+  "left_only_examples": [],
+  "right_only_examples": [],
+  "neither_side_examples": []
+}

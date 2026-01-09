@@ -1,0 +1,156 @@
+{
+  "total_with_fromStreet": 34324,
+  "total_segments": 34324,
+  "sample_analysis": [
+    {
+      "cnn": "13100000",
+      "side": "L",
+      "segment": {
+        "fromStreet": "START: 1000-1075 BLOCK",
+        "toStreet": "FLORENCE ST",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "START: 1000-1075 BLOCK",
+        "t_st": "FLORENCE ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13100000",
+      "side": "R",
+      "segment": {
+        "fromStreet": "START: 1000-1075 BLOCK",
+        "toStreet": "FLORENCE ST",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "START: 1000-1075 BLOCK",
+        "t_st": "FLORENCE ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13107000",
+      "side": "L",
+      "segment": {
+        "fromStreet": "LARKIN ST",
+        "toStreet": "POLK ST",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "LARKIN ST",
+        "t_st": "POLK ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13107000",
+      "side": "R",
+      "segment": {
+        "fromStreet": "LARKIN ST",
+        "toStreet": "POLK ST",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "LARKIN ST",
+        "t_st": "POLK ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13114000",
+      "side": "L",
+      "segment": {
+        "fromStreet": "Buchanan St",
+        "toStreet": "Webster St",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "BUCHANAN ST",
+        "t_st": "WEBSTER ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13114000",
+      "side": "R",
+      "segment": {
+        "fromStreet": "Buchanan St",
+        "toStreet": "Webster St",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "BUCHANAN ST",
+        "t_st": "WEBSTER ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13121000",
+      "side": "L",
+      "segment": {
+        "fromStreet": "Divisadero St",
+        "toStreet": "Broderick St",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "DIVISADERO ST",
+        "t_st": "BRODERICK ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13121000",
+      "side": "R",
+      "segment": {
+        "fromStreet": "Divisadero St",
+        "toStreet": "Broderick St",
+        "street": "VALLEJO"
+      },
+      "streets_collection": {
+        "f_st": "DIVISADERO ST",
+        "t_st": "BRODERICK ST",
+        "street": "VALLEJO"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13127000",
+      "side": "L",
+      "segment": {
+        "fromStreet": "Church St",
+        "toStreet": "Sanchez St",
+        "street": "VALLEY"
+      },
+      "streets_collection": {
+        "f_st": "CHURCH ST",
+        "t_st": "SANCHEZ ST",
+        "street": "VALLEY"
+      },
+      "intersections_collection": null
+    },
+    {
+      "cnn": "13127000",
+      "side": "R",
+      "segment": {
+        "fromStreet": "Church St",
+        "toStreet": "Sanchez St",
+        "street": "VALLEY"
+      },
+      "streets_collection": {
+        "f_st": "CHURCH ST",
+        "t_st": "SANCHEZ ST",
+        "street": "VALLEY"
+      },
+      "intersections_collection": null
+    }
+  ]
+}

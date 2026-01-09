@@ -1,0 +1,17 @@
+
+Total segments: 19600
+With rules: 12819 (65.4%)
+With fromStreet: 19700 (100.5%)
+With toStreet: 19700 (100.5%)
+With cardinalDirection: 19800 (101.0%)
+With streetCleaningAggregation: 12290 (62.7%)
+With nonMeteredRegulationAggregation: 3569 (18.2%)
+With schedules: 1723 (8.8%)
+
+Sample segment (CNN 13107000, side L):
+  fromStreet: LARKIN ST
+  toStreet: POLK ST
+  cardinalDirection: N
+  rules count: 4
+  has streetCleaningAggregation: False
+  has nonMeteredRegulationAggregation: True

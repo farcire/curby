@@ -1,0 +1,58 @@
+[
+  {
+    "post_id": "N/A",
+    "schedule_type": "Alternate",
+    "days_applied": "Posted Events",
+    "from_time": "12:00 AM",
+    "to_time": "12:00 AM",
+    "matches": [
+      {
+        "field": "days_applied",
+        "value": "Posted Events",
+        "keyword_found": "event"
+      }
+    ],
+    "full_record": {
+      "street_and_block": "16TH ST 3100",
+      "block_side": "Odd",
+      "post_id": "216-31010",
+      "cap_color": "Grey",
+      "schedule_type": "Alternate",
+      "applied_color_rule": "White - Passenger loading zone",
+      "priority": "2",
+      "days_applied": "Posted Events",
+      "from_time": "12:00 AM",
+      "to_time": "12:00 AM",
+      "active_meter_status": "M - Active meter installed",
+      "time_limit": "0 minutes"
+    }
+  },
+  {
+    "post_id": "N/A",
+    "schedule_type": "Alternate",
+    "days_applied": "Posted Events",
+    "from_time": "12:00 AM",
+    "to_time": "12:00 AM",
+    "matches": [
+      {
+        "field": "days_applied",
+        "value": "Posted Events",
+        "keyword_found": "event"
+      }
+    ],
+    "full_record": {
+      "street_and_block": "16TH ST 3100",
+      "block_side": "Odd",
+      "post_id": "216-31030",
+      "cap_color": "Grey",
+      "schedule_type": "Alternate",
+      "applied_color_rule": "White - Passenger loading zone",
+      "priority": "2",
+      "days_applied": "Posted Events",
+      "from_time": "12:00 AM",
+      "to_time": "12:00 AM",
+      "active_meter_status": "M - Active meter installed",
+      "time_limit": "0 minutes"
+    }
+  }
+]

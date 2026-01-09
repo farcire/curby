@@ -70,4 +70,8 @@ coverage/
 
 # Misc
 response.json
-unique_regulations.json
+unique_regulations.jsonbackend/database_backups/
+backend/cnn_master_reference.json
+backend/cnn_master_reference.json.backup_before_rates
+backend/DO_NOT_USE_cnn_master_with_blockfaces.json
+backend/cnn_master_with_blockfaces_CORRECTED.json

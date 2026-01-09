@@ -1,0 +1,193 @@
+/Users/ssp/Desktop/snapdev-apps/elegant-lynx-play/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+================================================================================
+METER POLICIES COVERAGE VALIDATION
+================================================================================
+
+1. Fetching Parking Meters Dataset (8vzz-qzz9)...
+--------------------------------------------------------------------------------
+✓ Fetched 38356 parking meter records
+
+Available columns in Parking Meters:
+  - :@computed_region_26cr_cadq
+  - :@computed_region_6qbp_sg9q
+  - :@computed_region_ajp5_b2md
+  - :@computed_region_jwn9_ihcz
+  - :@computed_region_qgnn_b9vv
+  - active_meter_flag
+  - analysis_neighborhood
+  - blockface_id
+  - cap_color
+  - collection_route
+  - collection_route_desc
+  - collection_subroute
+  - collection_subroute_desc
+  - data_as_of
+  - data_loaded_at
+  - jurisdiction
+  - latitude
+  - longitude
+  - meter_model
+  - meter_type
+  - meter_vendor
+  - ms_pay_station_id
+  - ms_space_num
+  - objectid
+  - on_offstreet_type
+  - pm_district_id
+  - pmr_route
+  - post_id
+  - reason_code
+  - shape
+  - street_id
+  - street_name
+  - street_num
+  - street_seg_ctrln_id
+  - supervisor_district
+
+✓ Using postID field: 'post_id'
+✓ Found 38356 unique postIDs in Parking Meters
+✓ Found cap color field: 'cap_color'
+
+Cap color distribution in Parking Meters:
+  - Grey: 25691 meters (67.0%)
+  - Yellow: 4574 meters (11.9%)
+  - Black: 2948 meters (7.7%)
+  - -: 2033 meters (5.3%)
+  - Green: 1466 meters (3.8%)
+  - Red: 1404 meters (3.7%)
+  - Blue: 171 meters (0.4%)
+  - Purple: 34 meters (0.1%)
+  - Brown: 20 meters (0.1%)
+  - White: 15 meters (0.0%)
+⚠ WARNING: No parking_space_id field found in Parking Meters dataset
+
+2. Fetching Meter Policies Dataset (qq7v-hds4)...
+--------------------------------------------------------------------------------
+✓ Fetched 50000 meter policy records
+✓ Using postID field: 'postid'
+✓ Found 1545 unique postIDs in Meter Policies
+
+3. Validating PostID Coverage...
+--------------------------------------------------------------------------------
+
+PostIDs in Meter Policies: 1545
+PostIDs also in Parking Meters: 1545 (100.0%)
+PostIDs NOT in Parking Meters: 0 (0.0%)
+
+✓ CONFIRMED: All postIDs in Meter Policies exist in Parking Meters!
+
+PostIDs in Parking Meters without policies: 36811 (96.0%)
+  ℹ 36811 meters have no operating schedule policies
+  Sample postIDs without policies:
+    1. 339-01480
+    2. 359-17350
+    3. 443-08250
+    4. 463-00670
+    5. 684-05073
+
+4. Meter Policies Dataset Columns...
+--------------------------------------------------------------------------------
+
+All available columns in Meter Policies:
+  - capcolor
+  - dayofweek
+  - enddate
+  - endtime
+  - hourlyrate
+  - mspaystationid
+  - parkingspaceid
+  - pk_mapi
+  - postid
+  - revisiondate
+  - scheduletype
+  - spacenumber
+  - startdate
+  - starttime
+  - timelimitminutes
+
+5. Analyzing Schedule Types in Meter Policies...
+--------------------------------------------------------------------------------
+
+Schedule type distribution:
+  - FREE: 19812 policies (39.6%)
+  - OP: 16323 policies (32.6%)
+  - PRE: 8641 policies (17.3%)
+  - ALT: 3932 policies (7.9%)
+  - TOW: 1292 policies (2.6%)
+
+Sample policies by schedule type (with actual field names):
+
+  FREE Schedule:
+    PostID: 330-06520
+    ParkingSpaceID: 138864
+    DayOfWeek: We
+    StartTime: 18:00, EndTime: 24:00
+    TimeLimitMinutes: nan
+    HourlyRate: nan
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+    PostID: 568-27070
+    ParkingSpaceID: 120699
+    DayOfWeek: Th
+    StartTime: 18:00, EndTime: 24:00
+    TimeLimitMinutes: nan
+    HourlyRate: nan
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+
+  PRE Schedule:
+    PostID: 568-20380
+    ParkingSpaceID: 113548
+    DayOfWeek: We
+    StartTime: 4:30, EndTime: 8:00
+    TimeLimitMinutes: 30
+    HourlyRate: nan
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+    PostID: 330-06520
+    ParkingSpaceID: 138864
+    DayOfWeek: Th
+    StartTime: 4:30, EndTime: 6:00
+    TimeLimitMinutes: 30
+    HourlyRate: nan
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+
+  OP Schedule:
+    PostID: 651-07110
+    ParkingSpaceID: 110056
+    DayOfWeek: Tu
+    StartTime: 12:00, EndTime: 15:00
+    TimeLimitMinutes: 30
+    HourlyRate: 7.75
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+    PostID: 651-07110
+    ParkingSpaceID: 110056
+    DayOfWeek: Tu
+    StartTime: 7:00, EndTime: 12:00
+    TimeLimitMinutes: 30
+    HourlyRate: 5.25
+    Valid: 2026-01-12T00:00:00.000 to 2200-12-31T00:00:00.000
+
+================================================================================
+SUMMARY & RECOMMENDATIONS
+================================================================================
+
+✓ DATA HIERARCHY CONFIRMED:
+  1. Parking Meters (8vzz-qzz9) = PRIMARY source
+     - Contains: postID, parking_space_id, cap_color, location, etc.
+     - 38356 unique meters
+
+  2. Meter Policies (qq7v-hds4) = SUPPLEMENTAL source
+     - Contains: Operating schedules (Free/PRE/OP), time windows, rates
+     - 1545 unique postIDs with policies
+     - 50000 total policy records
+
+✓ VALIDATION PASSED: All meter policies reference valid parking meters
+
+✓ INTEGRATION STRATEGY:
+  1. Load Parking Meters first (get postID, parking_space_id, cap_color)
+  2. Load Meter Policies and group by postID
+  3. Attach policies to meters using postID as join key
+  4. Cap color comes from Parking Meters, NOT from policies
+
+================================================================================
+VALIDATION COMPLETE
+================================================================================
