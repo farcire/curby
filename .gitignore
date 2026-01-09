@@ -6,36 +6,27 @@ __pycache__/
 *.pyc
 *.pyo
 
-cd ..
-cat > .gitignore << 'EOF'
-# Python
-.venv/
-venv/
-env/
-__pycache__/
-*.pyc
-*.pyo
-
-# Data files
-*.json
-!package.json
-!package-lock.json
-!tsconfig.json
-*.csv
-*.pkl
-*.pkl.gz
+# Data files  
+backend/*.json
+backend/*.csv
+backend/*.pkl
+backend/*.pkl.gz
 
 # Logs
 *.log
+logs/
 
 # IDE
 .DS_Store
 .vscode/*
-!.vscode/settings.json
 
 # Database
-database_backups/
+backend/database_backups/
 
 # Build
 frontend/dist/
 frontend/node_modules/
+
+# Temp
+*.tmp
+temp/
