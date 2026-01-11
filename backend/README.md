@@ -28,8 +28,13 @@ backend/
 ├── config/
 │   ├── .env             # Environment variables
 │   └── requirements.txt # Dependencies
-├── docs/                 # Documentation
-│   └── PROJECT_HISTORY.md  # Full project history
+├── docs/                 # 📚 77 documentation files (organized Jan 11, 2026)
+│   ├── README.md        # ← DOCUMENTATION NAVIGATION GUIDE
+│   ├── current/         # 8 files - Production systems (running NOW)
+│   ├── reference/       # 36 files - Guides, specs, status reports
+│   ├── completed/       # 14 files - Implementation history
+│   ├── investigations/  # 11 files - Research & analysis
+│   └── archive/         # 10 files - Obsolete docs
 └── tests/                # Tests
 ```
 
@@ -62,7 +67,33 @@ python scripts/ingestion/build_cnn_master.py
 
 ## Documentation
 
-See docs/PROJECT_HISTORY.md for complete project context, investigation findings, and architecture decisions.
+### 📖 New to the Project?
+
+1. **Start here:** [`docs/README.md`](docs/README.md) - Complete documentation navigation guide
+2. **Essential reading:** [`docs/current/INDEX.md`](docs/current/INDEX.md) - 8 production system docs
+3. **System overview:** [`docs/current/CNN_MASTER_REFERENCE_ARCHITECTURE.md`](docs/current/CNN_MASTER_REFERENCE_ARCHITECTURE.md)
+4. **Project context:** [`docs/current/PROJECT_HISTORY.md`](docs/current/PROJECT_HISTORY.md)
+
+### 📚 Documentation Organization (Reorganized Jan 11, 2026)
+
+All 77 markdown files are organized by **content and purpose**:
+
+- **`docs/current/`** (8 files) - Systems running in production NOW
+- **`docs/reference/guides/`** (12 files) - How-to guides for current systems
+- **`docs/reference/specs/`** (11 files) - Technical specifications  
+- **`docs/reference/status/`** (13 files) - Status reports and bug fixes
+- **`docs/completed/`** (14 files) - Implementation summaries (historical)
+- **`docs/investigations/`** (11 files) - Research and analysis
+- **`docs/archive/`** (10 files) - Obsolete docs (40+ days old)
+
+Each directory has an `INDEX.md` to help you navigate.
+
+### 🔍 Quick Links
+
+- **How does ingestion work?** → [`docs/current/INGESTION_REFACTORING_COMPLETE_SUMMARY.md`](docs/current/INGESTION_REFACTORING_COMPLETE_SUMMARY.md)
+- **Database schema?** → [`docs/current/MONGODB_COLLECTION_ARCHITECTURE.md`](docs/current/MONGODB_COLLECTION_ARCHITECTURE.md)
+- **Parse days/times?** → [`docs/reference/guides/DAY_TIME_NORMALIZATION_GUIDE.md`](docs/reference/guides/DAY_TIME_NORMALIZATION_GUIDE.md)
+- **Known issues?** → [`docs/current/DATA_QUALITY_LOG.md`](docs/current/DATA_QUALITY_LOG.md) (updated Jan 7!)
 
 ## Next Steps
 
