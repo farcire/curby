@@ -1,0 +1,372 @@
+# Frontend AI Coding Rules
+
+**Project:** Curby - San Francisco Parking App  
+**Last Updated:** January 11, 2026  
+**For:** Cursor, Claude, Copilot, and all AI coding assistants
+
+---
+
+## 🎯 Project Context
+
+This is a **mobile-first Progressive Web App (PWA)** for San Francisco parking regulations.
+- **Focus:** Real-time parking legality checking
+- **Coverage:** Mission & SOMA neighborhoods (34,292 street segments)
+- **Users:** SF residents, gig workers, daily commuters
+
+---
+
+## 📁 Directory Structure (FOLLOW THIS)
+
+```
+frontend/
+├── src/
+│   ├── App.tsx              # Router setup (DO NOT move routes elsewhere)
+│   ├── main.tsx             # Entry point
+│   ├── globals.css          # Global Tailwind styles
+│   ├── pages/               # Page components
+│   │   └── Index.tsx        # Main page (default route)
+│   ├── components/          # Feature components
+│   │   ├── ui/             # shadcn/ui components (DO NOT EDIT)
+│   │   ├── MapView.tsx     # Leaflet map component
+│   │   ├── ParkingNavigator.tsx
+│   │   ├── BlockfaceDetail.tsx
+│   │   └── [your new components]
+│   ├── types/               # TypeScript type definitions
+│   ├── utils/               # Utility functions
+│   ├── hooks/               # Custom React hooks
+│   └── lib/                 # Third-party library configs
+├── public/                  # Static assets
+└── README.md
+```
+
+---
+
+## 🛠️ Tech Stack (USE THESE)
+
+### Core Framework
+- **React 18** with **TypeScript** (strict mode)
+- **Vite** for build tooling
+- **React Router** (routes stay in `src/App.tsx`)
+
+### UI & Styling
+- **Tailwind CSS** - Use extensively for ALL styling
+- **shadcn/ui** - Pre-built UI components (already installed)
+- **Lucide React** - Icons (already installed)
+- **Radix UI** - Primitives (already installed via shadcn)
+
+### Map & Location
+- **Leaflet** - Map rendering
+- **React Leaflet** - React bindings for Leaflet
+- **OpenStreetMap** - Tile provider (free, no API key)
+
+### PWA
+- **vite-plugin-pwa** - Service worker, manifest, offline support
+
+---
+
+## ✅ CRITICAL RULES
+
+### 1. File Placement (ALWAYS FOLLOW)
+```
+NEW PAGE? → src/pages/YourPage.tsx
+NEW COMPONENT? → src/components/YourComponent.tsx
+NEW TYPE? → src/types/yourTypes.ts
+NEW UTILITY? → src/utils/yourUtil.ts
+NEW HOOK? → src/hooks/useYourHook.ts
+```
+
+### 2. Component Visibility (IMPORTANT!)
+**Problem:** Components created but not imported = user can't see them
+**Solution:** ALWAYS update the parent to import and render new components
+```tsx
+// BAD: Create component but don't use it
+// GOOD: Create component AND add to parent
+import YourNewComponent from '@/components/YourNewComponent';
+
+// In parent's JSX:
+<YourNewComponent />
+```
+
+### 3. shadcn/ui Components (DO NOT EDIT)
+- Components in `src/components/ui/` are from shadcn/ui
+- **NEVER edit these files directly**
+- If you need changes, create a NEW wrapper component
+```tsx
+// BAD: Edit src/components/ui/button.tsx
+// GOOD: Create src/components/CustomButton.tsx that wraps Button
+```
+
+### 4. React Router (KEEP IN App.tsx)
+- All routes MUST stay in `src/App.tsx`
+- Do NOT create separate routing files
+```tsx
+// src/App.tsx
+<BrowserRouter>
+  <Routes>
+    <Route path="/" element={<Index />} />
+    <Route path="/your-page" element={<YourPage />} />
+  </Routes>
+</BrowserRouter>
+```
+
+### 5. TypeScript (USE STRICTLY)
+- Always define types for props
+- Avoid `any` - use proper types
+- Use TypeScript's strict mode
+```tsx
+// GOOD
+interface Props {
+  title: string;
+  count: number;
+}
+
+export function MyComponent({ title, count }: Props) {
+  // ...
+}
+
+// BAD
+export function MyComponent(props: any) {
+  // ...
+}
+```
+
+---
+
+## 🎨 Styling Guidelines
+
+### Tailwind CSS (PRIMARY)
+- Use Tailwind for ALL styling
+- Leverage utility classes extensively
+- Mobile-first approach (default styles are mobile)
+
+```tsx
+// GOOD: Tailwind utilities
+<div className="flex items-center gap-4 p-4 bg-white rounded-lg shadow-md">
+
+// BAD: Inline styles
+<div style={{ display: 'flex', padding: '16px' }}>
+
+// BAD: Custom CSS file for component-specific styles
+```
+
+### Responsive Design Pattern
+```tsx
+// Mobile-first (default)
+<div className="text-sm md:text-base lg:text-lg">
+  // Small on mobile, larger on desktop
+</div>
+```
+
+### Color System (USE PROJECT COLORS)
+```tsx
+// Primary colors (based on parking status)
+className="bg-green-500"   // Legal parking
+className="bg-red-500"     // Illegal parking
+className="bg-yellow-500"  // Partial restrictions
+className="bg-gray-400"    // Unknown/loading
+```
+
+---
+
+## 📦 Available Packages (ALREADY INSTALLED)
+
+### You DON'T Need to Install:
+- ✅ shadcn/ui components (all installed)
+- ✅ Radix UI primitives (all installed)
+- ✅ Lucide React icons
+- ✅ React Leaflet
+- ✅ Tailwind CSS
+
+### Import Patterns:
+```tsx
+// shadcn/ui components
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+
+// Icons
+import { MapPin, Clock, Calendar } from "lucide-react"
+
+// Map components
+import { MapContainer, TileLayer, Marker } from "react-leaflet"
+```
+
+---
+
+## 🗺️ Map-Specific Rules
+
+### Leaflet Map Setup
+```tsx
+import { MapContainer, TileLayer, Polygon } from "react-leaflet"
+
+// Always set center and zoom
+<MapContainer
+  center={[37.7599, -122.4148]}  // SF Mission District
+  zoom={16}
+  className="w-full h-screen"
+>
+  <TileLayer
+    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    attribution='&copy; OpenStreetMap'
+  />
+</MapContainer>
+```
+
+### Performance: Dynamic Loading
+- Only load blockfaces in viewport
+- Use `useMemo` for expensive calculations
+- Debounce map move events
+
+---
+
+## 🚀 PWA Requirements
+
+### Service Worker
+- Handled by `vite-plugin-pwa` (already configured)
+- Don't create custom service workers
+
+### Manifest
+- Already configured in `vite.config.ts`
+- Icons in `public/` directory
+
+### Offline Support
+- App shell caches automatically
+- API calls fail gracefully when offline
+
+---
+
+## 🔗 API Integration
+
+### Backend Endpoint Pattern
+```tsx
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+
+// Fetch blockfaces
+const response = await fetch(
+  `${API_BASE}/api/v1/blockfaces?lat=${lat}&lng=${lng}&radius=${radius}`
+)
+```
+
+### Error Handling
+```tsx
+try {
+  const data = await response.json()
+} catch (error) {
+  console.error('API error:', error)
+  // Show user-friendly error message
+}
+```
+
+---
+
+## 📝 Code Style Preferences
+
+### Naming Conventions
+```tsx
+// Components: PascalCase
+export function MapView() {}
+
+// Files: PascalCase.tsx for components
+MapView.tsx
+
+// Utilities: camelCase
+export function calculateDistance() {}
+
+// Files: camelCase.ts for utilities
+calculateDistance.ts
+
+// Constants: UPPER_SNAKE_CASE
+const MAX_ZOOM_LEVEL = 18
+```
+
+### Component Structure
+```tsx
+// 1. Imports
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+
+// 2. Types/Interfaces
+interface Props {
+  title: string
+}
+
+// 3. Component
+export function MyComponent({ title }: Props) {
+  // 4. Hooks
+  const [count, setCount] = useState(0)
+  
+  // 5. Event handlers
+  const handleClick = () => setCount(count + 1)
+  
+  // 6. Render
+  return (
+    <div>
+      <h1>{title}</h1>
+      <Button onClick={handleClick}>Count: {count}</Button>
+    </div>
+  )
+}
+```
+
+---
+
+## ⚠️ Common Pitfalls to Avoid
+
+### ❌ DON'T:
+- Edit files in `src/components/ui/` (shadcn/ui components)
+- Create routes outside `App.tsx`
+- Use inline styles instead of Tailwind
+- Install packages that are already included
+- Forget to import new components in parent
+- Use `any` type in TypeScript
+- Create custom CSS files for one-off styles
+
+### ✅ DO:
+- Use Tailwind utilities for styling
+- Keep routes in `App.tsx`
+- Define proper TypeScript interfaces
+- Wrap shadcn components if you need modifications
+- Import and render new components in parent
+- Use existing hooks and utilities
+- Follow mobile-first responsive design
+
+---
+
+## 🔗 Related Documentation
+
+**For documentation standards:**
+- See `backend/docs/AI_ASSISTANT_GUIDE.md` for documentation rules
+- See `backend/docs/README.md` for project documentation
+
+**For project context:**
+- See `README.md` (root) for project overview
+- See `frontend/README.md` for frontend-specific details
+- See `backend/README.md` for API documentation
+
+---
+
+## 📞 Quick Reference
+
+**Need to add a new page?**
+1. Create `src/pages/YourPage.tsx`
+2. Add route in `src/App.tsx`
+3. Import and use in navigation
+
+**Need to add a new component?**
+1. Create `src/components/YourComponent.tsx`
+2. Import in parent component
+3. Render in parent's JSX
+
+**Need to style something?**
+1. Use Tailwind utilities first
+2. If complex, use shadcn/ui component
+3. If very custom, wrap shadcn component
+
+**Need an icon?**
+1. Import from `lucide-react`
+2. Use like: `<MapPin className="w-4 h-4" />`
+
+---
+
+**Last Updated:** January 11, 2026  
+**This file should be named:** `.cursorrules` or `AI_RULES.md`  
+**Location:** `frontend/` directory

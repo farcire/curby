@@ -1,0 +1,421 @@
+# Curby Backend - AI Coding Assistant Rules
+
+**Project:** Curby - San Francisco Parking Regulation Decoder  
+**Type:** FastAPI + Python Backend API  
+**Last Updated:** January 11, 2026
+
+---
+
+## 🎯 Project Context
+
+**What we're building:** Backend API for SF parking regulation data processing and serving  
+**Coverage:** 34,324 street segments with parking regulations, meters, street cleaning  
+**Status:** Production - serving data to frontend PWA  
+**Architecture:** FastAPI + MongoDB Atlas + Python 3.13
+
+---
+
+## 📚 **CRITICAL: Read Existing Documentation First**
+
+**Before writing ANY code, consult these docs:**
+
+### Core Production Docs (`docs/current/`)
+1. **`CNN_MASTER_REFERENCE_ARCHITECTURE.md`** - Main system architecture
+2. **`REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`** - How regulations work (ESSENTIAL!)
+3. **`INGESTION_REFACTORING_COMPLETE_SUMMARY.md`** - 12-step data pipeline
+4. **`MONGODB_COLLECTION_ARCHITECTURE.md`** - Database schema
+5. **`PROJECT_HISTORY.md`** - Why decisions were made
+
+### How-To Guides (`docs/reference/guides/`)
+- **`DAY_TIME_NORMALIZATION_GUIDE.md`** - Parse days/times
+- **`REGULATION_DISPLAY_EXAMPLES.md`** - Format regulations for display
+- **`INGESTION_PROGRESS_GUIDE.md`** - Run ingestion
+- **`MANUAL_DATA_OVERRIDES_GUIDE.md`** - Apply manual fixes
+
+### Technical Specs (`docs/reference/specs/`)
+- **`REGULATION_SEVERITY_HIERARCHY.md`** - Rule precedence
+- **`INGESTION_ARCHITECTURE_SPECIFICATION.md`** - Data flow
+
+**READ THESE BEFORE CODING!** They contain critical business logic.
+
+---
+
+## 📁 Project Structure
+
+```
+backend/
+├── src/                          # Production code (3 files only!)
+│   ├── api/
+│   │   ├── main.py              # FastAPI server (419 lines)
+│   │   └── models.py            # Pydantic models (117 lines)
+│   └── core/
+│       └── regulation_normalizer.py  # ⭐ CORE LOGIC (2,335 lines)
+│
+├── scripts/                      # Utility scripts (174 files)
+│   ├── ingestion/               # Data loading (16 files)
+│   ├── analysis/                # Data analysis (31 files)
+│   ├── maintenance/             # DB operations (33 files)
+│   └── utilities/               # Testing & validation (94 files)
+│
+├── config/
+│   ├── requirements.txt
+│   └── .env
+│
+├── docs/                         # 77 organized documentation files
+│   ├── README.md                # Documentation navigation
+│   ├── AI_ASSISTANT_GUIDE.md    # ⭐ Doc standards (read this!)
+│   ├── current/                 # 8 production system docs
+│   ├── reference/               # 36 guides, specs, status reports
+│   ├── completed/               # 14 implementation summaries
+│   ├── investigations/          # 11 research documents
+│   └── archive/                 # 10 obsolete docs
+│
+└── tests/                        # TODO: Add tests
+```
+
+---
+
+## 🛠️ Tech Stack
+
+### Core
+- **Python 3.13** (async/await everywhere)
+- **FastAPI** - Modern async web framework
+- **Motor** - Async MongoDB driver
+- **Pydantic** - Data validation
+
+### Database
+- **MongoDB Atlas** - Cloud database
+- **Geospatial indexes** (2dsphere)
+- Collections: `street_segments`, `parking_regulations`, `error_reports`
+
+### Data Sources
+- **SFMTA Open Data** - 10 datasets via Socrata API
+
+---
+
+## ✅ Code Standards
+
+### The Golden Rule
+
+**⭐ USE `regulation_normalizer.py` FOR EVERYTHING!**
+
+**This file is the SINGLE SOURCE OF TRUTH for:**
+- Day/time parsing (any format → canonical)
+- Duration normalization
+- Regulation display formatting
+- Special event zones
+- Meter schedule priority
+- 6-color cap system
+
+**NEVER reimplement this logic elsewhere!**
+
+```python
+# ✅ CORRECT - Import from regulation_normalizer
+from src.core.regulation_normalizer import (
+    normalize_regulation,
+    format_day_display,
+    format_time_display
+)
+
+# ❌ WRONG - Don't reimplement parsing
+def parse_days(day_string):  # NO! This already exists!
+    ...
+```
+
+### File Organization
+
+**Production code ONLY in `src/`:**
+- `src/api/main.py` - API endpoints
+- `src/api/models.py` - Pydantic models
+- `src/core/regulation_normalizer.py` - Business logic
+
+**Everything else in `scripts/`:**
+- One-time scripts → `scripts/utilities/`
+- Recurring scripts → `scripts/ingestion/` or `scripts/maintenance/`
+- Analysis scripts → `scripts/analysis/`
+
+**Documentation in `docs/`:**
+- Follow `docs/AI_ASSISTANT_GUIDE.md` for doc standards
+
+### Python Style
+
+**Always:**
+- Use async/await (FastAPI is async)
+- Use type hints (`def func(x: int) -> str:`)
+- Use Pydantic models for validation
+- Use Motor for MongoDB (not PyMongo)
+- Follow PEP 8
+
+**Never:**
+- Use blocking I/O operations
+- Use synchronous MongoDB operations
+- Hardcode configuration (use environment variables)
+
+---
+
+## 🗄️ Database Rules
+
+### MongoDB Collections
+
+**street_segments** - Main collection (34,324 documents)
+```python
+{
+    "cnn": "123456",
+    "side": "L",  # or "R"
+    "geometry": {...},  # GeoJSON LineString
+    "street_name": "Mission St",
+    "rules": [...]  # Array of ParkingRule objects
+}
+```
+
+**parking_regulations** - Regulations by zone
+**error_reports** - User-submitted errors
+
+### Geospatial Queries
+
+**Always use geospatial indexes:**
+```python
+# ✅ CORRECT - Use $geoWithin
+results = await db.street_segments.find({
+    "geometry": {
+        "$geoWithin": {
+            "$centerSphere": [[lng, lat], radius_in_radians]
+        }
+    }
+}).to_list(length=None)
+```
+
+---
+
+## 🚦 Regulation Business Logic
+
+### Priority Hierarchy (CRITICAL!)
+
+**Read: `docs/reference/specs/REGULATION_SEVERITY_HIERARCHY.md`**
+
+1. **TOW AWAY** - Highest priority
+2. **ALTERNATE** - Street sweeping alternate side
+3. **METER** - Paid parking
+4. **OP** - Other prohibitions (time limits, RPP)
+5. **PRE** - Preferential parking
+6. **FREE** - Unrestricted parking
+
+### 6-Color Cap System
+
+**Read: `docs/current/REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`**
+
+- **Red** - No parking (TOW)
+- **Orange** - Street sweeping (ALTERNATE)
+- **Yellow** - Meter required (METER)
+- **Blue** - Time limit applies (OP)
+- **Green** - RPP only (PRE)
+- **Gray** - Unrestricted (FREE)
+
+### Special Event Zones
+
+**Read: Part 1 of `REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`**
+
+- Oracle Park (Ballpark)
+- Chase Center (Arena)
+- ~2,400 meters (7.9% of total)
+- Special display format with hyperlinks
+
+---
+
+## 🔄 Data Ingestion
+
+### 12-Step Pipeline
+
+**Read: `docs/current/INGESTION_REFACTORING_COMPLETE_SUMMARY.md`**
+
+**Main script:** `scripts/ingestion/ingest_data_cnn_segments_v2.py`
+
+**Steps:**
+1. Load Active Streets
+2. Build RPP area boundaries
+3. Process Parking Regulations
+4. Apply geospatial joins
+5. Process Parking Meters
+6. ... (see doc for all 12 steps)
+
+**Runtime:** ~15-20 minutes for full ingestion
+
+**To run:**
+```bash
+python scripts/ingestion/ingest_data_cnn_segments_v2.py
+```
+
+---
+
+## 🚫 What NOT to Do
+
+### Don't:
+- ❌ Reimplement day/time parsing (use `regulation_normalizer.py`)
+- ❌ Edit production files in `src/` without understanding full impact
+- ❌ Create new collections without documenting schema
+- ❌ Use blocking I/O (everything must be async)
+- ❌ Hardcode SFMTA dataset IDs (use constants)
+- ❌ Skip reading existing docs before implementing features
+- ❌ Create documentation without following `AI_ASSISTANT_GUIDE.md`
+- ❌ Put utility scripts in `src/` (they go in `scripts/`)
+
+### Do:
+- ✅ Read relevant docs BEFORE coding
+- ✅ Use `regulation_normalizer.py` for all temporal logic
+- ✅ Keep production code minimal (only 3 files!)
+- ✅ Put utilities in `scripts/` directories
+- ✅ Document new features following standards
+- ✅ Use async/await consistently
+- ✅ Add type hints to all functions
+- ✅ Test with real SFMTA data
+
+---
+
+## 🎯 Common Tasks
+
+### Adding a New API Endpoint
+
+```python
+# In src/api/main.py
+from fastapi import FastAPI, Query
+from src.api.models import BlockfaceResponse
+
+@app.get("/api/v1/new-endpoint", response_model=BlockfaceResponse)
+async def new_endpoint(
+    param: str = Query(..., description="Parameter description")
+):
+    """
+    Endpoint description.
+    
+    See docs/reference/guides/[RELEVANT_GUIDE].md for details.
+    """
+    # Implementation
+    pass
+```
+
+### Using Regulation Normalizer
+
+```python
+from src.core.regulation_normalizer import (
+    normalize_regulation,
+    format_day_display,
+    format_time_display,
+    format_duration_display
+)
+
+# Normalize a regulation from SFMTA data
+normalized = normalize_regulation(
+    raw_record,
+    dataset_type='parking_regulations'  # or 'street_cleaning', 'meter_schedules'
+)
+
+# Format for display
+day_text = format_day_display(normalized['canonical']['days'])
+time_text = format_time_display(normalized['canonical']['start_time'])
+```
+
+### Running Data Analysis
+
+```bash
+# Analyze meter coverage
+python scripts/analysis/analyze_on_street_meter_coverage.py
+
+# Inspect specific CNN
+python scripts/utilities/get_cnn_783420_fields.py
+
+# Validate data quality
+python scripts/utilities/validate_all_dataset_relationships.py
+```
+
+---
+
+## 📚 Documentation Standards
+
+**CRITICAL:** Follow `docs/AI_ASSISTANT_GUIDE.md` for ALL documentation.
+
+**Key principles:**
+1. **UPDATE, DON'T DUPLICATE** - Check if doc exists first
+2. **Use naming:** `[TYPE]_[topic]_[variant].md`
+3. **Search before creating:** `grep -r "topic" docs/`
+4. **Update INDEX.md** when adding/changing files
+
+**For creating/updating docs, read the full guide:**
+```bash
+cat docs/AI_ASSISTANT_GUIDE.md
+```
+
+---
+
+## 🐛 Debugging Tips
+
+### Common Issues
+
+**Ingestion fails:**
+- Check MongoDB connection string in `.env`
+- Verify SFMTA API token is valid
+- Check dataset IDs haven't changed
+- See `docs/reference/guides/INGESTION_PROGRESS_GUIDE.md`
+
+**Regulation display wrong:**
+- Check `regulation_normalizer.py` logic
+- See `docs/reference/guides/REGULATION_DISPLAY_EXAMPLES.md`
+- Review `docs/current/REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`
+
+**Geospatial query slow:**
+- Verify 2dsphere index exists
+- Check query bounds aren't too large
+- See `docs/current/CNN_MASTER_REFERENCE_ARCHITECTURE.md`
+
+---
+
+## 📖 Key Documentation (Must Read)
+
+### Before Writing ANY Code:
+1. `docs/AI_ASSISTANT_GUIDE.md` - Documentation standards
+2. `docs/current/CNN_MASTER_REFERENCE_ARCHITECTURE.md` - System architecture
+3. `docs/current/REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md` - Core business logic
+
+### For Specific Tasks:
+- **Parsing days/times:** `docs/reference/guides/DAY_TIME_NORMALIZATION_GUIDE.md`
+- **Display formatting:** `docs/reference/guides/REGULATION_DISPLAY_EXAMPLES.md`
+- **Running ingestion:** `docs/current/INGESTION_REFACTORING_COMPLETE_SUMMARY.md`
+- **Database schema:** `docs/current/MONGODB_COLLECTION_ARCHITECTURE.md`
+
+### For Understanding Decisions:
+- `docs/current/PROJECT_HISTORY.md` - Why things are the way they are
+- `docs/investigations/` - Research that led to current approach
+
+---
+
+## ⚡ Quick Reference
+
+**Main production file:** `src/core/regulation_normalizer.py` (2,335 lines - READ IT!)
+
+**Main ingestion script:** `scripts/ingestion/ingest_data_cnn_segments_v2.py`
+
+**API server:** `src/api/main.py`
+
+**Data models:** `src/api/models.py`
+
+**All docs:** `docs/README.md` (navigation hub)
+
+**Your Downloads:** `/Users/ssp/Downloads/` (files from Claude go here)
+
+---
+
+## 🎓 Learning Path for New AI Assistants
+
+1. Read `docs/README.md` - Documentation overview
+2. Read `docs/AI_ASSISTANT_GUIDE.md` - Documentation standards
+3. Read `docs/current/INDEX.md` - Essential production docs
+4. Scan `regulation_normalizer.py` - Understand core logic
+5. Review `docs/current/REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`
+6. Check relevant guides in `docs/reference/guides/` for specific tasks
+
+**Don't skip step 1-3! They're critical.**
+
+---
+
+**Last Updated:** January 11, 2026  
+**Project:** Curby v1.0 Beta  
+**Status:** Production - 34,324 segments serving real users
