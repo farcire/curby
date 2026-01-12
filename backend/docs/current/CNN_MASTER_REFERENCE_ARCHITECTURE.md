@@ -127,6 +127,15 @@ This standard is essential for:
 
 **Reference**: See [`archive/old_docs/INTERSECTION_DATASETS_COMPLETE_INTEGRATION.md`](../archive/old_docs/INTERSECTION_DATASETS_COMPLETE_INTEGRATION.md) for detailed explanation.
 
+### Historical Note: Fuzzy Matching Abandonment
+
+**Validation Results** (December 2024):
+- Fuzzy matching algorithm tested against 113 blockfaces
+- **Accuracy: 21.4%** (24 correct out of 112)
+- **Root cause:** Street intersections dataset provides only ONE cross street, but blockfaces require TWO for unique identification
+- **Decision:** Abandon fuzzy matching entirely. Use deterministic matching only.
+- **Reference:** See [`FUZZY_MATCHING_VALIDATION_SUMMARY.md`](../reference/status/FUZZY_MATCHING_VALIDATION_SUMMARY.md)
+
 ### Layer 4A: Blockface Geometry - Meter-Calibrated Offsets - ✅ IMPLEMENTED & INTEGRATED
 
 **Implementation Date**: December 30, 2025
@@ -339,6 +348,14 @@ Phase 2: Regulations (Parallel - Independent)
 **Documentation**: [`STREET_CLEANING_INTEGRATION_GUIDE.md`](STREET_CLEANING_INTEGRATION_GUIDE.md)
 
 **Purpose**: Integrate street cleaning schedules as absolute prohibitions that override all parking availability types
+
+**Key Statistics** (December 31, 2025):
+- Total records: 37,878
+- Total CNNs: 12,253 unique
+- CNNs with both sides: 10,320 (84.2%)
+- CNNs with only one side: 1,933 (15.8%) - Known data quality issue
+
+**Reference:** See [`STREET_CLEANING_INTEGRATION_GUIDE.md`](../reference/guides/STREET_CLEANING_INTEGRATION_GUIDE.md) for complete integration details.
 #### Blockface-Level Street Cleaning Aggregation
 
 **Purpose**: Aggregate multiple street cleaning schedules at the CNN+SIDE (blockface) level for user display
@@ -1463,6 +1480,29 @@ class SpecialEventZoneFormatter:
 **Reference**: See [`REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`](REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md) for complete implementation details.
 
 **Reference**: See [`ALTERNATE_SCHEDULE_ANALYSIS_SUMMARY.md`](ALTERNATE_SCHEDULE_ANALYSIS_SUMMARY.md) for complete analysis and [`non_dow_days_applied_patterns.json`](non_dow_days_applied_patterns.json) for detailed data.
+
+### Regulation Severity & Display Logic
+
+**Critical Architecture**: Regulations are layered from **least to most severe**:
+
+**Severity Hierarchy**:
+1. **Non-metered regulations** (Severity 1 - Least Severe)
+   - Time-limited parking, RPP zones, general restrictions
+   - Impact: You can park with time/permit limits
+
+2. **Metered parking** (Severity 2)
+   - Paid parking with rates and time limits
+   - **Internal meter schedule priority**: TOW > ALTERNATE > OP > PRE+FREE
+   - Impact: You can park if you pay (unless meter TOW active)
+
+3. **Street sweeping** (Severity 3 - Most Severe)
+   - Complete prohibition during specific times
+   - Overrides ALL regulations including meter TOW
+   - Impact: Absolute restriction, guaranteed tow
+
+**Display Logic**: Always show the **most severe active regulation** to users.
+
+**Reference:** See [`REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md`](REGULATION_NORMALIZATION_COMPLETE_SUMMARY.md) for complete normalization logic.
 
 ## Implementation Plan
 
