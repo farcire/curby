@@ -6,7 +6,6 @@ __pycache__/
 *.pyc
 
 # Environment files
-.env
 backend/.env
 backend/src/api/.env
 frontend/.env
@@ -31,3 +30,5 @@ backend/database_backups/
 # Build
 frontend/dist/
 frontend/node_modules/
+config.bat
+node_modules
