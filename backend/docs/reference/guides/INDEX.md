@@ -1,8 +1,23 @@
 # Reference Guides
 
-**Last Updated:** January 8, 2026
+**Last Updated:** January 12, 2026
 
 How-to guides for using current production systems.
+
+---
+
+## 🚀 Setup & Deployment Guides
+
+### GUIDE_development_setup.md
+Local development environment setup
+- Prerequisites and dependencies
+- Running locally
+
+### GUIDE_deployment_quickref.md
+Production deployment quick reference
+- Render.com deployment
+- MongoDB Atlas setup
+- Environment configuration
 
 ---
 
@@ -69,6 +84,12 @@ How street cleaning integrates with other data
 ---
 
 ## 📌 Quick Reference
+
+**Setting up for the first time?**
+→ GUIDE_development_setup.md
+
+**Deploying to production?**
+→ GUIDE_deployment_quickref.md
 
 **Need to parse days/times?**
 → DAY_TIME_NORMALIZATION_GUIDE.md

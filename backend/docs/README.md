@@ -1,7 +1,7 @@
 # Documentation Guide
 
-**Last Updated:** January 11, 2026  
-**Total:** 77 markdown files organized by content and purpose
+**Last Updated:** January 12, 2026
+**Total:** 78 markdown files organized by content and purpose
 
 ---
 
@@ -36,8 +36,8 @@ docs/
 │   ├── DATA_QUALITY_LOG.md (updated Jan 7)
 │   └── PROJECT_HISTORY.md
 │
-├── reference/                    # 36 files - HOW TO USE
-│   ├── guides/INDEX.md          # 12 how-to guides
+├── reference/                    # 37 files - HOW TO USE
+│   ├── guides/INDEX.md          # 13 how-to guides
 │   ├── specs/INDEX.md           # 11 technical specs
 │   └── status/INDEX.md          # 13 status reports & fixes
 │
@@ -72,6 +72,8 @@ docs/
 
 | Question | Document |
 |----------|----------|
+| How do I set up locally? | `reference/guides/GUIDE_development_setup.md` |
+| How do I deploy to production? | `reference/guides/GUIDE_deployment_quickref.md` |
 | How does ingestion work? | `current/INGESTION_REFACTORING_COMPLETE_SUMMARY.md` |
 | How do I parse days/times? | `reference/guides/DAY_TIME_NORMALIZATION_GUIDE.md` |
 | What's the database schema? | `current/MONGODB_COLLECTION_ARCHITECTURE.md` |
@@ -185,6 +187,7 @@ grep -r "blockface" . --include="*.md"
 
 ---
 
-**Organization completed:** January 11, 2026  
-**Method:** Content analysis of all 77 files (not just names)  
+**Organization completed:** January 11, 2026
+**Last updated:** January 12, 2026 (added deployment guide)
+**Method:** Content analysis of all 78 files (not just names)
 **Next:** Phase 2 naming standardization (in 1-2 weeks)
