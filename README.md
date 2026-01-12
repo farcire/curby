@@ -142,8 +142,6 @@ Backend API runs at: `http://localhost:8000`
 
 ### 🔄 In Progress
 
-- AI-powered regulation interpretation system (see [`UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](UNIQUE_REGULATIONS_EXTRACTION_PLAN.md))
-- Gemini 2.0 Flash integration for natural language processing (see [`GEMINI_FREE_TIER_STRATEGY.md`](GEMINI_FREE_TIER_STRATEGY.md))
 - Data quality validation and workarounds
 
 ### 📋 Planned Features
@@ -164,11 +162,6 @@ Backend API runs at: `http://localhost:8000`
 - **[`Backend-dev-plan.md`](Backend-dev-plan.md)** - Development plan with sprint details
 - **[`frontend/README.md`](frontend/README.md)** - Frontend-specific documentation
 - **[`backend/README.md`](backend/README.md)** - Backend architecture & API docs
-
-### Technical Plans
-
-- **[`UNIQUE_REGULATIONS_EXTRACTION_PLAN.md`](UNIQUE_REGULATIONS_EXTRACTION_PLAN.md)** - AI interpretation system design
-- **[`GEMINI_FREE_TIER_STRATEGY.md`](GEMINI_FREE_TIER_STRATEGY.md)** - Cost-efficient LLM processing strategy
 
 ### Data Quality
 
@@ -215,7 +208,6 @@ User Interface (Leaflet Map + Controls)
 - FastAPI (Python web framework)
 - Motor (async MongoDB driver)
 - Pydantic (data validation)
-- Google Generative AI (Gemini 2.0 Flash)
 
 **Database:**
 - MongoDB Atlas (cloud database)
